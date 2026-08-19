@@ -49,7 +49,7 @@ export default function Experience() {
       id="experience"
       className="bg-[#090909] text-[#F4F0E8]"
     >
-      <div className="mx-auto max-w-[1440px] px-6 py-28 sm:px-8 sm:py-36 lg:px-10 lg:py-44">
+      <div className="mx-auto max-w-360 px-6 py-28 sm:px-8 sm:py-36 lg:px-10 lg:py-44">
 
         {/* HEADER */}
         <div className="mb-24 grid gap-12 lg:grid-cols-12 lg:items-end">
@@ -102,7 +102,7 @@ export default function Experience() {
             >
 
               {/* IMAGE */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-[#111]">
+              <div className="relative aspect-4/3 overflow-hidden bg-[#111]">
 
                 <img
                   src={experience.image}
@@ -151,7 +151,7 @@ export default function Experience() {
                   TSE / {experience.number}
                 </span>
 
-                <p className="max-w-[280px] text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
+                <p className="max-w-70 text-xs leading-5 text-white/45 sm:text-sm sm:leading-6">
                   {experience.description}
                 </p>
 
