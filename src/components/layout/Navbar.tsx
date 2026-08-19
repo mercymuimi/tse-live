@@ -32,9 +32,9 @@ export default function Navbar() {
           MAIN NAVBAR
       ====================================================== */}
       <header className="fixed inset-x-0 top-0 z-50">
-        <nav className="border-b border-white/[0.10] bg-black/95 backdrop-blur-xl">
-          <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-10">
-            <div className="flex h-[74px] items-center justify-between">
+        <nav className="border-b border-white/10 bg-black/95 backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-360 px-6 sm:px-8 lg:px-10">
+            <div className="flex h-18.5 items-center justify-between">
 
               {/* LOGO */}
               <Link
@@ -115,8 +115,8 @@ export default function Navbar() {
                   href="/tickets"
                   className="
                     hidden
-                    h-[40px]
-                    min-w-[156px]
+                    h-10
+                    min-w-39
                     items-center
                     justify-center
                     bg-[#F4F0E8]
@@ -150,7 +150,7 @@ export default function Navbar() {
                   aria-expanded={menuOpen}
                   className="
                     relative
-                    z-[60]
+                    z-60
                     flex
                     h-10
                     w-10

@@ -22,7 +22,7 @@ const socialLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#090909] text-[#F4F0E8]">
-      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-360 px-6 sm:px-8 lg:px-10">
 
         {/* ==================================================
             BRAND
@@ -30,7 +30,7 @@ export default function Footer() {
 
         <div className="py-20 sm:py-28 lg:py-36">
 
-          <div className="max-w-[900px]">
+          <div className="max-w-225">
             <p className="mb-8 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
               The Styled Edit Live
             </p>
