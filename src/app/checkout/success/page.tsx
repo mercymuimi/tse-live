@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -40,10 +40,10 @@ type OrderDetails = {
 type FetchState = "loading" | "ready" | "error";
 
 /* =========================================================
-   SUCCESS PAGE
+   SUCCESS PAGE (INNER — uses useSearchParams)
 ========================================================= */
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
@@ -334,5 +334,27 @@ export default function CheckoutSuccessPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+/* =========================================================
+   SUCCESS PAGE (OUTER — provides the Suspense boundary
+   Next.js requires around useSearchParams during
+   static build/prerender)
+========================================================= */
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#f4f1ea] px-6 text-black">
+          <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+            Loading your order...
+          </p>
+        </main>
+      }
+    >
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
