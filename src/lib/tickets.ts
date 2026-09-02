@@ -8,32 +8,26 @@ import type {
    ADD-ONS
 ========================================================= */
 
-export const ADD_ONS: Record<
-  AddOnId,
-  AddOn
-> = {
+export const ADD_ONS: Record<AddOnId, AddOn> = {
   pool: {
     id: "pool",
     name: "Pool Access",
     price: 500,
-    description:
-      "Access to the pool area during the event.",
+    description: "Access to the pool area during the event.",
   },
 
   food: {
     id: "food",
     name: "Artisan Food",
     price: 0,
-    description:
-      "Food available separately at the event.",
+    description: "Food available separately at the event.",
   },
 
   drinks: {
     id: "drinks",
     name: "Craft Drinks",
     price: 0,
-    description:
-      "Drinks available separately at the event.",
+    description: "Drinks available separately at the event.",
   },
 };
 
@@ -48,7 +42,7 @@ export const TICKETS: TicketType[] = [
     name: "General Admission",
     description:
       "Full event access. Fashion, culture, music and community.",
-    price: 5,
+    price: 500,
 
     inclusions: [
       "Full event access",
@@ -98,13 +92,9 @@ export const TICKETS: TicketType[] = [
 export function getTicketById(
   ticketId: string
 ): TicketType | undefined {
-  return TICKETS.find(
-    (ticket) => ticket.id === ticketId
-  );
+  return TICKETS.find((ticket) => ticket.id === ticketId);
 }
 
-export function getAddOnById(
-  addOnId: AddOnId
-): AddOn {
+export function getAddOnById(addOnId: AddOnId): AddOn {
   return ADD_ONS[addOnId];
 }
