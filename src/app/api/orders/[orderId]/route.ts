@@ -1,58 +1,91 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const supabaseKey =
+  process.env.SUPABASE_SECRET_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "Missing Supabase environment variables."
+  );
+}
+
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!
+  supabaseUrl,
+  supabaseKey
 );
 
-type RouteContext = {
-  params: Promise<{
-    orderId: string;
-  }>;
-};
+/* =========================================================
+   GET /api/orders/[orderId]
+========================================================= */
 
 export async function GET(
-  request: Request,
-  context: RouteContext
+  _request: Request,
+  {
+    params,
+  }: {
+    params: Promise<{
+      orderId: string;
+    }>;
+  }
 ) {
   try {
-    const { orderId } =
-      await context.params;
+    /* =====================================================
+       GET ORDER ID
+    ===================================================== */
 
-    if (!orderId) {
+    const { orderId } =
+      await params;
+
+    if (
+      !orderId ||
+      typeof orderId !== "string"
+    ) {
       return NextResponse.json(
         {
           error:
             "Order ID is required.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
     /* =====================================================
-       ORDER
+       FETCH ORDER
     ===================================================== */
 
     const {
       data: order,
-      error,
+      error: orderError,
     } = await supabase
       .from("orders")
       .select(
         `
-          id,
-          full_name,
-          email,
-          phone,
-          payment_status,
-          payment_result_code,
-          payment_result_description,
-          mpesa_receipt_number,
-          subtotal,
-          addon_total,
-          total,
-          created_at
+        id,
+        full_name,
+        email,
+        phone,
+        payment_method,
+        payment_status,
+        subtotal,
+        addon_total,
+        total,
+        checkout_request_id,
+        merchant_request_id,
+        mpesa_receipt_number,
+        payment_result_code,
+        payment_result_description,
+        mpesa_transaction_date,
+        created_at
         `
       )
       .eq(
@@ -61,150 +94,197 @@ export async function GET(
       )
       .single();
 
-    if (error || !order) {
+    if (
+      orderError
+    ) {
       console.error(
-        "Order status lookup error:",
-        error
+        "ORDER STATUS LOOKUP ERROR:",
+        orderError
       );
 
       return NextResponse.json(
         {
           error:
-            "Order not found.",
+            "Order could not be found.",
         },
-        { status: 404 }
+        {
+          status: 404,
+        }
+      );
+    }
+
+    if (!order) {
+      return NextResponse.json(
+        {
+          error:
+            "Order could not be found.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
     /* =====================================================
-       ORDER ITEMS
-       Only needed once payment is confirmed — this endpoint
-       is polled every 2s while pending, so skip the extra
-       queries until there's actually a receipt to build.
+       FETCH ORDER ITEMS
+       Only needed once payment has been completed.
     ===================================================== */
 
-    let formattedItems: {
-      ticketName: string;
-      quantity: number;
-      unitPrice: number;
-      addOnTotal: number;
-      addOns: { name: string; price: number }[];
-    }[] = [];
+    let items: unknown[] = [];
 
-    if (order.payment_status === "paid") {
+    if (
+      order.payment_status ===
+      "paid"
+    ) {
       const {
-        data: items,
-        error: itemsError,
+        data: orderItems,
+        error:
+          itemsError,
       } = await supabase
         .from("order_items")
         .select(
-          "id, ticket_name, quantity, unit_price, add_on_total"
+          `
+          id,
+          ticket_id,
+          ticket_name,
+          quantity,
+          unit_price,
+          add_on_total,
+          order_item_addons (
+            id,
+            addon_id,
+            addon_name,
+            addon_price
+          )
+          `
         )
-        .eq("order_id", orderId);
+        .eq(
+          "order_id",
+          order.id
+        );
 
-      if (itemsError) {
+      if (
+        itemsError
+      ) {
         console.error(
-          "Order items lookup error:",
+          "ORDER ITEMS LOOKUP ERROR:",
           itemsError
         );
+
+        /*
+         * We don't fail the payment-status
+         * request just because item details
+         * could not be loaded.
+         */
+      } else {
+        items =
+          orderItems ?? [];
       }
-
-      const itemIds =
-        (items ?? []).map(
-          (item) => item.id
-        );
-
-      const {
-        data: addons,
-        error: addonsError,
-      } =
-        itemIds.length > 0
-          ? await supabase
-              .from(
-                "order_item_addons"
-              )
-              .select(
-                "order_item_id, addon_name, price"
-              )
-              .in(
-                "order_item_id",
-                itemIds
-              )
-          : { data: [], error: null };
-
-      if (addonsError) {
-        console.error(
-          "Order item add-ons lookup error:",
-          addonsError
-        );
-      }
-
-      formattedItems =
-        (items ?? []).map(
-          (item) => ({
-            ticketName:
-              item.ticket_name,
-            quantity:
-              item.quantity,
-            unitPrice:
-              item.unit_price,
-            addOnTotal:
-              item.add_on_total,
-            addOns:
-              (addons ?? [])
-                .filter(
-                  (addon) =>
-                    addon.order_item_id ===
-                    item.id
-                )
-                .map(
-                  (addon) => ({
-                    name: addon.addon_name,
-                    price: addon.price,
-                  })
-                ),
-          })
-        );
     }
 
     /* =====================================================
        RESPONSE
     ===================================================== */
 
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      paymentStatus:
-        order.payment_status,
-      paymentResultCode:
-        order.payment_result_code,
-      paymentResultDescription:
-        order.payment_result_description,
-      mpesaReceiptNumber:
-        order.mpesa_receipt_number,
-      customer: {
-        fullName: order.full_name,
-        email: order.email,
-        phone: order.phone,
+    return NextResponse.json(
+      {
+        success: true,
+
+        order: {
+          id:
+            order.id,
+
+          customer: {
+            fullName:
+              order.full_name,
+
+            email:
+              order.email,
+
+            phone:
+              order.phone,
+          },
+
+          paymentMethod:
+            order.payment_method,
+
+          paymentStatus:
+            order.payment_status,
+
+          subtotal:
+            Number(
+              order.subtotal
+            ),
+
+          addonTotal:
+            Number(
+              order.addon_total
+            ),
+
+          total:
+            Number(
+              order.total
+            ),
+
+          checkoutRequestId:
+            order.checkout_request_id,
+
+          merchantRequestId:
+            order.merchant_request_id,
+
+          mpesaReceiptNumber:
+            order.mpesa_receipt_number,
+
+          paymentResultCode:
+            order.payment_result_code,
+
+          paymentResultDescription:
+            order.payment_result_description,
+
+          mpesaTransactionDate:
+            order.mpesa_transaction_date,
+
+          createdAt:
+            order.created_at,
+
+          items,
+        },
+
+        /* -----------------------------------------------
+           Convenience fields
+           Used by checkout polling.
+        ----------------------------------------------- */
+
+        paymentStatus:
+          order.payment_status,
+
+        paymentResultCode:
+          order.payment_result_code,
+
+        paymentResultDescription:
+          order.payment_result_description,
+
+        mpesaReceiptNumber:
+          order.mpesa_receipt_number,
       },
-      subtotal: order.subtotal,
-      addonTotal: order.addon_total,
-      total: order.total,
-      createdAt: order.created_at,
-      items: formattedItems,
-    });
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error(
-      "Order status API error:",
+      "ORDER API ERROR:",
       error
     );
 
     return NextResponse.json(
       {
         error:
-          "Could not check payment status.",
+          "Something went wrong while retrieving the order.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }

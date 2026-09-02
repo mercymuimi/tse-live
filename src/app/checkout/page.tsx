@@ -14,25 +14,14 @@ import type {
 } from "@/types/checkout";
 
 import type {
-  SelectedTicket,
   AddOnId,
+  SelectedTicket,
+  StoredTicketSelection,
 } from "@/types/ticket";
 
-import { ADD_ONS, TICKETS as tickets } from "@/lib/tickets";
+import { ADD_ONS, TICKETS } from "@/lib/tickets";
 
-/* =========================================================
-   STORED TICKET DATA
-========================================================= */
-
-type StoredTicketSelection = {
-  ticketId: string;
-  quantity: number;
-  selectedAddOns?: string[];
-};
-
-/* =========================================================
-   PAYMENT STATUS
-========================================================= */
+const STORAGE_KEY = "tse-ticket-selection";
 
 type PaymentState =
   | "idle"
@@ -41,16 +30,28 @@ type PaymentState =
   | "paid"
   | "failed";
 
-/* =========================================================
-   CHECKOUT PAGE
-========================================================= */
+type OrderStatusResponse = {
+  success?: boolean;
+  paymentStatus?: string;
+  paymentResultCode?: number | null;
+  paymentResultDescription?: string | null;
+  mpesaReceiptNumber?: string | null;
+
+  order?: {
+    id: string;
+    paymentStatus?: string;
+    paymentResultCode?: number | null;
+    paymentResultDescription?: string | null;
+    mpesaReceiptNumber?: string | null;
+  };
+};
 
 export default function CheckoutPage() {
   const router = useRouter();
 
-  /* -------------------------------------------------------
-     CUSTOMER
-  ------------------------------------------------------- */
+  // --------------------------------------------------
+  // CUSTOMER
+  // --------------------------------------------------
 
   const [customer, setCustomer] =
     useState<CustomerDetails>({
@@ -59,9 +60,9 @@ export default function CheckoutPage() {
       phone: "",
     });
 
-  /* -------------------------------------------------------
-     PAYMENT
-  ------------------------------------------------------- */
+  // --------------------------------------------------
+  // PAYMENT
+  // --------------------------------------------------
 
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethodType>("mpesa");
@@ -75,16 +76,12 @@ export default function CheckoutPage() {
   const [currentOrderId, setCurrentOrderId] =
     useState<string | null>(null);
 
-  /* -------------------------------------------------------
-     TICKETS
-  ------------------------------------------------------- */
+  // --------------------------------------------------
+  // TICKETS
+  // --------------------------------------------------
 
   const [selectedTickets, setSelectedTickets] =
     useState<SelectedTicket[]>([]);
-
-  /* -------------------------------------------------------
-     CHECKOUT STATE
-  ------------------------------------------------------- */
 
   const [termsAccepted, setTermsAccepted] =
     useState(false);
@@ -92,49 +89,53 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] =
     useState(false);
 
-  /* =======================================================
-     LOAD TICKETS FROM SESSION STORAGE
-  ======================================================= */
+  // --------------------------------------------------
+  // LOAD TICKET SELECTION
+  // --------------------------------------------------
 
   useEffect(() => {
-    const stored =
-      sessionStorage.getItem(
-        "tse-ticket-selection"
-      );
-
-    if (!stored) {
-      return;
-    }
-
     try {
-      const parsed =
-        JSON.parse(
-          stored
-        ) as StoredTicketSelection[];
+      const stored =
+        sessionStorage.getItem(STORAGE_KEY);
 
-      const hydrated: SelectedTicket[] =
+      if (!stored) {
+        return;
+      }
+
+      const parsed =
+        JSON.parse(stored) as StoredTicketSelection[];
+
+      if (!Array.isArray(parsed)) {
+        return;
+      }
+
+      const hydratedTickets: SelectedTicket[] =
         parsed
-          .map((item): SelectedTicket | null => {
-            const ticket =
-              tickets.find(
-                (ticket) =>
-                  ticket.id ===
-                  item.ticketId
-              );
+          .map((item) => {
+            const ticket = TICKETS.find(
+              (ticket) =>
+                ticket.id === item.ticketId
+            );
 
             if (!ticket) {
               return null;
             }
 
+            const addOns: AddOnId[] =
+              Array.isArray(item.selectedAddOns)
+                ? item.selectedAddOns.filter(
+                    (addOnId): addOnId is AddOnId =>
+                      Boolean(ADD_ONS[addOnId])
+                  )
+                : [];
+
             return {
               ticket,
-              quantity:
-                item.quantity,
-              addOns:
-                (item.selectedAddOns ?? []).filter(
-                  (id): id is AddOnId =>
-                    id in ADD_ONS
-                ),
+              quantity: Math.max(
+                0,
+                Number(item.quantity) || 0
+              ),
+              addOns,
             };
           })
           .filter(
@@ -144,673 +145,717 @@ export default function CheckoutPage() {
               item !== null
           );
 
-      setSelectedTickets(
-        hydrated
-      );
+      setSelectedTickets(hydratedTickets);
     } catch (error) {
       console.error(
-        "Could not load ticket selection:",
+        "❌ Failed to load ticket selection:",
         error
-      );
-
-      sessionStorage.removeItem(
-        "tse-ticket-selection"
       );
     }
   }, []);
 
-  /* =======================================================
-     ACTIVE TICKETS
-  ======================================================= */
+  // --------------------------------------------------
+  // ACTIVE TICKETS
+  // --------------------------------------------------
 
-  const activeTickets =
-    useMemo(() => {
-      return selectedTickets.filter(
-        (item) =>
-          item.quantity > 0
-      );
-    }, [selectedTickets]);
+  const activeTickets = useMemo(
+    () =>
+      selectedTickets.filter(
+        (item) => item.quantity > 0
+      ),
+    [selectedTickets]
+  );
 
-  /* =======================================================
-     TICKET TOTAL
-  ======================================================= */
+  // --------------------------------------------------
+  // TICKET TOTAL
+  // --------------------------------------------------
 
-  const ticketTotal =
-    useMemo(() => {
-      return activeTickets.reduce(
-        (sum, item) =>
-          sum +
-          item.ticket.price *
+  const ticketTotal = useMemo(
+    () =>
+      activeTickets.reduce(
+        (total, item) =>
+          total +
+          Number(item.ticket.price) *
             item.quantity,
         0
-      );
-    }, [activeTickets]);
+      ),
+    [activeTickets]
+  );
 
-  /* =======================================================
-     ADD-ON TOTAL
-  ======================================================= */
+  // --------------------------------------------------
+  // ADD-ON TOTAL
+  // --------------------------------------------------
 
-  const addOnTotal =
-    useMemo(() => {
-      return activeTickets.reduce(
-        (sum, item) => {
-          const poolSelected =
-            (item.addOns ?? []).includes(
-              "pool"
-            );
+  const addOnTotal = useMemo(
+    () =>
+      activeTickets.reduce((total, item) => {
+        const itemAddOnTotal =
+          (item.addOns ?? []).reduce(
+            (sum, addOnId) => {
+              const addOn =
+                ADD_ONS[addOnId];
 
-          return (
-            sum +
-            (poolSelected
-              ? ADD_ONS.pool.price *
-                item.quantity
-              : 0)
+              if (
+                !addOn ||
+                Number(addOn.price) <= 0
+              ) {
+                return sum;
+              }
+
+              return (
+                sum + Number(addOn.price)
+              );
+            },
+            0
           );
-        },
-        0
-      );
-    }, [activeTickets]);
 
-  /* =======================================================
-     FINAL TOTAL
-  ======================================================= */
+        return (
+          total +
+          itemAddOnTotal * item.quantity
+        );
+      }, 0),
+    [activeTickets]
+  );
+
+  // --------------------------------------------------
+  // TOTAL
+  // --------------------------------------------------
 
   const total =
-    ticketTotal +
-    addOnTotal;
+    ticketTotal + addOnTotal;
 
-  /* =======================================================
-     CHECKOUT VALIDATION
-  ======================================================= */
+  // --------------------------------------------------
+  // CHECKOUT VALIDATION
+  // --------------------------------------------------
 
   const canCheckout =
-    customer.fullName.trim() !==
-      "" &&
-    customer.email.trim() !==
-      "" &&
-    customer.phone.trim() !==
-      "" &&
+    customer.fullName.trim() !== "" &&
+    customer.email.trim() !== "" &&
+    customer.phone.trim() !== "" &&
     termsAccepted &&
     activeTickets.length > 0;
 
-  /* =======================================================
-     CHECK PAYMENT STATUS
-  ======================================================= */
+  // --------------------------------------------------
+  // CHECK PAYMENT STATUS
+  // --------------------------------------------------
 
-  const checkPaymentStatus =
-    async (
-      orderId: string
-    ) => {
-      try {
-        const response =
-          await fetch(
-            `/api/orders/${orderId}`,
-            {
-              method: "GET",
-              cache: "no-store",
-            }
-          );
-
-        if (!response.ok) {
-          return null;
+  const checkPaymentStatus = async (
+    orderId: string
+  ): Promise<OrderStatusResponse | null> => {
+    try {
+      const response = await fetch(
+        `/api/orders/${orderId}`,
+        {
+          method: "GET",
+          cache: "no-store",
         }
+      );
 
-        const data =
-          await response.json();
+      const data =
+        (await response.json()) as OrderStatusResponse;
 
-        return data;
-      } catch (error) {
+      if (!response.ok) {
         console.error(
-          "Payment status check failed:",
-          error
+          "❌ Payment status API error:",
+          data
         );
 
         return null;
       }
-    };
 
-  /* =======================================================
-     WAIT FOR PAYMENT
-  ======================================================= */
+      return data;
+    } catch (error) {
+      console.error(
+        "❌ Failed to check payment status:",
+        error
+      );
+
+      return null;
+    }
+  };
+
+  // --------------------------------------------------
+  // PAYMENT POLLING
+  // --------------------------------------------------
 
   useEffect(() => {
     if (
-      paymentState !==
-        "waiting" ||
+      paymentState !== "waiting" ||
       !currentOrderId
     ) {
       return;
     }
 
     let cancelled = false;
-
     let attempts = 0;
 
-    const maxAttempts = 30;
+    // 60 attempts × 2 seconds = 2 minutes
+    const maxAttempts = 60;
 
-    const poll =
-      async () => {
-        if (cancelled) {
-          return;
-        }
+    let timeoutId:
+      ReturnType<typeof setTimeout> | undefined;
 
-        attempts++;
+    const poll = async () => {
+      if (cancelled) {
+        return;
+      }
 
-        const data =
-          await checkPaymentStatus(
-            currentOrderId
-          );
+      attempts += 1;
 
-        if (cancelled) {
-          return;
-        }
+      console.log(
+        `🔎 Checking payment status ${attempts}/${maxAttempts}`
+      );
 
-        if (
-          data?.paymentStatus ===
-          "paid"
-        ) {
-          setPaymentState(
-            "paid"
-          );
-
-          setPaymentMessage(
-            "Payment received successfully."
-          );
-
-          setIsSubmitting(
-            false
-          );
-
-          sessionStorage.removeItem(
-            "tse-ticket-selection"
-          );
-
-          router.push(
-            `/checkout/success?orderId=${currentOrderId}`
-          );
-
-          return;
-        }
-
-        if (
-          data?.paymentStatus ===
-          "failed"
-        ) {
-          setPaymentState(
-            "failed"
-          );
-
-          setPaymentMessage(
-            data.paymentResultDescription ||
-              "M-Pesa payment was not completed."
-          );
-
-          setIsSubmitting(
-            false
-          );
-
-          return;
-        }
-
-        if (
-          attempts >=
-          maxAttempts
-        ) {
-          setPaymentState(
-            "failed"
-          );
-
-          setPaymentMessage(
-            "We could not confirm the payment yet. Please check your M-Pesa messages or contact support."
-          );
-
-          setIsSubmitting(
-            false
-          );
-
-          return;
-        }
-
-        setTimeout(
-          poll,
-          2000
+      const data =
+        await checkPaymentStatus(
+          currentOrderId
         );
-      };
+
+      if (cancelled) {
+        return;
+      }
+
+      console.log(
+        "🔎 Payment status response:",
+        data
+      );
+
+      // API returns paymentStatus at root.
+      // We also support order.paymentStatus.
+      const paymentStatus =
+        data?.paymentStatus ??
+        data?.order?.paymentStatus;
+
+      console.log(
+        "🔎 Current payment status:",
+        paymentStatus
+      );
+
+      // --------------------------------------------
+      // PAID
+      // --------------------------------------------
+
+      if (paymentStatus === "paid") {
+        console.log(
+          "🎉 PAYMENT CONFIRMED"
+        );
+
+        setPaymentState("paid");
+        setPaymentMessage(
+          "Payment received successfully."
+        );
+        setIsSubmitting(false);
+
+        sessionStorage.removeItem(
+          STORAGE_KEY
+        );
+
+        // Give React state a moment to settle,
+        // then redirect.
+        router.replace(
+          `/checkout/success?orderId=${currentOrderId}`
+        );
+
+        return;
+      }
+
+      // --------------------------------------------
+      // FAILED
+      // --------------------------------------------
+
+      if (paymentStatus === "failed") {
+        console.log(
+          "❌ PAYMENT FAILED"
+        );
+
+        setPaymentState("failed");
+
+        setPaymentMessage(
+          data?.paymentResultDescription ??
+            data?.order
+              ?.paymentResultDescription ??
+            "M-Pesa payment was not completed. Please try again."
+        );
+
+        setIsSubmitting(false);
+
+        return;
+      }
+
+      // --------------------------------------------
+      // TIMEOUT
+      // --------------------------------------------
+
+      if (attempts >= maxAttempts) {
+        console.log(
+          "⚠️ PAYMENT STATUS CHECK TIMED OUT"
+        );
+
+        setPaymentState("failed");
+
+        setPaymentMessage(
+          "We could not confirm your payment yet. If you received an M-Pesa confirmation message, please contact us before making another payment."
+        );
+
+        setIsSubmitting(false);
+
+        return;
+      }
+
+      // --------------------------------------------
+      // CHECK AGAIN
+      // --------------------------------------------
+
+      timeoutId = setTimeout(
+        poll,
+        2000
+      );
+    };
 
     poll();
 
     return () => {
       cancelled = true;
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [
     paymentState,
     currentOrderId,
+    router,
   ]);
 
-  /* =======================================================
-     SUBMIT CHECKOUT
-  ======================================================= */
+  // --------------------------------------------------
+  // SUBMIT CHECKOUT
+  // --------------------------------------------------
 
-  const handleSubmit =
-    async (
-      event: React.FormEvent<HTMLFormElement>
-    ) => {
-      event.preventDefault();
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
 
-      if (
-        !canCheckout ||
-        isSubmitting
-      ) {
-        return;
+    if (
+      !canCheckout ||
+      isSubmitting
+    ) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setPaymentState("initiating");
+    setPaymentMessage(
+      "Creating your order..."
+    );
+
+    try {
+      // --------------------------------------------
+      // CREATE ORDER
+      // --------------------------------------------
+
+      const checkoutResponse =
+        await fetch("/api/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            customer,
+            paymentMethod,
+            selectedTickets,
+          }),
+        });
+
+      const checkoutData =
+        await checkoutResponse.json();
+
+      if (!checkoutResponse.ok) {
+        throw new Error(
+          checkoutData.error ||
+            "Checkout failed. Please try again."
+        );
       }
 
-      setIsSubmitting(
-        true
+      const orderId =
+        checkoutData.orderId;
+
+      const orderTotal = Number(
+        checkoutData.total
       );
 
-      setPaymentState(
-        "initiating"
+      if (
+        !orderId ||
+        !Number.isFinite(orderTotal) ||
+        orderTotal <= 0
+      ) {
+        throw new Error(
+          "The order could not be prepared for payment."
+        );
+      }
+
+      console.log(
+        "✅ ORDER CREATED:",
+        {
+          orderId,
+          orderTotal,
+        }
       );
 
-      setPaymentMessage(
-        ""
-      );
+      setCurrentOrderId(orderId);
 
-      try {
-        /* ===============================================
-           STEP 1 — CREATE ORDER
-        =============================================== */
+      // --------------------------------------------
+      // M-PESA
+      // --------------------------------------------
 
-        const checkoutResponse =
+      if (
+        paymentMethod === "mpesa"
+      ) {
+        setPaymentMessage(
+          "Sending M-Pesa payment request..."
+        );
+
+        const mpesaResponse =
           await fetch(
-            "/api/checkout",
+            "/api/mpesa/stkpush",
             {
               method: "POST",
-
               headers: {
                 "Content-Type":
                   "application/json",
               },
-
               body: JSON.stringify({
-                customer,
-                paymentMethod,
-                selectedTickets,
+                orderId,
+                phone: customer.phone,
+                amount: orderTotal,
               }),
             }
           );
 
-        const checkoutData =
-          await checkoutResponse.json();
+        const mpesaData =
+          await mpesaResponse.json();
 
         console.log(
-          "CHECKOUT RESPONSE:",
-          checkoutData
+          "📱 M-PESA RESPONSE:",
+          mpesaData
         );
 
-        if (
-          !checkoutResponse.ok
-        ) {
+        if (!mpesaResponse.ok) {
           throw new Error(
-            checkoutData.error ||
-              "Checkout failed. Please try again."
+            mpesaData.error ||
+              "Could not initiate M-Pesa payment."
           );
         }
 
-        const orderId =
-          checkoutData.orderId;
-
-        const orderTotal =
-          checkoutData.total;
-
-        if (!orderId) {
-          throw new Error(
-            "Order was created but no order ID was returned."
-          );
-        }
-
-        setCurrentOrderId(
-          orderId
-        );
-
-        /* ===============================================
-           STEP 2 — M-PESA
-        =============================================== */
-
-        if (
-          paymentMethod ===
-          "mpesa"
-        ) {
-          const mpesaResponse =
-            await fetch(
-              "/api/mpesa/stkpush",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json",
-                },
-
-                body: JSON.stringify({
-                  orderId,
-                  phone:
-                    customer.phone,
-                  amount:
-                    orderTotal,
-                }),
-              }
-            );
-
-          const mpesaData =
-            await mpesaResponse.json();
-
-          console.log(
-            "M-PESA RESPONSE:",
-            mpesaData
-          );
-
-          if (
-            !mpesaResponse.ok
-          ) {
-            throw new Error(
-              mpesaData.error ||
-                "Could not initiate M-Pesa payment."
-            );
-          }
-
-          /* =============================================
-             STK PUSH SENT
-          ============================================= */
-
-          setPaymentState(
-            "waiting"
-          );
-
-          setPaymentMessage(
-            "Check your phone and enter your M-Pesa PIN."
-          );
-
-          return;
-        }
-
-        /* ===============================================
-           CARD PAYMENT
-        =============================================== */
-
-        if (
-          paymentMethod ===
-          "card"
-        ) {
-          setPaymentState(
-            "failed"
-          );
-
-          setPaymentMessage(
-            `Order ${orderId} was created. Card payments will be available soon.`
-          );
-
-          setIsSubmitting(
-            false
-          );
-
-          return;
-        }
-      } catch (error) {
-        console.error(
-          "Checkout error:",
-          error
-        );
-
-        setPaymentState(
-          "failed"
-        );
+        // Start polling
+        setPaymentState("waiting");
 
         setPaymentMessage(
-          error instanceof Error
-            ? error.message
-            : "Something went wrong during checkout."
+          "M-Pesa prompt sent. Check your phone and enter your PIN."
         );
 
-        setIsSubmitting(
-          false
-        );
+        return;
       }
-    };
 
-  /* =======================================================
-     PAGE
-  ======================================================= */
+      // --------------------------------------------
+      // CARD
+      // --------------------------------------------
+
+      setPaymentState("failed");
+
+      setPaymentMessage(
+        "Card payments will be available soon. Please select M-Pesa."
+      );
+
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error(
+        "❌ Checkout error:",
+        error
+      );
+
+      setPaymentState("failed");
+
+      setPaymentMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong during checkout."
+      );
+
+      setIsSubmitting(false);
+    }
+  };
+
+  // --------------------------------------------------
+  // EMPTY CART
+  // --------------------------------------------------
+
+  if (activeTickets.length === 0) {
+    return (
+      <main className="min-h-screen bg-[#f4f1ea] text-black">
+        <div className="mx-auto flex min-h-screen w-full max-w-xl items-center justify-center px-6">
+          <div className="w-full text-center">
+
+            <p className="text-[9px] uppercase tracking-[0.35em] text-black/35">
+              The Styled Edit Live
+            </p>
+
+            <h1 className="mt-4 text-4xl uppercase tracking-[-0.04em] md:text-5xl">
+              Your bag is empty.
+            </h1>
+
+            <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-black/45">
+              You need to select a ticket before
+              continuing to checkout.
+            </p>
+
+            <Link
+              href="/tickets"
+              className="mt-8 inline-flex border border-black bg-black px-8 py-4 text-[10px] uppercase tracking-[0.2em] text-white transition hover:bg-black/85"
+            >
+              Choose tickets
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // --------------------------------------------------
+  // CHECKOUT PAGE
+  // --------------------------------------------------
 
   return (
     <main className="min-h-screen bg-[#f4f1ea] text-black">
 
-      {/* ===================================================
-          HEADER
-      =================================================== */}
+      {/* -------------------------------------------- */}
+      {/* HEADER */}
+      {/* -------------------------------------------- */}
 
-      <section className="bg-black px-6 pb-16 pt-32 text-white md:px-12 md:pb-20 md:pt-40">
-        <div className="mx-auto max-w-7xl">
+      <div className="border-b border-black/10">
+        <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12">
 
           <Link
             href="/tickets"
-            className="mb-8 inline-block text-[9px] uppercase tracking-[0.3em] text-white/35 transition hover:text-white"
+            className="text-[9px] uppercase tracking-[0.25em] text-black/40 transition hover:text-black"
           >
             ← Back to tickets
           </Link>
 
-          <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
-            TSE LIVE // CHECKOUT
-          </p>
+          <div className="mt-10 max-w-3xl">
+            <p className="text-[9px] uppercase tracking-[0.35em] text-black/35">
+              The Styled Edit Live / Checkout
+            </p>
 
-          <h1 className="mt-6 max-w-5xl font-display text-[clamp(4.5rem,10vw,8rem)] uppercase leading-[0.78] tracking-[-0.055em]">
-            Complete
-            <br />
-            Your Entry.
-          </h1>
+            <h1 className="mt-3 text-5xl uppercase tracking-[-0.05em] md:text-6xl">
+              Secure your spot.
+            </h1>
+
+            <p className="mt-4 max-w-xl text-sm leading-6 text-black/45">
+              Complete your details below and
+              secure your TSE Live ticket via
+              M-Pesa.
+            </p>
+          </div>
 
         </div>
-      </section>
+      </div>
 
-      {/* ===================================================
-          CHECKOUT CONTENT
-      =================================================== */}
+      {/* -------------------------------------------- */}
+      {/* CHECKOUT CONTENT */}
+      {/* -------------------------------------------- */}
 
-      <section className="px-6 py-12 md:px-12 md:py-20">
-        <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
 
-          <form
-            onSubmit={
-              handleSubmit
-            }
-            className="grid gap-8 lg:grid-cols-[1fr_380px]"
-          >
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px]"
+        >
 
-            {/* LEFT COLUMN */}
+          {/* ---------------------------------------- */}
+          {/* LEFT COLUMN */}
+          {/* ---------------------------------------- */}
 
-            <div className="space-y-6">
+          <div className="space-y-6">
 
-              <CheckoutForm
-                customer={
-                  customer
-                }
-                onChange={
-                  setCustomer
-                }
-              />
+            {/* CUSTOMER */}
 
-              <PaymentMethod
-                value={
-                  paymentMethod
-                }
-                onChange={
-                  setPaymentMethod
-                }
-              />
+            <CheckoutForm
+              customer={customer}
+              onChange={setCustomer}
+            />
 
-              {/* TERMS */}
+            {/* PAYMENT */}
 
-              <div className="border border-black/15 bg-[#f4f1ea] p-6 md:p-8">
+            <section className="border border-black/10 bg-[#f4f1ea]">
 
-                <label className="flex cursor-pointer gap-4">
+              <div className="border-b border-black/10 px-6 py-6 md:px-8">
 
-                  <input
-                    type="checkbox"
-                    checked={
-                      termsAccepted
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setTermsAccepted(
-                        event
-                          .target
-                          .checked
-                      )
-                    }
-                    className="mt-1 h-4 w-4 accent-black"
-                  />
+                <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                  Step 02
+                </p>
 
-                  <span className="text-[10px] uppercase leading-5 tracking-[0.08em] text-black/50">
-                    I understand that
-                    tickets are
-                    non-refundable
-                    and agree to the
-                    TSE Live terms of
-                    entry.
-                  </span>
+                <h2 className="mt-2 text-2xl uppercase tracking-[-0.03em]">
+                  Payment
+                </h2>
 
-                </label>
+                <p className="mt-2 max-w-lg text-xs leading-5 text-black/45">
+                  Choose your payment method and
+                  complete your ticket purchase.
+                </p>
 
               </div>
 
-              {/* PAYMENT STATUS */}
+              <div className="p-6 md:p-8">
 
-              {paymentState !==
-                "idle" && (
-                <div
-                  className={`border p-6 ${
-                    paymentState ===
-                    "paid"
-                      ? "border-black bg-black text-white"
-                      : paymentState ===
-                        "failed"
-                      ? "border-red-300 bg-red-50 text-red-900"
-                      : "border-black/10 bg-white"
-                  }`}
-                >
-                  <p className="text-[9px] uppercase tracking-[0.25em] opacity-50">
-                    {paymentState ===
-                    "initiating"
-                      ? "Payment"
-                      : paymentState ===
-                        "waiting"
-                      ? "M-Pesa"
-                      : paymentState ===
-                        "paid"
-                      ? "Payment complete"
-                      : "Payment status"}
-                  </p>
+                <PaymentMethod
+                  value={paymentMethod}
+                  onChange={setPaymentMethod}
+                />
 
-                  <p className="mt-3 text-sm leading-6">
-                    {paymentMessage}
-                  </p>
+              </div>
+            </section>
 
-                  {paymentState ===
-                    "waiting" && (
-                    <p className="mt-4 text-[9px] uppercase tracking-[0.15em] opacity-40">
-                      Waiting for payment confirmation...
-                    </p>
-                  )}
-                </div>
-              )}
+            {/* TERMS */}
 
-              {/* PAY BUTTON */}
+            <section className="border border-black/10 bg-[#f4f1ea] p-6 md:p-8">
 
-              <button
-                type="submit"
-                disabled={
-                  !canCheckout ||
-                  isSubmitting ||
-                  paymentState ===
-                    "paid"
-                }
-                className={`flex w-full items-center justify-between px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] transition ${
-                  canCheckout &&
-                  !isSubmitting &&
-                  paymentState !==
-                    "paid"
-                    ? "bg-black text-white hover:bg-black/80"
-                    : "cursor-not-allowed bg-black/10 text-black/25"
+              <label className="flex cursor-pointer items-start gap-4">
+
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(event) =>
+                    setTermsAccepted(
+                      event.target.checked
+                    )
+                  }
+                  className="mt-0.5 h-4 w-4 accent-black"
+                />
+
+                <span className="text-xs leading-5 text-black/50">
+                  I agree to the event terms and
+                  understand that ticket purchases
+                  are subject to the event&apos;s
+                  cancellation and refund policy.
+                </span>
+
+              </label>
+
+            </section>
+
+            {/* PAYMENT STATUS */}
+
+            {paymentMessage && (
+              <section
+                className={`border p-5 ${
+                  paymentState === "failed"
+                    ? "border-red-900/15 bg-red-900/[0.03]"
+                    : paymentState === "paid"
+                    ? "border-green-900/15 bg-green-900/[0.03]"
+                    : "border-black/10 bg-[#f4f1ea]"
                 }`}
               >
 
-                <span>
-                  {isSubmitting
-                    ? paymentState ===
+                <div className="flex items-start gap-4">
+
+                  {/* LOADING */}
+
+                  {(paymentState ===
+                    "initiating" ||
+                    paymentState ===
+                      "waiting") && (
+                    <div className="mt-0.5 h-4 w-4 shrink-0 animate-spin rounded-full border border-black/15 border-t-black" />
+                  )}
+
+                  {/* SUCCESS */}
+
+                  {paymentState ===
+                    "paid" && (
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-black text-[9px] text-white">
+                      ✓
+                    </div>
+                  )}
+
+                  {/* FAILED */}
+
+                  {paymentState ===
+                    "failed" && (
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-red-900 text-[9px] text-white">
+                      !
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em]">
+                      {paymentState ===
                       "waiting"
-                      ? "Waiting for payment..."
-                      : "Processing..."
-                    : paymentState ===
-                      "paid"
-                    ? "Payment complete"
-                    : paymentMethod ===
-                      "mpesa"
-                    ? "Pay with M-Pesa"
-                    : "Continue to Card"}
-                </span>
+                        ? "Waiting for payment"
+                        : paymentState ===
+                          "initiating"
+                        ? "Processing"
+                        : paymentState ===
+                          "paid"
+                        ? "Payment confirmed"
+                        : paymentState ===
+                          "failed"
+                        ? "Payment unsuccessful"
+                        : "Payment"}
+                    </p>
 
-                <span>
-                  →
-                </span>
+                    <p className="mt-2 text-xs leading-5 text-black/45">
+                      {paymentMessage}
+                    </p>
+                  </div>
 
-              </button>
+                </div>
 
-              <p className="text-center text-[8px] uppercase tracking-[0.2em] text-black/25">
-                Secure checkout · M-Pesa · Visa · Mastercard
-              </p>
+              </section>
+            )}
 
-            </div>
+            {/* PAY BUTTON */}
 
-            {/* RIGHT COLUMN */}
-
-            <CheckoutSummary
-              selectedTickets={
-                selectedTickets
+            <button
+              type="submit"
+              disabled={
+                !canCheckout ||
+                isSubmitting
               }
-            />
+              className="w-full bg-black px-8 py-5 text-[10px] uppercase tracking-[0.25em] text-white transition hover:bg-black/85 disabled:cursor-not-allowed disabled:opacity-35"
+            >
+              {paymentState ===
+              "waiting"
+                ? "Waiting for payment..."
+                : isSubmitting
+                ? "Processing..."
+                : paymentMethod ===
+                  "mpesa"
+                ? `Pay KES ${total.toLocaleString()} via M-Pesa`
+                : `Pay KES ${total.toLocaleString()}`}
+            </button>
 
-          </form>
-
-        </div>
-      </section>
-
-      {/* FOOTER */}
-
-      <footer className="bg-black px-6 py-12 text-white md:px-12">
-
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-
-          <div>
-
-            <p className="font-display text-3xl tracking-[-0.04em]">
-              TSE / LIVE
-            </p>
-
-            <p className="mt-2 text-[8px] uppercase tracking-[0.25em] text-white/30">
-              The Styled Edit Live
+            <p className="text-center text-[8px] uppercase tracking-[0.15em] text-black/25">
+              Secure checkout · The Styled Edit Live
             </p>
 
           </div>
 
-          <p className="text-[8px] uppercase tracking-[0.2em] text-white/30">
-            Nairobi, Kenya
-          </p>
+          {/* ---------------------------------------- */}
+          {/* RIGHT COLUMN */}
+          {/* ---------------------------------------- */}
 
-        </div>
+          <div>
+            <CheckoutSummary
+              selectedTickets={
+                activeTickets
+              }
+              total={total}
+            />
+          </div>
 
-      </footer>
-
+        </form>
+      </div>
     </main>
   );
 }

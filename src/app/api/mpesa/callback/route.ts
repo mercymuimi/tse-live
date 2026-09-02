@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -6,252 +6,275 @@ const supabase = createClient(
   process.env.SUPABASE_SECRET_KEY!
 );
 
-type MpesaCallbackItem = {
+type CallbackItem = {
   Name: string;
   Value?: string | number;
 };
 
-type MpesaCallback = {
-  Body?: {
-    stkCallback?: {
-      MerchantRequestID?: string;
-      CheckoutRequestID?: string;
-      ResultCode?: number;
-      ResultDesc?: string;
-      CallbackMetadata?: {
-        Item?: MpesaCallbackItem[];
-      };
-    };
+type StkCallback = {
+  MerchantRequestID?: string;
+  CheckoutRequestID?: string;
+  ResultCode?: number;
+  ResultDesc?: string;
+  CallbackMetadata?: {
+    Item?: CallbackItem[];
   };
 };
 
-export async function POST(
-  request: Request
-) {
+type MpesaCallbackBody = {
+  Body?: {
+    stkCallback?: StkCallback;
+  };
+};
+
+export async function POST(request: NextRequest) {
   try {
     const body =
-      (await request.json()) as MpesaCallback;
+      (await request.json()) as MpesaCallbackBody;
 
+    console.log("🔥 M-PESA CALLBACK RECEIVED");
     console.log(
-      "M-PESA CALLBACK:",
-      JSON.stringify(
-        body,
-        null,
-        2
-      )
+      "🔥 CALLBACK BODY:",
+      JSON.stringify(body, null, 2)
     );
 
-    const stkCallback =
-      body?.Body?.stkCallback;
+    const stkCallback = body?.Body?.stkCallback;
 
     if (!stkCallback) {
-      console.error(
-        "Invalid M-Pesa callback payload."
-      );
+      console.error("❌ Invalid M-Pesa callback");
 
       return NextResponse.json({
-        ResultCode: 1,
-        ResultDesc:
-          "Invalid callback payload",
+        ResultCode: 0,
+        ResultDesc: "Accepted",
       });
     }
 
     const {
+      MerchantRequestID,
       CheckoutRequestID,
       ResultCode,
       ResultDesc,
       CallbackMetadata,
     } = stkCallback;
 
+    console.log("🔥 CheckoutRequestID:", CheckoutRequestID);
+    console.log("🔥 ResultCode:", ResultCode);
+    console.log("🔥 ResultDesc:", ResultDesc);
+
     if (!CheckoutRequestID) {
-      console.error(
-        "Missing CheckoutRequestID."
-      );
+      console.error("❌ Missing CheckoutRequestID");
 
       return NextResponse.json({
-        ResultCode: 1,
-        ResultDesc:
-          "Missing CheckoutRequestID",
+        ResultCode: 0,
+        ResultDesc: "Accepted",
       });
     }
 
-    /* =====================================================
-       PAYMENT SUCCESS
-    ===================================================== */
+    // --------------------------------------------------
+    // Find the order
+    // --------------------------------------------------
 
-    if (
-      ResultCode === 0
-    ) {
-      const items =
-        CallbackMetadata?.Item ??
-        [];
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .select(`
+        id,
+        total,
+        payment_status,
+        checkout_request_id
+      `)
+      .eq("checkout_request_id", CheckoutRequestID)
+      .maybeSingle();
 
-      const getValue = (
-        name: string
-      ) => {
-        const item =
-          items.find(
-            (item) =>
-              item.Name ===
-              name
-          );
-
-        return (
-          item?.Value ??
-          null
-        );
-      };
-
-      const amount =
-        getValue("Amount");
-
-      const mpesaReceiptNumber =
-        getValue(
-          "MpesaReceiptNumber"
-        );
-
-      const transactionDate =
-        getValue(
-          "TransactionDate"
-        );
-
-      const phoneNumber =
-        getValue(
-          "PhoneNumber"
-        );
-
-      console.log(
-        "M-PESA PAYMENT SUCCESS:",
-        {
-          CheckoutRequestID,
-          amount,
-          mpesaReceiptNumber,
-          transactionDate,
-          phoneNumber,
-        }
+    if (orderError) {
+      console.error(
+        "❌ Error finding order:",
+        orderError
       );
 
-      /* ===================================================
-         UPDATE ORDER
-      =================================================== */
+      return NextResponse.json({
+        ResultCode: 0,
+        ResultDesc: "Accepted",
+      });
+    }
 
-      const {
-        data,
-        error,
-      } = await supabase
-        .from("orders")
-        .update({
-          payment_status:
-            "paid",
+    if (!order) {
+      console.error(
+        "❌ No order found for CheckoutRequestID:",
+        CheckoutRequestID
+      );
 
-          mpesa_receipt_number:
-            mpesaReceiptNumber
-              ? String(
-                  mpesaReceiptNumber
-                )
-              : null,
+      return NextResponse.json({
+        ResultCode: 0,
+        ResultDesc: "Accepted",
+      });
+    }
 
-          payment_result_code:
-            ResultCode,
+    console.log("🔥 ORDER FOUND:", order);
 
-          payment_result_description:
-            ResultDesc ??
-            null,
-        })
-        .eq(
-          "checkout_request_id",
-          CheckoutRequestID
-        )
-        .select("id")
-        .single();
+    // --------------------------------------------------
+    // Prevent duplicate callback processing
+    // --------------------------------------------------
 
-      if (error) {
+    if (order.payment_status === "paid") {
+      console.log(
+        "✅ Order already marked as paid:",
+        order.id
+      );
+
+      return NextResponse.json({
+        ResultCode: 0,
+        ResultDesc: "Accepted",
+      });
+    }
+
+    // --------------------------------------------------
+    // PAYMENT SUCCESS
+    // --------------------------------------------------
+
+    if (Number(ResultCode) === 0) {
+      const metadata = CallbackMetadata?.Item ?? [];
+
+      const getMetadata = (name: string) =>
+        metadata.find((item) => item.Name === name)?.Value;
+
+      const amount = getMetadata("Amount");
+      const receiptNumber = getMetadata(
+        "MpesaReceiptNumber"
+      );
+      const transactionDate = getMetadata(
+        "TransactionDate"
+      );
+      const phoneNumber = getMetadata("PhoneNumber");
+
+      console.log("🔥 PAYMENT METADATA:", {
+        amount,
+        receiptNumber,
+        transactionDate,
+        phoneNumber,
+      });
+
+      // ------------------------------------------------
+      // Verify amount
+      // ------------------------------------------------
+
+      if (
+        amount !== undefined &&
+        Number(amount) !== Number(order.total)
+      ) {
+        console.error("❌ PAYMENT AMOUNT MISMATCH", {
+          expected: order.total,
+          received: amount,
+        });
+
+        await supabase
+          .from("orders")
+          .update({
+            payment_status: "failed",
+            payment_result_code: Number(ResultCode),
+            payment_result_description:
+              "Payment amount mismatch",
+          })
+          .eq("id", order.id);
+
+        return NextResponse.json({
+          ResultCode: 0,
+          ResultDesc: "Accepted",
+        });
+      }
+
+      // ------------------------------------------------
+      // MARK ORDER AS PAID
+      // ------------------------------------------------
+
+      const { data: updatedOrder, error: updateError } =
+        await supabase
+          .from("orders")
+          .update({
+            payment_status: "paid",
+            merchant_request_id:
+              MerchantRequestID || null,
+            mpesa_receipt_number:
+              receiptNumber !== undefined
+                ? String(receiptNumber)
+                : null,
+            payment_result_code: Number(ResultCode),
+            payment_result_description:
+              ResultDesc || "Payment successful",
+            mpesa_transaction_date:
+              transactionDate !== undefined
+                ? String(transactionDate)
+                : null,
+          })
+          .eq("id", order.id)
+          .select("id, payment_status")
+          .single();
+
+      if (updateError) {
         console.error(
-          "Failed to update paid order:",
-          error
+          "❌ FAILED TO UPDATE ORDER:",
+          updateError
         );
 
         return NextResponse.json({
-          ResultCode: 1,
-          ResultDesc:
-            "Failed to update order",
+          ResultCode: 0,
+          ResultDesc: "Accepted",
         });
       }
 
       console.log(
-        "ORDER MARKED AS PAID:",
-        data?.id
+        "🔥 ORDER UPDATED AFTER PAYMENT:",
+        updatedOrder
+      );
+
+      console.log(
+        `✅ M-PESA PAYMENT SUCCESSFUL FOR ORDER ${order.id}`
       );
     }
 
-    /* =====================================================
-       PAYMENT FAILED / CANCELLED
-    ===================================================== */
+    // --------------------------------------------------
+    // PAYMENT FAILED / CANCELLED
+    // --------------------------------------------------
 
     else {
-      console.log(
-        "M-PESA PAYMENT FAILED:",
-        {
-          CheckoutRequestID,
-          ResultCode,
-          ResultDesc,
-        }
-      );
-
-      const {
-        error,
-      } = await supabase
+      const { error: updateError } = await supabase
         .from("orders")
         .update({
-          payment_status:
-            "failed",
-
-          payment_result_code:
-            ResultCode ??
-            null,
-
+          payment_status: "failed",
+          merchant_request_id:
+            MerchantRequestID || null,
+          payment_result_code: Number(ResultCode),
           payment_result_description:
-            ResultDesc ??
-            null,
+            ResultDesc || "M-Pesa payment failed",
         })
-        .eq(
-          "checkout_request_id",
-          CheckoutRequestID
-        );
+        .eq("id", order.id);
 
-      if (error) {
+      if (updateError) {
         console.error(
-          "Failed to update failed order:",
-          error
+          "❌ FAILED TO UPDATE FAILED PAYMENT:",
+          updateError
         );
-
-        return NextResponse.json({
-          ResultCode: 1,
-          ResultDesc:
-            "Failed to update order",
-        });
+      } else {
+        console.log(
+          `❌ M-PESA PAYMENT FAILED FOR ORDER ${order.id}`
+        );
       }
     }
 
-    /* =====================================================
-       ACKNOWLEDGE CALLBACK
-    ===================================================== */
-
+    // Safaricom expects acknowledgement
     return NextResponse.json({
       ResultCode: 0,
-      ResultDesc:
-        "Callback received successfully",
+      ResultDesc: "Accepted",
     });
   } catch (error) {
     console.error(
-      "M-Pesa callback error:",
+      "❌ M-PESA CALLBACK ERROR:",
       error
     );
 
+    // Always acknowledge the callback
     return NextResponse.json({
-      ResultCode: 1,
-      ResultDesc:
-        "Internal server error",
+      ResultCode: 0,
+      ResultDesc: "Accepted",
     });
   }
 }

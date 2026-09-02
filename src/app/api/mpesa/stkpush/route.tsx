@@ -1,17 +1,39 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const supabaseKey =
+  process.env.SUPABASE_SECRET_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "Missing Supabase environment variables."
+  );
+}
+
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!
+  supabaseUrl,
+  supabaseKey
 );
 
 /* =========================================================
-   PHONE NORMALIZATION
+   HELPERS
 ========================================================= */
 
 function normalizePhone(phone: string): string {
-  const cleaned = phone.replace(/\D/g, "");
+  const cleaned = phone
+    .replace(/\s+/g, "")
+    .replace(/-/g, "");
+
+  if (cleaned.startsWith("+254")) {
+    return cleaned.slice(1);
+  }
 
   if (cleaned.startsWith("254")) {
     return cleaned;
@@ -31,20 +53,29 @@ function normalizePhone(phone: string): string {
   return cleaned;
 }
 
+function isValidKenyanPhone(
+  phone: string
+): boolean {
+  return /^254[17]\d{8}$/.test(phone);
+}
+
 /* =========================================================
-   GET M-PESA ACCESS TOKEN
+   GET ACCESS TOKEN
 ========================================================= */
 
-async function getMpesaAccessToken(): Promise<string> {
+async function getAccessToken(): Promise<string> {
   const consumerKey =
     process.env.MPESA_CONSUMER_KEY;
 
   const consumerSecret =
     process.env.MPESA_CONSUMER_SECRET;
 
-  if (!consumerKey || !consumerSecret) {
+  if (
+    !consumerKey ||
+    !consumerSecret
+  ) {
     throw new Error(
-      "M-Pesa consumer credentials are missing."
+      "Missing M-Pesa consumer credentials."
     );
   }
 
@@ -56,24 +87,26 @@ async function getMpesaAccessToken(): Promise<string> {
     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
     {
       method: "GET",
+
       headers: {
         Authorization: `Basic ${credentials}`,
       },
+
       cache: "no-store",
     }
   );
 
-  const data = await response.json();
+  const data =
+    await response.json();
 
   if (!response.ok || !data.access_token) {
     console.error(
-      "M-Pesa token error:",
+      "M-Pesa OAuth error:",
       data
     );
 
     throw new Error(
-      data.errorMessage ||
-        "Could not get M-Pesa access token."
+      "Could not authenticate with M-Pesa."
     );
   }
 
@@ -81,61 +114,105 @@ async function getMpesaAccessToken(): Promise<string> {
 }
 
 /* =========================================================
-   TIMESTAMP
+   POST /api/mpesa/stkpush
 ========================================================= */
 
-function generateTimestamp(): string {
-  const date = new Date();
-
-  return (
-    date.getFullYear().toString() +
-    String(date.getMonth() + 1).padStart(2, "0") +
-    String(date.getDate()).padStart(2, "0") +
-    String(date.getHours()).padStart(2, "0") +
-    String(date.getMinutes()).padStart(2, "0") +
-    String(date.getSeconds()).padStart(2, "0")
-  );
-}
-
-/* =========================================================
-   STK PUSH
-========================================================= */
-
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+) {
   try {
-    const body = await request.json();
+    /* =====================================================
+       PARSE REQUEST
+    ===================================================== */
 
-    const {
-      orderId,
-      phone,
-      amount,
-    }: {
-      orderId?: string;
-      phone?: string;
-      amount?: number;
-    } = body;
+    const body =
+      (await request.json()) as {
+        orderId?: string;
+        phone?: string;
+        amount?: number;
+      };
+
+    const orderId =
+      body.orderId;
+
+    const phone =
+      body.phone;
+
+    const requestedAmount =
+      Number(body.amount);
 
     /* =====================================================
-       VALIDATION
+       BASIC VALIDATION
     ===================================================== */
 
     if (
       !orderId ||
-      !phone ||
-      !amount ||
-      amount <= 0
+      typeof orderId !== "string"
     ) {
       return NextResponse.json(
         {
           error:
-            "orderId, phone and a valid amount are required.",
+            "Order ID is required.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      !phone ||
+      typeof phone !== "string"
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Phone number is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const normalizedPhone =
+      normalizePhone(phone);
+
+    if (
+      !isValidKenyanPhone(
+        normalizedPhone
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Please enter a valid Kenyan M-Pesa number.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      !Number.isFinite(
+        requestedAmount
+      ) ||
+      requestedAmount <= 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid payment amount.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
     /* =====================================================
-       VERIFY ORDER
+       LOAD ORDER
     ===================================================== */
 
     const {
@@ -144,34 +221,74 @@ export async function POST(request: Request) {
     } = await supabase
       .from("orders")
       .select(
-        "id, total, payment_status"
+        `
+        id,
+        total,
+        payment_status,
+        payment_method
+        `
       )
-      .eq("id", orderId)
+      .eq(
+        "id",
+        orderId
+      )
       .single();
 
-    if (orderError || !order) {
+    if (
+      orderError ||
+      !order
+    ) {
       console.error(
-        "Order lookup error:",
+        "ORDER LOOKUP ERROR:",
         orderError
       );
 
       return NextResponse.json(
         {
-          error: "Order not found.",
+          error:
+            "Order could not be found.",
         },
-        { status: 404 }
+        {
+          status: 404,
+        }
       );
     }
 
+    /* =====================================================
+       CHECK PAYMENT STATUS
+    ===================================================== */
+
     if (
-      order.payment_status !== "pending"
+      order.payment_status !==
+      "pending"
     ) {
       return NextResponse.json(
         {
           error:
-            "This order is no longer pending payment.",
+            "This order is no longer awaiting payment.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
+      );
+    }
+
+    /* =====================================================
+       CHECK PAYMENT METHOD
+    ===================================================== */
+
+    if (
+      order.payment_method !==
+      "mpesa"
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "This order is not configured for M-Pesa.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -179,21 +296,47 @@ export async function POST(request: Request) {
        VERIFY AMOUNT
     ===================================================== */
 
+    const orderTotal =
+      Number(order.total);
+
     if (
-      Number(order.total) !==
-      Number(amount)
+      !Number.isFinite(
+        orderTotal
+      ) ||
+      orderTotal <= 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid order total.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      Math.round(
+        requestedAmount
+      ) !==
+      Math.round(
+        orderTotal
+      )
     ) {
       return NextResponse.json(
         {
           error:
             "Payment amount does not match the order total.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
     /* =====================================================
-       ENVIRONMENT VARIABLES
+       M-PESA CONFIG
     ===================================================== */
 
     const shortcode =
@@ -210,29 +353,36 @@ export async function POST(request: Request) {
       !passkey ||
       !callbackUrl
     ) {
-      throw new Error(
-        "M-Pesa shortcode, passkey or callback URL is missing."
+      console.error(
+        "Missing M-Pesa configuration."
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "M-Pesa configuration is incomplete.",
+        },
+        {
+          status: 500,
+        }
       );
     }
-
-    console.log(
-      "Using M-Pesa callback URL:",
-      callbackUrl
-    );
-
-    /* =====================================================
-       ACCESS TOKEN
-    ===================================================== */
-
-    const accessToken =
-      await getMpesaAccessToken();
 
     /* =====================================================
        TIMESTAMP
     ===================================================== */
 
     const timestamp =
-      generateTimestamp();
+      new Date()
+        .toISOString()
+        .replace(
+          /[-:TZ.]/g,
+          ""
+        )
+        .slice(
+          0,
+          14
+        );
 
     /* =====================================================
        PASSWORD
@@ -241,42 +391,71 @@ export async function POST(request: Request) {
     const password =
       Buffer.from(
         `${shortcode}${passkey}${timestamp}`
-      ).toString("base64");
+      ).toString(
+        "base64"
+      );
 
     /* =====================================================
-       PHONE
+       ACCESS TOKEN
     ===================================================== */
 
-    const formattedPhone =
-      normalizePhone(phone);
+    const accessToken =
+      await getAccessToken();
 
-    if (
-      !/^254[17]\d{8}$/.test(
-        formattedPhone
-      )
-    ) {
-      return NextResponse.json(
-        {
-          error:
-            "Please enter a valid Kenyan M-Pesa phone number.",
-        },
-        { status: 400 }
-      );
-    }
+    /* =====================================================
+       STK PUSH REQUEST
+    ===================================================== */
+
+    const stkPayload = {
+      BusinessShortCode:
+        shortcode,
+
+      Password:
+        password,
+
+      Timestamp:
+        timestamp,
+
+      TransactionType:
+        "CustomerPayBillOnline",
+
+      Amount:
+        Math.round(
+          orderTotal
+        ),
+
+      PartyA:
+        normalizedPhone,
+
+      PartyB:
+        shortcode,
+
+      PhoneNumber:
+        normalizedPhone,
+
+      CallBackURL:
+        callbackUrl,
+
+      AccountReference:
+        `TSE-${order.id}`,
+
+      TransactionDesc:
+        "TSE Live Ticket",
+    };
 
     console.log(
-      "Initiating STK Push:",
+      "M-Pesa STK Push:",
       {
-        orderId,
-        amount,
-        phone: formattedPhone,
-        callbackUrl,
+        orderId:
+          order.id,
+
+        amount:
+          orderTotal,
+
+        phone:
+          normalizedPhone,
       }
     );
-
-    /* =====================================================
-       SEND STK PUSH
-    ===================================================== */
 
     const stkResponse =
       await fetch(
@@ -292,43 +471,9 @@ export async function POST(request: Request) {
               "application/json",
           },
 
-          body: JSON.stringify({
-            BusinessShortCode:
-              shortcode,
-
-            Password:
-              password,
-
-            Timestamp:
-              timestamp,
-
-            TransactionType:
-              "CustomerPayBillOnline",
-
-            Amount:
-              Math.round(amount),
-
-            PartyA:
-              formattedPhone,
-
-            PartyB:
-              shortcode,
-
-            PhoneNumber:
-              formattedPhone,
-
-            CallBackURL:
-              callbackUrl,
-
-            AccountReference:
-              `TSE-${orderId.slice(
-                0,
-                8
-              )}`,
-
-            TransactionDesc:
-              "TSE Live Ticket Payment",
-          }),
+          body: JSON.stringify(
+            stkPayload
+          ),
         }
       );
 
@@ -336,26 +481,64 @@ export async function POST(request: Request) {
       await stkResponse.json();
 
     console.log(
-      "M-Pesa STK response:",
+      "M-Pesa STK Response:",
       stkData
     );
 
     /* =====================================================
-       HANDLE STK ERROR
+       SAFARICOM ERROR
     ===================================================== */
 
     if (
       !stkResponse.ok ||
-      stkData.ResponseCode !== "0"
+      stkData.ResponseCode !==
+        "0"
     ) {
+      console.error(
+        "M-Pesa STK Push failed:",
+        stkData
+      );
+
       return NextResponse.json(
         {
           error:
             stkData.errorMessage ||
             stkData.ResponseDescription ||
-            "M-Pesa STK Push failed.",
+            "M-Pesa payment request failed.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
+      );
+    }
+
+    /* =====================================================
+       EXTRACT REQUEST IDS
+    ===================================================== */
+
+    const checkoutRequestId =
+      stkData.CheckoutRequestID;
+
+    const merchantRequestId =
+      stkData.MerchantRequestID;
+
+    if (
+      !checkoutRequestId ||
+      !merchantRequestId
+    ) {
+      console.error(
+        "M-Pesa response missing request IDs:",
+        stkData
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "M-Pesa did not return valid payment request IDs.",
+        },
+        {
+          status: 502,
+        }
       );
     }
 
@@ -364,30 +547,38 @@ export async function POST(request: Request) {
     ===================================================== */
 
     const {
-      error: updateError,
+      error:
+        updateError,
     } = await supabase
       .from("orders")
       .update({
         checkout_request_id:
-          stkData.CheckoutRequestID,
+          checkoutRequestId,
 
         merchant_request_id:
-          stkData.MerchantRequestID,
+          merchantRequestId,
       })
-      .eq("id", orderId);
+      .eq(
+        "id",
+        order.id
+      );
 
-    if (updateError) {
+    if (
+      updateError
+    ) {
       console.error(
-        "Could not update order with M-Pesa request IDs:",
+        "ORDER M-PESA UPDATE ERROR:",
         updateError
       );
 
       return NextResponse.json(
         {
           error:
-            "STK Push was initiated, but the payment request could not be linked to the order.",
+            "M-Pesa request was sent, but the order could not be updated.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
@@ -395,24 +586,31 @@ export async function POST(request: Request) {
        SUCCESS
     ===================================================== */
 
-    return NextResponse.json({
-      success: true,
+    return NextResponse.json(
+      {
+        success: true,
 
-      message:
-        "STK Push sent successfully.",
+        message:
+          "M-Pesa payment request sent successfully.",
 
-      merchantRequestId:
-        stkData.MerchantRequestID,
+        orderId:
+          order.id,
 
-      checkoutRequestId:
-        stkData.CheckoutRequestID,
+        checkoutRequestId,
 
-      customerMessage:
-        stkData.CustomerMessage,
-    });
+        merchantRequestId,
+
+        customerMessage:
+          stkData.CustomerMessage ||
+          "Please check your phone and enter your M-Pesa PIN.",
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error(
-      "STK Push error:",
+      "STK PUSH ERROR:",
       error
     );
 
@@ -421,9 +619,11 @@ export async function POST(request: Request) {
         error:
           error instanceof Error
             ? error.message
-            : "Failed to initiate M-Pesa payment.",
+            : "Something went wrong while initiating M-Pesa payment.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }

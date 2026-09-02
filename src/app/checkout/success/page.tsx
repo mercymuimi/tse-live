@@ -1,360 +1,490 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { Check, ArrowRight } from "lucide-react";
 
-/* =========================================================
-   TYPES
-========================================================= */
-
-type OrderAddOn = {
-  name: string;
-  price: number;
-};
-
-type OrderItem = {
-  ticketName: string;
-  quantity: number;
-  unitPrice: number;
-  addOnTotal: number;
-  addOns: OrderAddOn[];
-};
-
-type OrderDetails = {
-  orderId: string;
-  paymentStatus: string;
-  mpesaReceiptNumber: string | null;
+type Order = {
+  id: string;
   customer: {
     fullName: string;
     email: string;
-    phone: string;
   };
-  subtotal: number;
-  addonTotal: number;
+  paymentStatus: string;
   total: number;
-  createdAt: string;
-  items: OrderItem[];
+  mpesaReceiptNumber: string | null;
+  items: Array<{
+    id: string;
+    ticket_name: string;
+    quantity: number;
+    unit_price: number;
+    add_on_total: number;
+    order_item_addons?: Array<{
+      id: string;
+      addon_name: string;
+      addon_price: number;
+    }>;
+  }>;
 };
 
-type FetchState = "loading" | "ready" | "error";
+type OrderResponse = {
+  success: boolean;
+  order?: Order;
+  error?: string;
+};
 
-/* =========================================================
-   SUCCESS PAGE (INNER — uses useSearchParams)
-========================================================= */
-
-function CheckoutSuccessContent() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
-
+export default function CheckoutSuccessPage() {
   const [order, setOrder] =
-    useState<OrderDetails | null>(null);
+    useState<Order | null>(null);
 
-  const [state, setState] =
-    useState<FetchState>("loading");
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  /* =========================================================
+     GET ORDER ID
+  ========================================================= */
 
   useEffect(() => {
-    if (!orderId) {
-      setState("error");
-      return;
-    }
-
-    let cancelled = false;
-
-    const load = async () => {
+    const loadOrder = async () => {
       try {
-        const response = await fetch(
-          `/api/orders/${orderId}`,
-          { cache: "no-store" }
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            "Could not load order."
+        const params =
+          new URLSearchParams(
+            window.location.search
           );
-        }
 
-        const data = await response.json();
+        const orderId =
+          params.get(
+            "orderId"
+          );
 
-        if (cancelled) {
+        if (!orderId) {
+          setError(
+            "We could not find your order."
+          );
+
+          setLoading(false);
+
           return;
         }
 
-        setOrder(data);
-        setState("ready");
+        /* ===============================================
+           FETCH ORDER
+        =============================================== */
+
+        const response =
+          await fetch(
+            `/api/orders/${orderId}`,
+            {
+              method: "GET",
+              cache: "no-store",
+            }
+          );
+
+        const data =
+          (await response.json()) as OrderResponse;
+
+        if (
+          !response.ok ||
+          !data.success ||
+          !data.order
+        ) {
+          throw new Error(
+            data.error ||
+              "Could not load your order."
+          );
+        }
+
+        setOrder(
+          data.order
+        );
       } catch (error) {
         console.error(
-          "Failed to load order:",
+          "Success page error:",
           error
         );
 
-        if (!cancelled) {
-          setState("error");
-        }
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while loading your order."
+        );
+      } finally {
+        setLoading(false);
       }
     };
 
-    load();
+    loadOrder();
+  }, []);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [orderId]);
-
-  /* =======================================================
+  /* =========================================================
      LOADING
-  ======================================================= */
+  ========================================================= */
 
-  if (state === "loading") {
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
+        <div className="text-center">
+
+          <div className="mx-auto mb-8 h-10 w-10 animate-spin rounded-full border border-white/20 border-t-white" />
+
+          <p className="text-[9px] uppercase tracking-[0.3em] text-white/50">
+            Confirming your entry
+          </p>
+
+        </div>
+      </main>
+    );
+  }
+
+  /* =========================================================
+     ERROR
+  ========================================================= */
+
+  if (error || !order) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#f4f1ea] px-6 text-black">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-          Loading your order...
-        </p>
+
+        <div className="w-full max-w-xl text-center">
+
+          <p className="text-[9px] uppercase tracking-[0.3em] text-black/40">
+            TSE LIVE // ORDER
+          </p>
+
+          <h1 className="mt-6 font-display text-[clamp(4rem,10vw,7rem)] uppercase leading-[0.8] tracking-[-0.05em]">
+            Order
+            <br />
+            Not Found.
+          </h1>
+
+          <p className="mx-auto mt-8 max-w-md text-sm leading-6 text-black/50">
+            We couldn't load your order details.
+            If you completed payment, please
+            keep your M-Pesa confirmation message.
+          </p>
+
+          <Link
+            href="/tickets"
+            className="mt-10 inline-flex items-center gap-6 bg-black px-7 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-black/80"
+          >
+            Back to Tickets
+            <ArrowRight size={15} />
+          </Link>
+
+        </div>
+
       </main>
     );
   }
 
-  /* =======================================================
-     ERROR / MISSING ORDER
-  ======================================================= */
-
-  if (state === "error" || !order) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-[#f4f1ea] px-6 text-center text-black">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-          TSE LIVE // ORDER
-        </p>
-
-        <h1 className="max-w-md text-3xl uppercase tracking-[-0.03em]">
-          We couldn&apos;t find that order.
-        </h1>
-
-        <p className="max-w-sm text-sm leading-6 text-black/45">
-          If you just completed payment, check your
-          M-Pesa messages for confirmation, or return
-          to tickets to try again.
-        </p>
-
-        <Link
-          href="/tickets"
-          className="mt-4 bg-black px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-black/80"
-        >
-          Back to tickets
-        </Link>
-      </main>
-    );
-  }
-
-  const shortOrderId = order.orderId.slice(0, 8);
-
-  const totalTickets = order.items.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
-
-  /* =======================================================
-     CONFIRMED
-  ======================================================= */
+  /* =========================================================
+     SUCCESS
+  ========================================================= */
 
   return (
     <main className="min-h-screen bg-[#f4f1ea] text-black">
-      {/* ===================================================
-          HEADER
-      =================================================== */}
 
-      <section className="bg-black px-6 pb-16 pt-32 text-white md:px-12 md:pb-20 md:pt-40">
-        <div className="mx-auto max-w-3xl">
-          <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
-            TSE LIVE // ORDER CONFIRMED
-          </p>
+      {/* =====================================================
+          HERO
+      ===================================================== */}
 
-          <h1 className="mt-6 max-w-xl font-display text-[clamp(3rem,8vw,5.5rem)] uppercase leading-[0.85] tracking-tighter">
-            You&apos;re
+      <section className="bg-black px-6 pb-20 pt-32 text-white md:px-12 md:pb-28 md:pt-40">
+        <div className="mx-auto max-w-7xl">
+
+          {/* STATUS */}
+
+          <div className="flex items-center gap-3">
+
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
+              <Check size={16} strokeWidth={3} />
+            </span>
+
+            <span className="text-[9px] uppercase tracking-[0.3em] text-white/50">
+              Payment Confirmed
+            </span>
+
+          </div>
+
+          {/* TITLE */}
+
+          <h1 className="mt-10 max-w-5xl font-display text-[clamp(5rem,12vw,10rem)] uppercase leading-[0.76] tracking-[-0.06em]">
+            You're
             <br />
             In.
           </h1>
 
-          <p className="mt-6 max-w-md text-sm leading-6 text-white/45">
-            Your payment was received and your{" "}
-            {totalTickets === 1 ? "ticket" : "tickets"}{" "}
-            {totalTickets === 1 ? "is" : "are"} confirmed.
-            A copy of this confirmation has been sent to{" "}
-            {order.customer.email}.
+          <p className="mt-10 max-w-xl text-sm leading-7 text-white/50 md:text-base">
+            Welcome to The Styled Edit Live.
+            Your ticket has been secured and
+            your payment has been confirmed.
           </p>
+
         </div>
       </section>
 
-      {/* ===================================================
+      {/* =====================================================
           ORDER DETAILS
-      =================================================== */}
+      ===================================================== */}
 
-      <section className="px-6 py-12 md:px-12 md:py-16">
-        <div className="mx-auto max-w-3xl">
-          <div className="bg-[#171717] p-6 text-white md:p-8">
-            {/* REFERENCE */}
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-6">
-              <div>
-                <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
-                  Order reference
-                </p>
+      <section className="px-6 py-12 md:px-12 md:py-20">
+        <div className="mx-auto max-w-5xl">
 
-                <p className="mt-2 text-xl uppercase tracking-[-0.02em]">
-                  #{shortOrderId}
-                </p>
-              </div>
+          {/* ORDER HEADER */}
 
-              {order.mpesaReceiptNumber && (
-                <div className="text-right">
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
-                    M-Pesa receipt
-                  </p>
+          <div className="flex flex-col justify-between gap-6 border-b border-black/15 pb-8 md:flex-row md:items-end">
 
-                  <p className="mt-2 text-xl uppercase tracking-[-0.02em]">
-                    {order.mpesaReceiptNumber}
-                  </p>
-                </div>
-              )}
-            </div>
+            <div>
 
-            {/* CUSTOMER */}
-            <div className="border-b border-white/10 py-6">
-              <p className="text-[9px] uppercase tracking-[0.25em] text-white/35">
-                Ticket holder
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Order Number
               </p>
 
-              <p className="mt-2 text-sm">
+              <p className="mt-3 break-all font-mono text-xs">
+                {order.id}
+              </p>
+
+            </div>
+
+            <div className="md:text-right">
+
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Payment Status
+              </p>
+
+              <p className="mt-3 text-xs font-bold uppercase tracking-[0.15em]">
+                Paid
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              CUSTOMER
+          ================================================= */}
+
+          <div className="grid gap-8 border-b border-black/15 py-10 md:grid-cols-2">
+
+            <div>
+
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Attendee
+              </p>
+
+              <p className="mt-3 text-sm font-medium">
                 {order.customer.fullName}
               </p>
 
-              <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/35">
-                {order.customer.phone}
-              </p>
             </div>
 
-            {/* ITEMS */}
-            <div className="space-y-6 border-b border-white/10 py-6">
-              {order.items.map((item, index) => (
-                <div
-                  key={`${item.ticketName}-${index}`}
-                  className="space-y-3"
-                >
-                  <div className="flex items-start justify-between gap-5">
+            <div>
+
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Email
+              </p>
+
+              <p className="mt-3 break-all text-sm font-medium">
+                {order.customer.email}
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              TICKETS
+          ================================================= */}
+
+          <div className="py-10">
+
+            <div className="mb-8">
+
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Your Entry
+              </p>
+
+              <h2 className="mt-3 font-display text-5xl uppercase tracking-[-0.03em]">
+                TSE Live
+              </h2>
+
+            </div>
+
+            <div className="divide-y divide-black/10 border-y border-black/10">
+
+              {order.items.map(
+                (item) => (
+                  <div
+                    key={
+                      item.id
+                    }
+                    className="flex flex-col justify-between gap-4 py-6 sm:flex-row sm:items-center"
+                  >
+
                     <div>
-                      <p className="text-sm uppercase tracking-[-0.01em]">
-                        {item.ticketName}
+
+                      <p className="text-xs font-bold uppercase tracking-[0.12em]">
+                        {
+                          item.ticket_name
+                        }
                       </p>
 
-                      <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/35">
-                        {item.quantity} × KES{" "}
-                        {item.unitPrice.toLocaleString()}
+                      <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-black/40">
+                        Quantity:{" "}
+                        {
+                          item.quantity
+                        }
                       </p>
+
+                      {item
+                        .order_item_addons
+                        ?.length ? (
+                        <div className="mt-3 space-y-1">
+                          {item.order_item_addons.map(
+                            (
+                              addon
+                            ) => (
+                              <p
+                                key={
+                                  addon.id
+                                }
+                                className="text-[9px] uppercase tracking-[0.1em] text-black/40"
+                              >
+                                +
+                                {
+                                  addon.addon_name
+                                }
+                              </p>
+                            )
+                          )}
+                        </div>
+                      ) : null}
+
                     </div>
 
-                    <p className="shrink-0 text-sm">
+                    <p className="text-sm font-bold">
                       KES{" "}
                       {(
-                        item.unitPrice * item.quantity
+                        item.unit_price *
+                          item.quantity +
+                        Number(
+                          item.add_on_total
+                        )
                       ).toLocaleString()}
                     </p>
+
                   </div>
+                )
+              )}
 
-                  {item.addOns.length > 0 && (
-                    <div className="space-y-2 border-l border-white/10 pl-4">
-                      {item.addOns.map((addOn, addOnIndex) => (
-                        <div
-                          key={`${addOn.name}-${addOnIndex}`}
-                          className="flex items-center justify-between gap-4 text-xs"
-                        >
-                          <span className="text-white/45">
-                            {addOn.name}
-                          </span>
-
-                          <span>
-                            {addOn.price > 0
-                              ? `KES ${addOn.price.toLocaleString()}`
-                              : "At event"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
             </div>
 
-            {/* TOTAL */}
-            <div className="pt-6">
-              <div className="flex items-end justify-between gap-5">
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.25em] text-white/35">
-                    Total paid
-                  </p>
-
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.15em] text-white/20">
-                    {totalTickets}{" "}
-                    {totalTickets === 1
-                      ? "ticket"
-                      : "tickets"}
-                  </p>
-                </div>
-
-                <span className="text-3xl tracking-[-0.04em]">
-                  KES {order.total.toLocaleString()}
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* NOTE */}
-          <div className="mt-6 border border-black/15 bg-white p-6 md:p-8">
-            <p className="text-[8px] uppercase leading-5 tracking-[0.15em] text-black/35">
-              Keep your order reference for entry. Tickets
-              are non-refundable and physical
-              identification may be required at the door.
+          {/* =================================================
+              TOTAL
+          ================================================= */}
+
+          <div className="flex items-end justify-between border-t border-black pt-8">
+
+            <div>
+
+              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                Total Paid
+              </p>
+
+              {order.mpesaReceiptNumber && (
+                <p className="mt-3 font-mono text-[10px] text-black/40">
+                  M-Pesa Receipt:{" "}
+                  {
+                    order.mpesaReceiptNumber
+                  }
+                </p>
+              )}
+
+            </div>
+
+            <p className="font-display text-5xl uppercase tracking-[-0.03em] md:text-6xl">
+              KES{" "}
+              {Number(
+                order.total
+              ).toLocaleString()}
             </p>
+
           </div>
 
-          {/* ACTIONS */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          {/* =================================================
+              EVENT INFO
+          ================================================= */}
+
+          <div className="mt-16 grid gap-px bg-black/10 md:grid-cols-3">
+
+            <div className="bg-[#f4f1ea] p-6">
+
+              <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+                Date
+              </p>
+
+              <p className="mt-4 text-sm font-bold">
+                30 October 2026
+              </p>
+
+            </div>
+
+            <div className="bg-[#f4f1ea] p-6">
+
+              <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+                Event
+              </p>
+
+              <p className="mt-4 text-sm font-bold">
+                The Styled Edit Live
+              </p>
+
+            </div>
+
+            <div className="bg-[#f4f1ea] p-6">
+
+              <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+                Entry
+              </p>
+
+              <p className="mt-4 text-sm font-bold">
+                Show your confirmation
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
+
+          <div className="mt-12 flex flex-col gap-3 sm:flex-row">
+
             <Link
               href="/"
-              className="flex flex-1 items-center justify-center bg-black px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-black/80"
+              className="flex flex-1 items-center justify-between bg-black px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-black/80"
             >
               Back to TSE Live
+              <ArrowRight size={15} />
             </Link>
 
             <Link
-              href="/schedule"
-              className="flex flex-1 items-center justify-center border border-black/15 bg-transparent px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-black transition hover:border-black/40"
+              href="/experience"
+              className="flex flex-1 items-center justify-between border border-black/20 px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] transition hover:border-black"
             >
-              View event schedule
+              Explore Experience
+              <ArrowRight size={15} />
             </Link>
+
           </div>
+
         </div>
       </section>
+
     </main>
-  );
-}
-
-/* =========================================================
-   SUCCESS PAGE (OUTER — provides the Suspense boundary
-   Next.js requires around useSearchParams during
-   static build/prerender)
-========================================================= */
-
-export default function CheckoutSuccessPage() {
-  return (
-    <Suspense
-      fallback={
-        <main className="flex min-h-screen items-center justify-center bg-[#f4f1ea] px-6 text-black">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-            Loading your order...
-          </p>
-        </main>
-      }
-    >
-      <CheckoutSuccessContent />
-    </Suspense>
   );
 }

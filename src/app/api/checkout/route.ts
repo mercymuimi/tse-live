@@ -1,77 +1,276 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-import { ADD_ONS } from "@/lib/tickets";
-import type { AddOnId } from "@/types/ticket";
+import {
+  ADD_ONS,
+  TICKETS,
+  getTicketById,
+} from "@/lib/tickets";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import type {
+  AddOnId,
+} from "@/types/ticket";
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const supabaseKey =
+  process.env.SUPABASE_SECRET_KEY;
+
+if (
+  !supabaseUrl ||
+  !supabaseKey
+) {
+  throw new Error(
+    "Missing Supabase environment variables."
+  );
+}
+
+const supabase =
+  createClient(
+    supabaseUrl,
+    supabaseKey
+  );
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type Customer = {
+  fullName: string;
+  email: string;
+  phone: string;
+};
+
+type IncomingAddOn = {
+  id: string;
+};
+
+type IncomingTicket = {
+  ticketId?: string;
+  quantity?: number;
+  addOns?: string[];
+
+  /*
+   * Kept optional for backwards compatibility
+   * with the current checkout payload.
+   */
+  ticket?: {
+    id?: string;
+  };
+};
 
 type CheckoutRequest = {
-  customer: {
-    fullName: string;
-    email: string;
-    phone: string;
-  };
-
-  paymentMethod: "mpesa" | "card";
-
-  selectedTickets: {
-    ticket: {
-      id: string;
-      name: string;
-      price: number;
-    };
-
-    quantity: number;
-    addOns: AddOnId[];
-  }[];
+  customer?: Customer;
+  paymentMethod?: "mpesa" | "card";
+  selectedTickets?: IncomingTicket[];
 };
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function isValidEmail(
+  email: string
+): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
+}
+
+function normalizePhone(
+  phone: string
+): string {
+  const cleaned =
+    phone
+      .replace(/\s+/g, "")
+      .replace(/-/g, "");
+
+  if (
+    cleaned.startsWith(
+      "+254"
+    )
+  ) {
+    return cleaned.slice(1);
+  }
+
+  if (
+    cleaned.startsWith(
+      "254"
+    )
+  ) {
+    return cleaned;
+  }
+
+  if (
+    cleaned.startsWith(
+      "0"
+    )
+  ) {
+    return `254${cleaned.slice(
+      1
+    )}`;
+  }
+
+  if (
+    cleaned.startsWith(
+      "7"
+    ) ||
+    cleaned.startsWith(
+      "1"
+    )
+  ) {
+    return `254${cleaned}`;
+  }
+
+  return cleaned;
+}
+
+function isValidKenyanPhone(
+  phone: string
+): boolean {
+  return /^254[17]\d{8}$/.test(
+    phone
+  );
+}
+
+function isAddOnId(
+  value: string
+): value is AddOnId {
+  return (
+    value in ADD_ONS
+  );
+}
+
+/* =========================================================
+   POST /api/checkout
+========================================================= */
 
 export async function POST(
   request: Request
 ) {
   try {
+    /* =====================================================
+       PARSE REQUEST
+    ===================================================== */
+
     const body =
       (await request.json()) as CheckoutRequest;
 
-    const {
-      customer,
-      paymentMethod,
-      selectedTickets,
-    } = body;
+    const customer =
+      body.customer;
+
+    const paymentMethod =
+      body.paymentMethod;
+
+    const selectedTickets =
+      body.selectedTickets;
 
     /* =====================================================
-       VALIDATION
+       BASIC VALIDATION
     ===================================================== */
 
-    if (
-      !customer?.fullName?.trim() ||
-      !customer?.email?.trim() ||
-      !customer?.phone?.trim()
-    ) {
+    if (!customer) {
       return NextResponse.json(
         {
           error:
             "Customer details are required.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
     if (
-      !["mpesa", "card"].includes(
-        paymentMethod
+      typeof customer.fullName !==
+        "string" ||
+      customer.fullName.trim()
+        .length < 2
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Please enter your full name.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      typeof customer.email !==
+        "string" ||
+      !isValidEmail(
+        customer.email.trim()
       )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Please enter a valid email address.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      typeof customer.phone !==
+        "string"
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Phone number is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const normalizedPhone =
+      normalizePhone(
+        customer.phone
+      );
+
+    if (
+      !isValidKenyanPhone(
+        normalizedPhone
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Please enter a valid Kenyan M-Pesa number.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      paymentMethod !==
+        "mpesa" &&
+      paymentMethod !==
+        "card"
     ) {
       return NextResponse.json(
         {
           error:
             "Invalid payment method.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
@@ -84,60 +283,293 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "No tickets selected.",
+            "Please select at least one ticket.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
     /* =====================================================
-       CALCULATE TOTAL
+       LIMIT TICKET TYPES
+       Prevents duplicate ticket entries being abused.
+    ===================================================== */
+
+    if (
+      selectedTickets.length >
+      TICKETS.length
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid ticket selection.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    /* =====================================================
+       SERVER-SIDE CALCULATION
     ===================================================== */
 
     let subtotal = 0;
     let addonTotal = 0;
 
-    for (const item of selectedTickets) {
+    const validatedTickets: {
+      ticketId: string;
+      ticketName: string;
+      quantity: number;
+      unitPrice: number;
+      addOns: AddOnId[];
+      addOnTotal: number;
+    }[] = [];
+
+    const selectedTicketIds =
+      new Set<string>();
+
+    for (
+      const item of selectedTickets
+    ) {
+      const ticketId =
+        item.ticketId ??
+        item.ticket?.id;
+
       if (
-        !item.ticket ||
-        !item.ticket.id ||
-        !item.ticket.name ||
-        typeof item.ticket.price !==
-          "number" ||
-        item.quantity <= 0
+        typeof ticketId !==
+        "string"
       ) {
         return NextResponse.json(
           {
             error:
               "Invalid ticket selection.",
           },
-          { status: 400 }
+          {
+            status: 400,
+          }
         );
       }
 
-      subtotal +=
-        item.ticket.price *
-        item.quantity;
+      /* -----------------------------------------------
+         PREVENT DUPLICATE TICKET IDS
+      ----------------------------------------------- */
 
-      for (const addonId of
-        item.addOns ?? []) {
-        const addon =
-          ADD_ONS[
-            addonId as keyof typeof ADD_ONS
-          ];
+      if (
+        selectedTicketIds.has(
+          ticketId
+        )
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Duplicate ticket selection detected.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
 
-        if (!addon) {
-          continue;
+      selectedTicketIds.add(
+        ticketId
+      );
+
+      /* -----------------------------------------------
+         GET CANONICAL TICKET
+      ----------------------------------------------- */
+
+      const ticket =
+        getTicketById(
+          ticketId
+        );
+
+      if (!ticket) {
+        return NextResponse.json(
+          {
+            error:
+              "One or more selected tickets are invalid.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      /* -----------------------------------------------
+         QUANTITY
+      ----------------------------------------------- */
+
+      const quantity =
+        Number(
+          item.quantity
+        );
+
+      if (
+        !Number.isInteger(
+          quantity
+        ) ||
+        quantity < 1 ||
+        quantity > 10
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Ticket quantity must be between 1 and 10.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      /* -----------------------------------------------
+         ADD-ONS
+      ----------------------------------------------- */
+
+      const requestedAddOns =
+        Array.isArray(
+          item.addOns
+        )
+          ? item.addOns
+          : [];
+
+      const uniqueAddOns =
+        [
+          ...new Set(
+            requestedAddOns
+          ),
+        ];
+
+      const validAddOns: AddOnId[] =
+        [];
+
+      for (
+        const addOnId of uniqueAddOns
+      ) {
+        if (
+          !isAddOnId(
+            addOnId
+          )
+        ) {
+          return NextResponse.json(
+            {
+              error:
+                "One or more selected add-ons are invalid.",
+            },
+            {
+              status: 400,
+            }
+          );
         }
 
-        addonTotal +=
-          addon.price *
-          item.quantity;
+        const offered =
+          ticket.addOns.some(
+            (addOn) =>
+              addOn.id ===
+              addOnId
+          );
+
+        if (!offered) {
+          return NextResponse.json(
+            {
+              error:
+                `${addOnId} is not available for ${ticket.name}.`,
+            },
+            {
+              status: 400,
+            }
+          );
+        }
+
+        validAddOns.push(
+          addOnId
+        );
       }
+
+      /* -----------------------------------------------
+         CALCULATE ADD-ONS
+      ----------------------------------------------- */
+
+      const itemAddOnTotal =
+        validAddOns.reduce(
+          (
+            total,
+            addOnId
+          ) => {
+            const addOn =
+              ADD_ONS[
+                addOnId
+              ];
+
+            return (
+              total +
+              addOn.price
+            );
+          },
+          0
+        );
+
+      /* -----------------------------------------------
+         CALCULATE TICKET
+      ----------------------------------------------- */
+
+      const itemTicketTotal =
+        ticket.price *
+        quantity;
+
+      const itemTotal =
+        itemTicketTotal +
+        itemAddOnTotal *
+          quantity;
+
+      subtotal +=
+        itemTicketTotal;
+
+      addonTotal +=
+        itemAddOnTotal *
+        quantity;
+
+      validatedTickets.push({
+        ticketId:
+          ticket.id,
+        ticketName:
+          ticket.name,
+        quantity,
+        unitPrice:
+          ticket.price,
+        addOns:
+          validAddOns,
+        addOnTotal:
+          itemAddOnTotal,
+      });
     }
 
+    /* =====================================================
+       FINAL TOTAL
+    ===================================================== */
+
     const total =
-      subtotal + addonTotal;
+      subtotal +
+      addonTotal;
+
+    if (
+      !Number.isFinite(
+        total
+      ) ||
+      total <= 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid order total.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     /* =====================================================
        CREATE ORDER
@@ -153,10 +585,12 @@ export async function POST(
           customer.fullName.trim(),
 
         email:
-          customer.email.trim(),
+          customer.email
+            .trim()
+            .toLowerCase(),
 
         phone:
-          customer.phone.trim(),
+          normalizedPhone,
 
         payment_method:
           paymentMethod,
@@ -165,27 +599,43 @@ export async function POST(
           "pending",
 
         subtotal,
+
         addon_total:
           addonTotal,
+
         total,
       })
-      .select()
+      .select(
+        "id, total, payment_status"
+      )
       .single();
 
     if (orderError) {
       console.error(
-        "Order creation error:",
+        "ORDER CREATION ERROR:",
         orderError
       );
 
       return NextResponse.json(
         {
           error:
-            "Could not create order.",
-          details:
-            orderError.message,
+            "Could not create your order.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
+      );
+    }
+
+    if (!order) {
+      return NextResponse.json(
+        {
+          error:
+            "Order creation failed.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
@@ -193,113 +643,161 @@ export async function POST(
        CREATE ORDER ITEMS
     ===================================================== */
 
-    for (const item of selectedTickets) {
-      let itemAddonTotal = 0;
-
-      const selectedAddOns =
-        item.addOns ?? [];
-
-      for (const addonId of
-        selectedAddOns) {
-        const addon =
-          ADD_ONS[
-            addonId as keyof typeof ADD_ONS
-          ];
-
-        if (!addon) {
-          continue;
-        }
-
-        itemAddonTotal +=
-          addon.price *
-          item.quantity;
-      }
-
+    for (
+      const item of validatedTickets
+    ) {
       const {
         data: orderItem,
-        error: itemError,
+        error:
+          orderItemError,
       } = await supabase
         .from("order_items")
         .insert({
-          order_id: order.id,
+          order_id:
+            order.id,
+
           ticket_id:
-            item.ticket.id,
+            item.ticketId,
+
           ticket_name:
-            item.ticket.name,
+            item.ticketName,
+
           quantity:
             item.quantity,
+
           unit_price:
-            item.ticket.price,
+            item.unitPrice,
+
           add_on_total:
-            itemAddonTotal,
+            item.addOnTotal *
+            item.quantity,
         })
-        .select()
+        .select(
+          "id"
+        )
         .single();
 
-      if (itemError) {
+      if (
+        orderItemError ||
+        !orderItem
+      ) {
         console.error(
-          "Order item creation error:",
-          itemError
+          "ORDER ITEM ERROR:",
+          orderItemError
         );
+
+        /*
+         * Remove the incomplete order.
+         * This prevents orphaned pending orders.
+         */
+        await supabase
+          .from("orders")
+          .delete()
+          .eq(
+            "id",
+            order.id
+          );
 
         return NextResponse.json(
           {
             error:
-              "Order was created but ticket details could not be saved.",
-            details:
-              itemError.message,
+              "Could not create your order items.",
           },
-          { status: 500 }
+          {
+            status: 500,
+          }
         );
       }
 
-      /* =================================================
+      /* ===============================================
          CREATE ADD-ONS
-      ================================================= */
+      =============================================== */
 
-      for (const addonId of
-        selectedAddOns) {
-        const addon =
-          ADD_ONS[
-            addonId as keyof typeof ADD_ONS
-          ];
+      if (
+        item.addOns.length >
+        0
+      ) {
+        const addonRows =
+          item.addOns.map(
+            (
+              addOnId
+            ) => ({
+              order_item_id:
+                orderItem.id,
 
-        if (!addon) {
-          continue;
-        }
+              addon_id:
+                addOnId,
+
+              addon_name:
+                ADD_ONS[
+                  addOnId
+                ].name,
+
+              addon_price:
+                ADD_ONS[
+                  addOnId
+                ].price,
+            })
+          );
 
         const {
-          error: addonError,
+          error:
+            addonError,
         } = await supabase
-          .from("order_item_addons")
-          .insert({
-            order_item_id:
-              orderItem.id,
+          .from(
+            "order_item_addons"
+          )
+          .insert(
+            addonRows
+          );
 
-            addon_id:
-              addonId,
-
-            addon_name:
-              addon.name,
-
-            price:
-              addon.price,
-          });
-
-        if (addonError) {
+        if (
+          addonError
+        ) {
           console.error(
-            "Add-on creation error:",
+            "ORDER ADD-ON ERROR:",
             addonError
           );
+
+          /*
+           * Clean up the incomplete order.
+           */
+          await supabase
+            .from(
+              "order_item_addons"
+            )
+            .delete()
+            .eq(
+              "order_item_id",
+              orderItem.id
+            );
+
+          await supabase
+            .from(
+              "order_items"
+            )
+            .delete()
+            .eq(
+              "order_id",
+              order.id
+            );
+
+          await supabase
+            .from("orders")
+            .delete()
+            .eq(
+              "id",
+              order.id
+            );
 
           return NextResponse.json(
             {
               error:
-                "Order was created but add-on details could not be saved.",
-              details:
-                addonError.message,
+                "Could not save your selected add-ons.",
             },
-            { status: 500 }
+            {
+              status: 500,
+            }
           );
         }
       }
@@ -309,24 +807,41 @@ export async function POST(
        SUCCESS
     ===================================================== */
 
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      total,
-      paymentStatus: "pending",
-    });
+    return NextResponse.json(
+      {
+        success: true,
+
+        orderId:
+          order.id,
+
+        total:
+          Number(
+            order.total
+          ),
+
+        paymentStatus:
+          order.payment_status,
+
+        paymentMethod,
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.error(
-      "Checkout API error:",
+      "CHECKOUT API ERROR:",
       error
     );
 
     return NextResponse.json(
       {
         error:
-          "Something went wrong during checkout.",
+          "Something went wrong while creating your order.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
