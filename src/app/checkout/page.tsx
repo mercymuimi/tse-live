@@ -122,8 +122,8 @@ export default function CheckoutPage() {
             }
 
             const addOns: AddOnId[] =
-              Array.isArray(item.selectedAddOns)
-                ? item.selectedAddOns.filter(
+              Array.isArray(item.addOns)
+                ? item.addOns.filter(
                     (addOnId): addOnId is AddOnId =>
                       Boolean(ADD_ONS[addOnId])
                   )

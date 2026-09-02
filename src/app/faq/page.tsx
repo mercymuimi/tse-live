@@ -26,24 +26,29 @@ const faqs: FAQ[] = [
       "The event is taking place at Kid Palace in Gatakwa-Rongai, Nairobi.",
   },
   {
-    question: "What does my General Admission ticket include?",
+    question: "What does my Regular ticket include?",
     answer:
-      "General Admission gives you full event access, entry to the TSE Thrift Market, styling consultations, curated content spaces, live music and DJ sets, and access to the wider creative community.",
+      "Regular gives you full event access, your day's outfit curated by TSE, entry to the TSE Thrift Market, styling sessions, content and photoshoot spaces, live music and DJ sets, and access to the wider creative community.",
+  },
+  {
+    question: "What's the difference between Regular and At The Gate?",
+    answer:
+      "Regular is your advance ticket — book ahead and it includes a styled outfit piece for the day. At The Gate is walk-in entry on the day itself, with the same full event access; outfit pieces are available while stock lasts.",
+  },
+  {
+    question: "What does the Vendor ticket include?",
+    answer:
+      "Vendor gives you full event access plus a dedicated selling spot, priority setup access, and a feature in TSE's content and community — built for thrift sellers, designers, stylists and creative businesses who want to sell and be seen.",
   },
   {
     question: "Does my ticket include food and drinks?",
     answer:
-      "No. Food and drinks are available separately at the event and are not included in the General Admission ticket price.",
+      "Food and drinks are available separately at the event and are not included in the ticket price.",
   },
   {
     question: "Is swimming included?",
     answer:
       "Pool access is available as an additional paid add-on and can be selected during ticket checkout.",
-  },
-  {
-    question: "What is included in VIP?",
-    answer:
-      "VIP includes full event access, priority entry, VIP lounge access, a styling consultation, a curated experience and access to the creative community.",
   },
   {
     question: "Can I get a refund for my ticket?",

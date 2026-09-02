@@ -206,15 +206,26 @@ export default function VendorsPage() {
               <p className="text-sm leading-7 text-white/45">
                 Are you a thrift seller, designer, stylist, artist,
                 maker or creative business? TSE Live is built for
-                people shaping the culture.
+                people shaping the culture. A Vendor ticket gets you
+                a selling spot and a feature in TSE&apos;s content
+                and community.
               </p>
 
-              <a
-                href="mailto:hello@thestyledeedit.com"
-                className="mt-8 inline-flex border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
-              >
-                Become A Vendor →
-              </a>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/tickets"
+                  className="inline-flex border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
+                >
+                  Get A Vendor Ticket →
+                </Link>
+
+                <a
+                  href="mailto:hello@thestylededit.com"
+                  className="inline-flex items-center px-2 text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 transition hover:text-white"
+                >
+                  Or ask us a question
+                </a>
+              </div>
             </div>
           </div>
         </div>
