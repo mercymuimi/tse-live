@@ -8,13 +8,16 @@ import type {
    ADD-ONS
 ========================================================= */
 
-export const ADD_ONS: Record<AddOnId, AddOn> = {
+export const ADD_ONS: Record<
+  AddOnId,
+  AddOn
+> = {
   pool: {
     id: "pool",
     name: "Pool Access",
     price: 500,
     description:
-      "Access to the pool area during TSE Live.",
+      "Access to the pool area during the event.",
   },
 
   food: {
@@ -40,21 +43,21 @@ export const ADD_ONS: Record<AddOnId, AddOn> = {
 
 export const TICKETS: TicketType[] = [
   {
-    id: "general",
-    tier: "Tier 01",
-    name: "General Admission",
-
+    id: "regular",
+    tier: "Tier 01 — Advance",
+    name: "Regular",
     description:
-      "Full event access. Fashion, culture, music and community.",
-
-    price: 5,
+      "Advance entry to TSE Live. Full event access plus your day's outfit, curated by TSE.",
+    price: 500,
 
     inclusions: [
       "Full event access",
+      "Your day's outfit — a styled TSE piece",
       "TSE Thrift Market",
-      "Styling consultations",
-      "Curated content spaces",
+      "Styling sessions",
+      "Content & photoshoot spaces",
       "Live music & DJ sets",
+      "Pool & lifestyle area",
       "Creative community",
     ],
 
@@ -66,22 +69,45 @@ export const TICKETS: TicketType[] = [
   },
 
   {
-    id: "vip",
-    tier: "Tier 02",
-    name: "VIP Experience",
-
+    id: "gate",
+    tier: "Tier 02 — At The Gate",
+    name: "At The Gate",
     description:
-      "An elevated TSE Live experience with premium access.",
-
-    price: 3500,
+      "Walk-in entry on the day. Full event access — outfit pieces available while stock lasts.",
+    price: 800,
 
     inclusions: [
       "Full event access",
-      "Priority entry",
-      "VIP lounge access",
-      "Styling consultation",
-      "Curated experience",
+      "TSE Thrift Market",
+      "Styling sessions",
+      "Content & photoshoot spaces",
+      "Live music & DJ sets",
+      "Pool & lifestyle area",
       "Creative community",
+    ],
+
+    addOns: [
+      ADD_ONS.pool,
+      ADD_ONS.food,
+      ADD_ONS.drinks,
+    ],
+  },
+
+  {
+    id: "vendor",
+    tier: "Tier 03 — Vendor",
+    name: "Vendor",
+    description:
+      "Sell at TSE Live and get featured in TSE content and community — for thrift sellers, designers, stylists and creative businesses.",
+    price: 1000,
+
+    inclusions: [
+      "Full event access",
+      "Dedicated selling spot",
+      "Featured in TSE content",
+      "Spotlighted in the TSE community",
+      "Priority vendor setup access",
+      "Networking with other vendors & brands",
     ],
 
     addOns: [
@@ -93,7 +119,7 @@ export const TICKETS: TicketType[] = [
 ];
 
 /* =========================================================
-   TICKET HELPERS
+   HELPERS
 ========================================================= */
 
 export function getTicketById(
@@ -104,19 +130,11 @@ export function getTicketById(
   );
 }
 
-/* =========================================================
-   ADD-ON HELPERS
-========================================================= */
-
 export function getAddOnById(
   addOnId: AddOnId
 ): AddOn {
   return ADD_ONS[addOnId];
 }
-
-/* =========================================================
-   PRICE HELPERS
-========================================================= */
 
 /**
  * Returns the price of a ticket using
@@ -125,12 +143,8 @@ export function getAddOnById(
 export function getTicketPrice(
   ticketId: string
 ): number | null {
-  const ticket =
-    getTicketById(ticketId);
-
-  return ticket
-    ? ticket.price
-    : null;
+  const ticket = getTicketById(ticketId);
+  return ticket ? ticket.price : null;
 }
 
 /**
@@ -140,18 +154,10 @@ export function getTicketPrice(
 export function calculateAddOnTotal(
   addOns: AddOnId[]
 ): number {
-  return addOns.reduce(
-    (total, addOnId) => {
-      const addOn =
-        getAddOnById(addOnId);
-
-      return (
-        total +
-        (addOn?.price ?? 0)
-      );
-    },
-    0
-  );
+  return addOns.reduce((total, addOnId) => {
+    const addOn = getAddOnById(addOnId);
+    return total + (addOn?.price ?? 0);
+  }, 0);
 }
 
 /**
@@ -163,22 +169,14 @@ export function calculateTicketTotal(
   quantity: number,
   addOns: AddOnId[] = []
 ): number {
-  const ticket =
-    getTicketById(ticketId);
+  const ticket = getTicketById(ticketId);
 
   if (!ticket) {
     return 0;
   }
 
-  const ticketTotal =
-    ticket.price * quantity;
+  const ticketTotal = ticket.price * quantity;
+  const addOnTotal = calculateAddOnTotal(addOns) * quantity;
 
-  const addOnTotal =
-    calculateAddOnTotal(addOns) *
-    quantity;
-
-  return (
-    ticketTotal +
-    addOnTotal
-  );
+  return ticketTotal + addOnTotal;
 }
