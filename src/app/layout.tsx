@@ -1,23 +1,53 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bebas_Neue, Fraunces, Inter } from "next/font/google";
+
 import "./globals.css";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bebas = Bebas_Neue({
+  variable: "--font-bebas",
+  weight: "400",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "The Styled Edit Live",
+  title: "The Styled Edit Live — Thrift. Style. Live.",
   description:
-    "The Styled Edit Live — fashion, culture and community brought together in real life.",
+    "The Styled Edit Live is the one-year anniversary of The Styled Edit — a live fashion and lifestyle experience built around thrift, styling, creativity, community and the next chapter of TSE.",
+  keywords: [
+    "The Styled Edit",
+    "TSE Live",
+    "thrift Kenya",
+    "fashion Kenya",
+    "Rongai events",
+    "fashion events Nairobi",
+    "lifestyle Kenya",
+    "thrift fashion",
+  ],
+  openGraph: {
+    title: "The Styled Edit Live",
+    description:
+      "One year of TSE. A live fashion & lifestyle experience.",
+    type: "website",
+    locale: "en_KE",
+  },
 };
 
 export default function RootLayout({
@@ -28,14 +58,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`
+        ${bebas.variable}
+        ${inter.variable}
+        ${fraunces.variable}
+        h-full
+        antialiased
+      `}
     >
-      <body className="min-h-full flex flex-col bg-[#090909]">
+      <body className="min-h-full flex flex-col bg-[#080808] text-[#F3F1EC]">
         <Navbar />
 
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
 
         <Footer />
       </body>

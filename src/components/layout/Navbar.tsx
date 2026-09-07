@@ -1,12 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const navigation = [
+const navItems = [
   { label: "Home", href: "/" },
   { label: "Experience", href: "/experience" },
   { label: "Schedule", href: "/schedule" },
@@ -16,338 +15,213 @@ const navigation = [
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
-  };
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
     <>
-      {/* =====================================================
-          MAIN NAVBAR
-      ====================================================== */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <nav className="border-b border-white/10 bg-black/95 backdrop-blur-xl">
-          <div className="mx-auto w-full max-w-360 px-6 sm:px-8 lg:px-10">
-            <div className="flex h-18.5 items-center justify-between">
+      <header
+        className={`
+          fixed inset-x-0 top-0 z-50
+          transition-all duration-500
+          ${
+            scrolled
+              ? "border-b border-white/10 bg-[#080808]/90 backdrop-blur-xl"
+              : "bg-transparent"
+          }
+        `}
+      >
+        <div className="mx-auto flex h-[76px] w-[min(100%-32px,1440px)] items-center justify-between">
+          {/* LOGO */}
+          <Link
+            href="/"
+            onClick={() => setMenuOpen(false)}
+            className="group relative z-50 flex items-center"
+          >
+            <span className="font-display text-[30px] leading-none tracking-[0.02em]">
+              TSE
+            </span>
 
-              {/* LOGO */}
+            <span className="ml-1 mt-0.5 font-sans text-[10px] font-medium tracking-[0.22em] text-white/55">
+              LIVE
+            </span>
+          </Link>
+
+          {/* DESKTOP NAV */}
+          <nav className="hidden items-center gap-8 lg:flex">
+            {navItems.map((item, index) => (
               <Link
-                href="/"
-                onClick={closeMenu}
-                aria-label="The Styled Edit Live"
-                className="group flex shrink-0 items-center"
+                key={item.href}
+                href={item.href}
+                className="group relative py-2"
               >
-                <span
-                  className="
-                    font-display
-                    text-[28px]
-                    font-bold
-                    leading-none
-                    tracking-[-0.07em]
-                    text-[#F4F0E8]
-                    transition-opacity
-                    duration-300
-                    group-hover:opacity-70
-                  "
-                >
-                  TSE<span className="text-white/40">.</span>LIVE
+                <span className="font-sans text-[11px] font-medium uppercase tracking-[0.18em] text-white/65 transition-colors duration-300 group-hover:text-white">
+                  {item.label}
+                </span>
+
+                <span className="absolute bottom-0 left-0 h-px w-0 bg-white transition-all duration-300 group-hover:w-full" />
+
+                <span className="absolute -top-2 -right-2.5 text-[7px] font-medium text-white/25 opacity-0 transition-opacity group-hover:opacity-100">
+                  0{index + 1}
                 </span>
               </Link>
+            ))}
+          </nav>
 
-              {/* DESKTOP NAVIGATION */}
-              <div className="hidden items-center gap-8 lg:flex">
-                {navigation.map((item) => {
-                  const active = isActive(item.href);
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="group relative py-2"
-                    >
-                      <span
-                        className={`
-                          text-[10px]
-                          font-semibold
-                          uppercase
-                          tracking-[0.17em]
-                          transition-colors
-                          duration-300
-                          ${
-                            active
-                              ? "text-[#F4F0E8]"
-                              : "text-white/50 group-hover:text-[#F4F0E8]"
-                          }
-                        `}
-                      >
-                        {item.label}
-                      </span>
-
-                      {/* ACTIVE / HOVER LINE */}
-                      <span
-                        className={`
-                          absolute
-                          bottom-0
-                          left-0
-                          h-px
-                          bg-[#F4F0E8]
-                          transition-all
-                          duration-300
-                          ${active ? "w-full" : "w-0 group-hover:w-full"}
-                        `}
-                      />
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* RIGHT SIDE */}
-              <div className="flex items-center gap-3">
-
-                {/* DESKTOP TICKET CTA */}
-                <Link
-                  href="/tickets"
-                  className="
-                    hidden
-                    h-10
-                    min-w-39
-                    items-center
-                    justify-center
-                    bg-[#F4F0E8]
-                    px-6
-                    text-black
-                    transition-all
-                    duration-300
-                    hover:bg-white
-                    sm:flex
-                  "
-                >
-                  <span
-                    className="
-                      whitespace-nowrap
-                      text-[10px]
-                      font-extrabold
-                      uppercase
-                      tracking-[0.13em]
-                      text-black
-                    "
-                  >
-                    Get Your Ticket
-                  </span>
-                </Link>
-
-                {/* MOBILE MENU BUTTON */}
-                <button
-                  type="button"
-                  onClick={() => setMenuOpen((open) => !open)}
-                  aria-label={menuOpen ? "Close menu" : "Open menu"}
-                  aria-expanded={menuOpen}
-                  className="
-                    relative
-                    z-60
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    border
-                    border-white/20
-                    text-[#F4F0E8]
-                    transition-all
-                    duration-300
-                    hover:border-white
-                    hover:bg-[#F4F0E8]
-                    hover:text-black
-                    lg:hidden
-                  "
-                >
-                  {menuOpen ? (
-                    <X size={18} strokeWidth={1.7} />
-                  ) : (
-                    <Menu size={18} strokeWidth={1.7} />
-                  )}
-                </button>
-              </div>
-            </div>
+          {/* DESKTOP CTA */}
+          <div className="hidden lg:block">
+            <Link
+              href="/tickets"
+              className="
+                group
+                flex items-center gap-3
+                border border-white/25
+                px-5 py-3
+                transition-all duration-300
+                hover:border-white
+                hover:bg-black
+                hover:text-white
+              "
+            >
+              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em]">
+                Get Tickets
+              </span>
+            </Link>
           </div>
-        </nav>
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((value) => !value)}
+            className="
+              relative z-50
+              flex h-11 w-11
+              items-center justify-center
+              border border-white/15
+              lg:hidden
+            "
+          >
+            {menuOpen ? (
+              <X size={19} strokeWidth={1.5} />
+            ) : (
+              <Menu size={19} strokeWidth={1.5} />
+            )}
+          </button>
+        </div>
       </header>
 
-      {/* =====================================================
-          MOBILE MENU
-      ====================================================== */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-[#090909] lg:hidden"
+            className="fixed inset-0 z-40 bg-[#080808]"
           >
-            <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{
-                duration: 0.25,
-                ease: "easeOut",
-              }}
-              className="
-                flex
-                min-h-screen
-                flex-col
-                px-6
-                pb-7
-                pt-28
-                sm:px-8
-              "
-            >
-              {/* MOBILE LINKS */}
-              <div className="flex flex-1 flex-col">
-                {navigation.map((item, index) => {
-                  const active = isActive(item.href);
-
-                  return (
+            <div className="flex h-full flex-col justify-between px-6 pb-8 pt-[110px]">
+              <nav>
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.06,
+                    }}
+                  >
                     <Link
-                      key={item.href}
                       href={item.href}
-                      onClick={closeMenu}
+                      onClick={() => setMenuOpen(false)}
                       className="
                         group
-                        flex
-                        items-center
-                        justify-between
-                        border-b
-                        border-white/10
+                        flex items-baseline
+                        border-b border-white/10
                         py-5
                       "
                     >
-                      <div className="flex items-baseline gap-4">
-                        <span
-                          className="
-                            text-[9px]
-                            font-medium
-                            tracking-[0.15em]
-                            text-white/30
-                          "
-                        >
-                          0{index + 1}
-                        </span>
+                      <span className="mr-4 font-sans text-[9px] tracking-[0.2em] text-white/25">
+                        0{index + 1}
+                      </span>
 
-                        <span
-                          className={`
-                            font-display
-                            text-4xl
-                            uppercase
-                            leading-none
-                            tracking-[-0.02em]
-                            transition-colors
-                            duration-300
-                            ${
-                              active
-                                ? "text-[#F4F0E8]"
-                                : "text-white/45 group-hover:text-[#F4F0E8]"
-                            }
-                          `}
-                        >
-                          {item.label}
-                        </span>
-                      </div>
-
-                      <ArrowUpRight
-                        size={19}
-                        strokeWidth={1.5}
-                        className="
-                          text-white/30
-                          transition-all
-                          duration-300
-                          group-hover:-translate-y-1
-                          group-hover:translate-x-1
-                          group-hover:text-[#F4F0E8]
-                        "
-                      />
+                      <span className="font-display text-[48px] uppercase leading-none text-white transition-colors duration-300 group-hover:text-white/60">
+                        {item.label}
+                      </span>
                     </Link>
-                  );
-                })}
-              </div>
+                  </motion.div>
+                ))}
+              </nav>
 
-              {/* MOBILE TICKET CTA */}
-              <Link
-                href="/tickets"
-                onClick={closeMenu}
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  bg-[#F4F0E8]
-                  px-5
-                  py-5
-                  text-black
-                  transition-colors
-                  duration-300
-                  hover:bg-white
-                "
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
               >
-                <div>
-                  <p
-                    className="
-                      text-[9px]
-                      font-semibold
-                      uppercase
-                      tracking-[0.18em]
-                    "
-                  >
-                    Entry
-                  </p>
-
-                  <p
-                    className="
-                      mt-1
-                      font-display
-                      text-3xl
-                      leading-none
-                    "
-                  >
-                    KES 500
-                  </p>
-                </div>
-
-                <span
+                <Link
+                  href="/tickets"
+                  onClick={() => setMenuOpen(false)}
                   className="
-                    text-[10px]
-                    font-extrabold
-                    uppercase
-                    tracking-[0.14em]
+                    flex items-center justify-between
+                    bg-[#F3F1EC]
+                    px-5 py-5
+                    text-[#080808]
                   "
                 >
-                  Get Your Ticket
-                </span>
-              </Link>
+                  <div>
+                    <p className="font-sans text-[9px] font-medium uppercase tracking-[0.2em] text-black/45">
+                      Secure your spot
+                    </p>
 
-              {/* MOBILE META */}
-              <div
-                className="
-                  mt-6
-                  flex
-                  items-center
-                  justify-between
-                  text-[9px]
-                  font-medium
-                  uppercase
-                  tracking-[0.16em]
-                  text-white/30
-                "
-              >
-                <span>The Styled Edit Live</span>
-                <span>30.10.26</span>
-              </div>
-            </motion.div>
+                    <p className="mt-1 font-display text-[32px] leading-none">
+                      GET TICKETS
+                    </p>
+                  </div>
+
+                  <ArrowUpRight size={22} strokeWidth={1.5} />
+                </Link>
+
+                <div className="mt-6 flex items-end justify-between">
+                  <div>
+                    <p className="font-sans text-[9px] uppercase tracking-[0.18em] text-white/30">
+                      The Styled Edit Live
+                    </p>
+
+                    <p className="mt-1 font-display text-[22px] leading-none">
+                      30.10.26
+                    </p>
+                  </div>
+
+                  <p className="font-sans text-[9px] uppercase tracking-[0.18em] text-white/30">
+                    Rongai · Kenya
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
