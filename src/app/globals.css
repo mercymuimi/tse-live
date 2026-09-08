@@ -1,176 +1,556 @@
 @import "tailwindcss";
 
+/* =========================================================
+   THE STYLED EDIT — GLOBAL DESIGN SYSTEM
+   Fashion Editorial × Underground Culture × Luxury
+========================================================= */
+
 :root {
-  /* ─────────────────────────────────────
-     TSE COLOUR SYSTEM
-  ───────────────────────────────────── */
+  /* -------------------------------------------------------
+     CORE COLOURS
+  ------------------------------------------------------- */
 
   --tse-black: #080808;
   --tse-ink: #111111;
+  --tse-deep: #0d0d0c;
 
   --tse-paper: #f3f1ec;
   --tse-white: #ffffff;
 
   --tse-muted: #92928c;
+  --tse-subtle: #686863;
 
-  --tse-line: rgba(243, 241, 236, 0.14);
-  --tse-soft-line: rgba(8, 8, 8, 0.14);
+  /* -------------------------------------------------------
+     ACCENT
+  ------------------------------------------------------- */
 
   --tse-accent: #b7a06a;
+  --tse-accent-soft: rgba(183, 160, 106, 0.14);
+
+  /* -------------------------------------------------------
+     BORDERS / DIVIDERS
+  ------------------------------------------------------- */
+
+  --tse-line: rgba(243, 241, 236, 0.14);
+  --tse-line-strong: rgba(243, 241, 236, 0.24);
+
+  --tse-soft-line: rgba(8, 8, 8, 0.14);
+  --tse-soft-line-strong: rgba(8, 8, 8, 0.22);
+
+  /* -------------------------------------------------------
+     SURFACES
+  ------------------------------------------------------- */
+
+  --tse-surface: #0f0f0e;
+  --tse-surface-raised: #151514;
+
+  /* -------------------------------------------------------
+     SYSTEM
+  ------------------------------------------------------- */
 
   --background: var(--tse-black);
   --foreground: var(--tse-paper);
 }
 
+
+/* =========================================================
+   TAILWIND THEME
+========================================================= */
+
 @theme inline {
   --color-tse-black: var(--tse-black);
   --color-tse-ink: var(--tse-ink);
+  --color-tse-deep: var(--tse-deep);
+
   --color-tse-paper: var(--tse-paper);
   --color-tse-white: var(--tse-white);
+
   --color-tse-muted: var(--tse-muted);
-  --color-tse-line: var(--tse-line);
-  --color-tse-soft-line: var(--tse-soft-line);
+  --color-tse-subtle: var(--tse-subtle);
+
   --color-tse-accent: var(--tse-accent);
+  --color-tse-accent-soft: var(--tse-accent-soft);
+
+  --color-tse-line: var(--tse-line);
+  --color-tse-line-strong: var(--tse-line-strong);
+
+  --color-tse-soft-line: var(--tse-soft-line);
+  --color-tse-soft-line-strong: var(--tse-soft-line-strong);
+
+  --color-tse-surface: var(--tse-surface);
+  --color-tse-surface-raised: var(--tse-surface-raised);
 
   --font-display: var(--font-bebas);
   --font-sans: var(--font-inter);
   --font-accent: var(--font-fraunces);
 }
 
-/* ─────────────────────────────────────
-   RESET
-───────────────────────────────────── */
 
-* {
-  box-sizing: border-box;
-}
+/* =========================================================
+   BASE LAYER
+   Everything here lives inside Tailwind's own cascade layer
+   system, so utility classes (mt-24, p-4, etc.) can always
+   override these defaults. Never put element-selector rules
+   like `h1 { margin: 0 }` OUTSIDE a layer — unlayered CSS
+   always wins over Tailwind's layered utilities regardless
+   of specificity, which silently breaks spacing utilities.
+========================================================= */
 
-html {
-  scroll-behavior: smooth;
-  background: var(--tse-black);
-}
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-body {
-  margin: 0;
-  background: var(--tse-black);
-  color: var(--tse-paper);
-  font-family: var(--font-inter), Arial, sans-serif;
-  overflow-x: hidden;
-}
+  html {
+    background: var(--tse-black);
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
 
-::selection {
-  background: var(--tse-paper);
-  color: var(--tse-black);
-}
+  body {
+    min-height: 100%;
+    margin: 0;
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
+    background: var(--tse-black);
+    color: var(--tse-paper);
 
-button {
-  font: inherit;
-}
+    font-family: var(--font-inter), Arial, sans-serif;
 
-/* ─────────────────────────────────────
-   TYPOGRAPHY
-───────────────────────────────────── */
+    overflow-x: hidden;
 
-.font-display {
-  font-family: var(--font-bebas), Impact, sans-serif;
-  letter-spacing: 0.015em;
-}
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-.font-sans {
-  font-family: var(--font-inter), Arial, sans-serif;
-}
+  ::selection {
+    background: var(--tse-paper);
+    color: var(--tse-black);
+  }
 
-.font-accent {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-style: italic;
-}
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
 
-/* Editorial heading defaults */
+  button {
+    font: inherit;
+  }
 
-h1,
-h2,
-h3,
-h4 {
-  margin: 0;
-  font-family: var(--font-bebas), Impact, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.015em;
-}
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
 
-/* ─────────────────────────────────────
-   LINKS
-───────────────────────────────────── */
+  button,
+  a {
+    cursor: pointer;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-/* ─────────────────────────────────────
-   TSE CONTAINER
-───────────────────────────────────── */
+  :focus-visible {
+    outline: 1px solid var(--tse-accent);
+    outline-offset: 4px;
+  }
 
-.tse-container {
-  width: min(100% - 48px, 1440px);
-  margin-inline: auto;
-}
+  /* -------------------------------------------------------
+     TYPOGRAPHY DEFAULTS
+     margin: 0 here is a starting point only — Tailwind
+     margin utilities (mt-*, mb-*, etc.) on these elements
+     will correctly override it since we're in @layer base.
+  ------------------------------------------------------- */
 
-@media (max-width: 768px) {
-  .tse-container {
-    width: min(100% - 32px, 1440px);
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+
+    font-family: var(--font-bebas), Impact, sans-serif;
+    font-weight: 400;
+
+    letter-spacing: 0.015em;
+
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
   }
 }
 
-/* ─────────────────────────────────────
-   BORDERS
-───────────────────────────────────── */
 
-.tse-border {
-  border-color: var(--tse-line);
+/* =========================================================
+   TYPOGRAPHY UTILITY CLASSES
+   (Not resets — these are opt-in classes, so they don't
+   need to live in @layer base. Leaving them unlayered is
+   fine since nothing needs to override a class you apply
+   on purpose, but placing them in @layer components keeps
+   the cascade fully predictable.)
+========================================================= */
+
+@layer components {
+  .font-display {
+    font-family: var(--font-bebas), Impact, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.015em;
+  }
+
+  .font-sans {
+    font-family: var(--font-inter), Arial, sans-serif;
+  }
+
+  .font-accent {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-style: italic;
+  }
+
+  .tse-eyebrow {
+    font-family: var(--font-inter), Arial, sans-serif;
+
+    font-size: 0.68rem;
+    font-weight: 600;
+
+    line-height: 1;
+    letter-spacing: 0.18em;
+
+    text-transform: uppercase;
+  }
+
+  .tse-label {
+    font-family: var(--font-inter), Arial, sans-serif;
+
+    font-size: 0.7rem;
+    font-weight: 500;
+
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+
+    text-transform: uppercase;
+  }
+
+  .tse-display {
+    font-family: var(--font-bebas), Impact, sans-serif;
+
+    font-weight: 400;
+    line-height: 0.86;
+
+    letter-spacing: 0.01em;
+  }
+
+  .tse-editorial {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-style: italic;
+  }
+
+  .tse-body {
+    font-family: var(--font-inter), Arial, sans-serif;
+
+    font-size: 0.95rem;
+    line-height: 1.7;
+
+    color: var(--tse-muted);
+  }
+
+  /* -------------------------------------------------------
+     LAYOUT / CONTAINER
+  ------------------------------------------------------- */
+
+  .tse-container {
+    width: min(calc(100% - 48px), 1440px);
+    margin-inline: auto;
+  }
+
+  @media (max-width: 768px) {
+    .tse-container {
+      width: min(calc(100% - 32px), 1440px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .tse-container {
+      width: calc(100% - 28px);
+    }
+  }
+
+  .tse-section {
+    position: relative;
+    width: 100%;
+  }
+
+  .tse-section-dark {
+    background: var(--tse-black);
+    color: var(--tse-paper);
+  }
+
+  .tse-section-paper {
+    background: var(--tse-paper);
+    color: var(--tse-black);
+  }
+
+  .tse-grid {
+    display: grid;
+
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+
+    column-gap: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .tse-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: 16px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .tse-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: 12px;
+    }
+  }
+
+  /* -------------------------------------------------------
+     BORDERS / DIVIDERS
+  ------------------------------------------------------- */
+
+  .tse-border {
+    border-color: var(--tse-line);
+  }
+
+  .tse-border-strong {
+    border-color: var(--tse-line-strong);
+  }
+
+  .tse-divider {
+    width: 100%;
+    height: 1px;
+
+    background: var(--tse-line);
+  }
+
+  .tse-divider-paper {
+    width: 100%;
+    height: 1px;
+
+    background: var(--tse-soft-line);
+  }
+
+  /* -------------------------------------------------------
+     SURFACES
+  ------------------------------------------------------- */
+
+  .tse-surface {
+    background: var(--tse-surface);
+  }
+
+  .tse-surface-raised {
+    background: var(--tse-surface-raised);
+  }
+
+  /* -------------------------------------------------------
+     IMAGE SYSTEM
+  ------------------------------------------------------- */
+
+  .tse-image {
+    position: relative;
+
+    overflow: hidden;
+  }
+
+  .tse-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 500ms ease;
+  }
+
+  .tse-image:hover img {
+    transform: scale(1.035);
+  }
+
+  .tse-image-editorial img {
+    filter: grayscale(100%);
+  }
+
+  .tse-image-editorial:hover img {
+    filter: grayscale(0%);
+  }
+
+  /* -------------------------------------------------------
+     FILM GRAIN
+  ------------------------------------------------------- */
+
+  .tse-noise {
+    position: relative;
+  }
+
+  .tse-noise::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    opacity: 0.035;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+
+    mix-blend-mode: soft-light;
+  }
+
+  /* -------------------------------------------------------
+     ATMOSPHERE
+  ------------------------------------------------------- */
+
+  .tse-atmosphere {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+      radial-gradient(
+        circle at 70% 20%,
+        rgba(183, 160, 106, 0.08),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(243, 241, 236, 0.035),
+        transparent 30%
+      );
+  }
+
+  /* -------------------------------------------------------
+     GOLD ACCENT
+  ------------------------------------------------------- */
+
+  .tse-accent {
+    color: var(--tse-accent);
+  }
+
+  .tse-accent-line {
+    position: relative;
+  }
+
+  .tse-accent-line::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -6px;
+
+    width: 100%;
+    height: 1px;
+
+    background: var(--tse-accent);
+
+    transform-origin: left;
+    transform: scaleX(0);
+
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .tse-accent-line:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* -------------------------------------------------------
+     BUTTON BASE
+  ------------------------------------------------------- */
+
+  .tse-button {
+    display: inline-flex;
+
+    min-height: 48px;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 0 20px;
+
+    border: 1px solid transparent;
+
+    font-family: var(--font-inter), Arial, sans-serif;
+
+    font-size: 0.68rem;
+    font-weight: 600;
+
+    line-height: 1;
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+
+    transition:
+      background-color 300ms ease,
+      color 300ms ease,
+      border-color 300ms ease,
+      transform 300ms ease;
+  }
+
+  .tse-button:active {
+    transform: translateY(1px);
+  }
+
+  .tse-button-primary {
+    background: var(--tse-paper);
+    color: var(--tse-black);
+  }
+
+  .tse-button-primary:hover {
+    background: var(--tse-white);
+  }
+
+  .tse-button-outline {
+    border-color: var(--tse-line-strong);
+    color: var(--tse-paper);
+  }
+
+  .tse-button-outline:hover {
+    border-color: var(--tse-paper);
+    background: var(--tse-paper);
+    color: var(--tse-black);
+  }
+
+  .tse-button-gold {
+    background: var(--tse-accent);
+    color: var(--tse-black);
+  }
+
+  .tse-button-gold:hover {
+    filter: brightness(1.08);
+  }
 }
 
-/* ─────────────────────────────────────
-   FILM GRAIN
-───────────────────────────────────── */
 
-.tse-noise {
-  position: relative;
-}
-
-.tse-noise::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 20;
-
-  opacity: 0.035;
-
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-}
-
-/* ─────────────────────────────────────
-   IMAGE TREATMENT
-───────────────────────────────────── */
-
-.tse-image {
-  overflow: hidden;
-}
-
-.tse-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ─────────────────────────────────────
+/* =========================================================
    SCROLLBAR
-───────────────────────────────────── */
+   (Pseudo-element selectors like this aren't part of
+   Tailwind's layer system either way, safe unlayered.)
+========================================================= */
 
 ::-webkit-scrollbar {
   width: 7px;
@@ -188,9 +568,25 @@ a {
   background: #555550;
 }
 
-/* ─────────────────────────────────────
+
+/* =========================================================
+   MOBILE TOUCH / INTERACTION
+========================================================= */
+
+@media (hover: none) {
+  .tse-image:hover img {
+    transform: none;
+  }
+
+  .tse-accent-line::after {
+    display: none;
+  }
+}
+
+
+/* =========================================================
    REDUCED MOTION
-───────────────────────────────────── */
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -202,7 +598,13 @@ a {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+
     transition-duration: 0.01ms !important;
+
     scroll-behavior: auto !important;
+  }
+
+  .tse-image img {
+    transition: none;
   }
 }

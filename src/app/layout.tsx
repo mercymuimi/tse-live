@@ -6,6 +6,11 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
+
+/* =========================================================
+   FONTS
+========================================================= */
+
 const bebas = Bebas_Neue({
   variable: "--font-bebas",
   weight: "400",
@@ -27,10 +32,20 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+
+/* =========================================================
+   SITE METADATA
+========================================================= */
+
 export const metadata: Metadata = {
-  title: "The Styled Edit Live — Thrift. Style. Live.",
+  title: {
+    default: "The Styled Edit Live — Thrift. Style. Live.",
+    template: "%s — The Styled Edit Live",
+  },
+
   description:
     "The Styled Edit Live is the one-year anniversary of The Styled Edit — a live fashion and lifestyle experience built around thrift, styling, creativity, community and the next chapter of TSE.",
+
   keywords: [
     "The Styled Edit",
     "TSE Live",
@@ -41,14 +56,41 @@ export const metadata: Metadata = {
     "lifestyle Kenya",
     "thrift fashion",
   ],
+
+  authors: [
+    {
+      name: "The Styled Edit",
+    },
+  ],
+
+  creator: "The Styled Edit",
+
   openGraph: {
     title: "The Styled Edit Live",
     description:
       "One year of TSE. A live fashion & lifestyle experience.",
     type: "website",
     locale: "en_KE",
+    siteName: "The Styled Edit Live",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "The Styled Edit Live",
+    description:
+      "One year of TSE. A live fashion & lifestyle experience.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
+
+
+/* =========================================================
+   ROOT LAYOUT
+========================================================= */
 
 export default function RootLayout({
   children,
@@ -66,10 +108,12 @@ export default function RootLayout({
         antialiased
       `}
     >
-      <body className="min-h-full flex flex-col bg-[#080808] text-[#F3F1EC]">
+      <body className="min-h-full bg-tse-black text-tse-paper flex flex-col">
         <Navbar />
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+        </main>
 
         <Footer />
       </body>
