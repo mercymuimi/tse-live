@@ -45,7 +45,7 @@ export const TICKETS: TicketType[] = [
     name: "TSE Experience",
     description:
       "Your full TSE Live experience — thrift, style, create, connect and celebrate one year of The Styled Edit.",
-    price: 500,
+    price: 5,
 
     inclusions: [
       "Full event access",

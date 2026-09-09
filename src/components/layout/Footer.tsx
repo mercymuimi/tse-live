@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -19,6 +20,8 @@ const socialLinks = [
   { label: "WhatsApp", href: "#" },
 ];
 
+const FLASH = "#FF2A2A";
+
 export default function Footer() {
   return (
     <footer className="bg-[#090909] text-[#F4F0E8]">
@@ -28,12 +31,19 @@ export default function Footer() {
             BRAND
         ================================================== */}
 
-        <div className="py-20 sm:py-28 lg:py-36">
+        <div className="pb-20 sm:pb-28 lg:pb-36">
 
           <div className="max-w-225">
-            <p className="mb-8 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
-              The Styled Edit Live
-            </p>
+            <div className="mb-8 flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: FLASH }}
+              />
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
+                The Styled Edit Live
+              </p>
+            </div>
 
             <h2
               className="
@@ -51,8 +61,8 @@ export default function Footer() {
             </h2>
 
             <p className="mt-10 max-w-md text-sm leading-6 text-white/40 sm:text-base sm:leading-7">
-              Fashion, culture and community — brought together
-              in real life.
+              One year of thrift and styling, brought to life —
+              fashion, community and everything around it.
             </p>
           </div>
         </div>
@@ -104,6 +114,7 @@ export default function Footer() {
                       group-hover:translate-x-1
                       group-hover:opacity-100
                     "
+                    style={{ color: FLASH }}
                   />
                 </Link>
               ))}
@@ -151,6 +162,7 @@ export default function Footer() {
                       group-hover:translate-x-1
                       group-hover:opacity-100
                     "
+                    style={{ color: FLASH }}
                   />
                 </Link>
               ))}
@@ -165,7 +177,7 @@ export default function Footer() {
 
             <nav className="flex flex-col gap-4">
               {socialLinks.map((link) => (
-                <a
+                <Link
                   key={link.label}
                   href={link.href}
                   target="_blank"
@@ -200,8 +212,9 @@ export default function Footer() {
                       group-hover:translate-x-1
                       group-hover:opacity-100
                     "
+                    style={{ color: FLASH }}
                   />
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
@@ -281,8 +294,7 @@ export default function Footer() {
           className="
             flex
             flex-col
-            justify-between
-            gap-4
+            gap-3
             border-t
             border-white/10
             py-6
@@ -292,17 +304,19 @@ export default function Footer() {
             tracking-[0.17em]
             text-white/25
             sm:flex-row
+            sm:items-center
+            sm:justify-between
           "
         >
           <span>
             © {new Date().getFullYear()} The Styled Edit Live
           </span>
 
-          <span>
+          <span className="sm:text-center">
             Fashion · Culture · Community
           </span>
 
-          <span>
+          <span className="sm:text-right">
             Nairobi · Kenya
           </span>
         </div>

@@ -50,7 +50,7 @@ export default function Hero() {
           relative
           z-10
           mx-auto
-          max-w-[1440px]
+          max-w-360
           px-5
           pb-0
           pt-28
@@ -153,7 +153,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.28, ease: "easeOut" }}
-              className="mt-8 max-w-[500px] sm:mt-10"
+              className="mt-8 max-w-125 sm:mt-10"
             >
               <p
                 className="
@@ -197,7 +197,7 @@ export default function Hero() {
                   group
                   relative
                   inline-flex
-                  h-[52px]
+                  h-13
                   items-center
                   justify-center
                   overflow-hidden
@@ -252,7 +252,7 @@ export default function Hero() {
                   group
                   relative
                   inline-flex
-                  h-[52px]
+                  h-13
                   items-center
                   justify-center
                   overflow-hidden
@@ -266,7 +266,7 @@ export default function Hero() {
                   ease-out
                   hover:-translate-y-1
                   hover:border-white/40
-                  hover:bg-white/[0.04]
+                  hover:bg-white/4
                   focus-visible:outline-none
                   focus-visible:ring-1
                   focus-visible:ring-tse-accent
@@ -278,7 +278,7 @@ export default function Hero() {
                     inset-y-0
                     left-0
                     w-0
-                    bg-white/[0.06]
+                    bg-white/6
                     transition-all
                     duration-500
                     ease-out
@@ -318,7 +318,7 @@ export default function Hero() {
               lg:mt-8
             "
           >
-            <div className="group relative aspect-[4/5] overflow-hidden bg-tse-ink">
+            <div className="group relative aspect-4/5 overflow-hidden bg-tse-ink">
               {/* IMAGE */}
 
               <motion.div
@@ -356,7 +356,7 @@ export default function Hero() {
                   pointer-events-none
                   absolute
                   inset-0
-                  bg-gradient-to-t
+                  bg-linear-to-t
                   from-black/55
                   via-transparent
                   to-black/5
@@ -420,14 +420,14 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.8 }}
-          className="mt-16 border-t border-white/[0.08] py-5 sm:mt-20"
+          className="mt-16 border-t border-white/8 py-5 sm:mt-20"
         >
           <div className="grid grid-cols-2 sm:grid-cols-4">
             {/* DATE */}
             <div
               className="
                 border-b
-                border-white/[0.08]
+                border-white/8
                 py-4
                 pr-5
                 sm:border-b-0
@@ -446,7 +446,7 @@ export default function Hero() {
             <div
               className="
                 border-b
-                border-white/[0.08]
+                border-white/8
                 py-4
                 pl-5
                 sm:border-b-0
@@ -462,7 +462,7 @@ export default function Hero() {
             </div>
 
             {/* ENTRY */}
-            <div className="border-r border-white/[0.08] py-4 pr-5 sm:py-2 sm:px-8">
+            <div className="border-r border-white/8 py-4 pr-5 sm:py-2 sm:px-8">
               <p className="tse-eyebrow text-white/35">Entry</p>
               <p className="mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-white/55">
                 From KES 500

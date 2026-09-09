@@ -7,8 +7,7 @@ import { ArrowUpRight } from "lucide-react";
 export default function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-[#090909] text-[#F4F0E8]">
-      <div className="mx-auto max-w-[1440px] px-6 py-28 sm:px-8 sm:py-36 lg:px-10 lg:py-48">
-
+      <div className="mx-auto max-w-360 px-6 pt-16 pb-28 sm:px-8 sm:pt-20 sm:pb-36 lg:px-10 lg:pt-24 lg:pb-48">
         {/* TOP META */}
         <div className="flex items-center justify-between border-t border-white/10 pt-5">
           <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
@@ -34,7 +33,7 @@ export default function FinalCTA() {
               text-[clamp(10rem,25vw,25rem)]
               leading-none
               tracking-[-0.08em]
-              text-white/[0.025]
+              text-white/2.5
             "
           >
             26
@@ -48,7 +47,7 @@ export default function FinalCTA() {
             className="
               relative
               z-10
-              max-w-[1100px]
+              max-w-275
               font-display
               text-[clamp(5rem,12vw,12rem)]
               uppercase
