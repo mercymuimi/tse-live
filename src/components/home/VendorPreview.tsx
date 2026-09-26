@@ -9,7 +9,7 @@ const categories = [
     number: "01",
     name: "Thrift & Vintage",
     tag: "Curated Racks",
-    image: "/images/thrift1.jpg",
+    image: "/images/thrift1.JPG",
   },
   {
     number: "02",
@@ -21,7 +21,7 @@ const categories = [
     number: "03",
     name: "accessories",
     tag: "Everyday Carry",
-    image: "/images/accessories2.jpg",
+    image: "/images/accessories2.JPG",
   },
 ];
 

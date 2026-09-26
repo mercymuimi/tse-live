@@ -8,21 +8,36 @@ const spaces = [
     title: "The Market",
     description:
       "A curated thrift playground where fashion finds meet independent vendors.",
-    image: "/images/thrift5.jpg",
+    image: "/images/thrift2.JPG",
   },
   {
     number: "02",
-    title: "The Studio",
+    title: "The Edit",
     description:
-      "Designed moments, creative corners and content-ready spaces made to be captured.",
-    image: "/images/thrift1.jpg",
+      "Experiment with your wardrobe, get inspired and connect with people who understand personal style.",
+    image: "/images/shoot2.JPG",
   },
   {
     number: "03",
+    title: "The Studio",
+    description:
+      "Designed moments, creative corners and content-ready spaces made to be captured.",
+    image: "/images/content1.jpg",
+  },
+  {
+    number: "04",
+    title: "The Community",
+    description:
+      "Meet creatives, fashion lovers, vendors and a community built around shared taste.",
+    image: "/images/socializing.JPG",
+  },
+  {
+    number: "05",
     title: "The Pool",
     description:
       "Slow down, cool off and experience another side of TSE Live.",
-    image: "/images/venue1.jpg",
+    image: "/images/pool1.jpg",
+    tag: "VIP & VVIP Exclusive",
   },
 ];
 
@@ -52,7 +67,7 @@ export default function ExperienceSpaces() {
         </div>
 
         <div className="mt-16 space-y-16 md:mt-24">
-          {spaces.map((space, index) => (
+          {spaces.map((space) => (
             <article
               key={space.number}
               className="grid gap-8 border-t border-white/15 pt-8 lg:grid-cols-[80px_1fr_0.7fr]"
@@ -67,6 +82,12 @@ export default function ExperienceSpaces() {
                 <h3 className="font-display text-5xl uppercase leading-none tracking-[-0.045em] md:text-7xl">
                   {space.title}
                 </h3>
+
+                {"tag" in space && space.tag && (
+                  <span className="mt-4 inline-block border border-white/25 px-3 py-1 text-[9px] uppercase tracking-[0.2em] text-white/60">
+                    {space.tag}
+                  </span>
+                )}
 
                 <p className="mt-6 max-w-md text-sm leading-6 text-white/40">
                   {space.description}

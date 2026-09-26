@@ -11,7 +11,7 @@ const experiences = [
     tag: "Shop",
     description:
       "Curated thrift finds and independent fashion, sold live at TSE prices — the racks you know from Instagram, in person.",
-    image: "/images/thrift1.jpg",
+    image: "/images/thrift1.JPG",
     className: "lg:col-span-7",
   },
   {
@@ -20,7 +20,7 @@ const experiences = [
     tag: "Get Styled",
     description:
       "Live styling sessions and curated looks — come as you are, leave photographed and put together.",
-    image: "/images/experience4.jpg",
+    image: "/images/experience4.JPG",
     className: "lg:col-span-5 lg:mt-12",
   },
   {
@@ -29,7 +29,7 @@ const experiences = [
     tag: "Create",
     description:
       "Photoshoot setups and content moments built for the shots you'll actually want to post.",
-    image: "/images/shoot6.jpg",
+    image: "/images/shoot6.JPG",
     className: "lg:col-span-5",
   },
   {

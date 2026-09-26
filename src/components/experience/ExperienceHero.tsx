@@ -8,7 +8,7 @@ export default function ExperienceHero() {
   return (
     <section className="relative min-h-[92vh] overflow-hidden bg-black text-white">
       <Image
-        src="/images/experience1.jpg"
+        src="/images/experience1.JPG"
         alt="The Styled Edit Live"
         fill
         priority
