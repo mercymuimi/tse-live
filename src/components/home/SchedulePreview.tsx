@@ -6,32 +6,39 @@ import { ArrowUpRight } from "lucide-react";
 
 const schedule = [
   {
-    time: "10:00",
-    period: "AM",
+    time: "03:00",
+    period: "PM",
     title: "Doors Open",
     description: "Arrive, check in, meet the community and ease into the day.",
     type: "Arrival",
   },
   {
-    time: "11:00",
-    period: "AM",
+    time: "03:30",
+    period: "PM",
     title: "The Thrift Edit",
     description: "Explore curated thrift, vintage pieces and independent fashion.",
     type: "Market",
   },
   {
-    time: "01:00",
+    time: "05:00",
     period: "PM",
-    title: "Style Sessions",
-    description: "Live styling, fashion conversations and creative looks.",
+    title: "Style & Splash",
+    description: "Live styling, fashion conversations and pool access for VIP & VVIP.",
     type: "Fashion",
   },
   {
     time: "07:00",
     period: "PM",
-    title: "The Afterglow",
-    description: "One final moment to connect, celebrate and leave inspired.",
+    title: "The Celebration",
+    description: "Cake cutting, best dressed and games — marking 1 year of TSE.",
     type: "Community",
+  },
+  {
+    time: "08:30",
+    period: "PM",
+    title: "The Afterglow",
+    description: "Live music, DJ sets and the final stretch — till late.",
+    type: "Night",
   },
 ];
 

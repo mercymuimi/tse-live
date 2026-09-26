@@ -37,12 +37,12 @@ export default function ExperiencePillars() {
   return (
     <section
       id="experience"
-      className="bg-[#f4f1ea] px-6 py-24 md:px-12 md:py-32"
+      className="bg-black px-6 py-24 md:px-12 md:py-32"
     >
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.35em] text-black/35">
+            <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
               What happens here
             </p>
 
@@ -55,25 +55,25 @@ export default function ExperiencePillars() {
             </h2>
           </div>
 
-          <div className="grid border-t border-black/15 sm:grid-cols-2">
+          <div className="grid border-t border-white/15 sm:grid-cols-2">
             {pillars.map((pillar) => (
               <article
                 key={pillar.number}
-                className="group border-b border-black/15 p-6 sm:p-8"
+                className="group border-b border-white/15 p-6 sm:p-8"
               >
                 <div className="flex items-start justify-between">
-                  <span className="text-[9px] tracking-[0.2em] text-black/35">
+                  <span className="text-[9px] tracking-[0.2em] text-white/35">
                     {pillar.number}
                   </span>
 
                   <ArrowUpRight
                     size={16}
                     strokeWidth={1.3}
-                    className="text-black/25 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-black"
+                    className="text-white/25 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white"
                   />
                 </div>
 
-                <p className="mt-12 text-[8px] uppercase tracking-[0.25em] text-black/35">
+                <p className="mt-12 text-[8px] uppercase tracking-[0.25em] text-white/35">
                   {pillar.label}
                 </p>
 
@@ -81,7 +81,7 @@ export default function ExperiencePillars() {
                   {pillar.title}
                 </h3>
 
-                <p className="mt-5 max-w-sm text-sm leading-6 text-black/45">
+                <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">
                   {pillar.description}
                 </p>
               </article>

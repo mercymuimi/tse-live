@@ -21,31 +21,37 @@ const moments = [
   },
   {
     time: "04",
+    title: "Splash",
+    description:
+      "Cool off at the pool — included with VIP and VVIP tickets.",
+  },
+  {
+    time: "05",
     title: "Create",
     description:
       "Find your angle. Capture the fit. Create something worth posting.",
   },
   {
-    time: "05",
-    title: "Connect",
+    time: "06",
+    title: "Celebrate",
     description:
-      "Meet people, exchange ideas and become part of the TSE community.",
+      "Cake cutting, best dressed, games and giveaways — marking 1 year of TSE.",
   },
   {
-    time: "06",
+    time: "07",
     title: "Stay",
     description:
-      "Music, movement, food, drinks and the energy of the night.",
+      "Live music, DJ sets, food and drinks till late.",
   },
 ];
 
 export default function ExperienceTimeline() {
   return (
-    <section className="bg-[#f4f1ea] px-6 py-24 md:px-12 md:py-32">
+    <section className="bg-black px-6 py-24 md:px-12 md:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.35em] text-black/35">
+            <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
               The flow
             </p>
 
@@ -58,13 +64,13 @@ export default function ExperienceTimeline() {
             </h2>
           </div>
 
-          <div className="border-t border-black/15">
+          <div className="border-t border-white/15">
             {moments.map((moment) => (
               <div
                 key={moment.time}
-                className="grid gap-6 border-b border-black/15 py-7 md:grid-cols-[70px_1fr_1fr] md:items-center"
+                className="grid gap-6 border-b border-white/15 py-7 md:grid-cols-[70px_1fr_1fr] md:items-center"
               >
-                <span className="text-[9px] tracking-[0.25em] text-black/30">
+                <span className="text-[9px] tracking-[0.25em] text-white/30">
                   {moment.time}
                 </span>
 
@@ -72,7 +78,7 @@ export default function ExperienceTimeline() {
                   {moment.title}
                 </h3>
 
-                <p className="max-w-sm text-sm leading-6 text-black/40">
+                <p className="max-w-sm text-sm leading-6 text-white/40">
                   {moment.description}
                 </p>
               </div>

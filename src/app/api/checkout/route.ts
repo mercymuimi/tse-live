@@ -46,10 +46,6 @@ type Customer = {
   phone: string;
 };
 
-type IncomingAddOn = {
-  id: string;
-};
-
 type IncomingTicket = {
   ticketId?: string;
   quantity?: number;
@@ -640,19 +636,17 @@ export async function POST(
     }
 
     /* =====================================================
-       CREATE ORDER ITEMS
+       CREATE ORDER ITEMS (BATCHED)
+
+       All order_items are inserted in a single request
+       instead of looping with sequential awaits. This
+       cuts several round-trips down to one, which matters
+       a lot for perceived checkout speed.
     ===================================================== */
 
-    for (
-      const item of validatedTickets
-    ) {
-      const {
-        data: orderItem,
-        error:
-          orderItemError,
-      } = await supabase
-        .from("order_items")
-        .insert({
+    const orderItemRows =
+      validatedTickets.map(
+        (item) => ({
           order_id:
             order.id,
 
@@ -672,58 +666,83 @@ export async function POST(
             item.addOnTotal *
             item.quantity,
         })
-        .select(
-          "id"
-        )
-        .single();
+      );
 
-      if (
-        orderItemError ||
-        !orderItem
-      ) {
-        console.error(
-          "ORDER ITEM ERROR:",
-          orderItemError
+    const {
+      data: insertedItems,
+      error: orderItemsError,
+    } = await supabase
+      .from("order_items")
+      .insert(
+        orderItemRows
+      )
+      .select(
+        "id, ticket_id"
+      );
+
+    if (
+      orderItemsError ||
+      !insertedItems
+    ) {
+      console.error(
+        "ORDER ITEMS ERROR:",
+        orderItemsError
+      );
+
+      /*
+       * Remove the incomplete order.
+       * This prevents orphaned pending orders.
+       */
+      await supabase
+        .from("orders")
+        .delete()
+        .eq(
+          "id",
+          order.id
         );
 
-        /*
-         * Remove the incomplete order.
-         * This prevents orphaned pending orders.
-         */
-        await supabase
-          .from("orders")
-          .delete()
-          .eq(
-            "id",
-            order.id
-          );
+      return NextResponse.json(
+        {
+          error:
+            "Could not create your order items.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
 
-        return NextResponse.json(
-          {
-            error:
-              "Could not create your order items.",
-          },
-          {
-            status: 500,
+    /* =====================================================
+       CREATE ADD-ONS (BATCHED)
+
+       Match each inserted order_item back to its original
+       validated ticket (by ticket_id) so we know which
+       add-ons belong to which order_item id, then insert
+       every add-on row in a single request.
+    ===================================================== */
+
+    const addonRows =
+      insertedItems.flatMap(
+        (insertedItem) => {
+          const original =
+            validatedTickets.find(
+              (item) =>
+                item.ticketId ===
+                insertedItem.ticket_id
+            );
+
+          if (
+            !original ||
+            original.addOns
+              .length === 0
+          ) {
+            return [];
           }
-        );
-      }
 
-      /* ===============================================
-         CREATE ADD-ONS
-      =============================================== */
-
-      if (
-        item.addOns.length >
-        0
-      ) {
-        const addonRows =
-          item.addOns.map(
-            (
-              addOnId
-            ) => ({
+          return original.addOns.map(
+            (addOnId) => ({
               order_item_id:
-                orderItem.id,
+                insertedItem.id,
 
               addon_id:
                 addOnId,
@@ -739,67 +758,58 @@ export async function POST(
                 ].price,
             })
           );
-
-        const {
-          error:
-            addonError,
-        } = await supabase
-          .from(
-            "order_item_addons"
-          )
-          .insert(
-            addonRows
-          );
-
-        if (
-          addonError
-        ) {
-          console.error(
-            "ORDER ADD-ON ERROR:",
-            addonError
-          );
-
-          /*
-           * Clean up the incomplete order.
-           */
-          await supabase
-            .from(
-              "order_item_addons"
-            )
-            .delete()
-            .eq(
-              "order_item_id",
-              orderItem.id
-            );
-
-          await supabase
-            .from(
-              "order_items"
-            )
-            .delete()
-            .eq(
-              "order_id",
-              order.id
-            );
-
-          await supabase
-            .from("orders")
-            .delete()
-            .eq(
-              "id",
-              order.id
-            );
-
-          return NextResponse.json(
-            {
-              error:
-                "Could not save your selected add-ons.",
-            },
-            {
-              status: 500,
-            }
-          );
         }
+      );
+
+    if (
+      addonRows.length > 0
+    ) {
+      const {
+        error: addonError,
+      } = await supabase
+        .from(
+          "order_item_addons"
+        )
+        .insert(
+          addonRows
+        );
+
+      if (addonError) {
+        console.error(
+          "ORDER ADD-ON ERROR:",
+          addonError
+        );
+
+        /*
+         * Clean up the incomplete order.
+         */
+        await supabase
+          .from(
+            "order_items"
+          )
+          .delete()
+          .eq(
+            "order_id",
+            order.id
+          );
+
+        await supabase
+          .from("orders")
+          .delete()
+          .eq(
+            "id",
+            order.id
+          );
+
+        return NextResponse.json(
+          {
+            error:
+              "Could not save your selected add-ons.",
+          },
+          {
+            status: 500,
+          }
+        );
       }
     }
 

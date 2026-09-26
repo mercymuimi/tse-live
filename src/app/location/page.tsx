@@ -74,11 +74,11 @@ export default function LocationPage() {
                   </p>
 
                   <h3 className="mt-2 text-2xl uppercase tracking-[-0.03em]">
-                    Kid Palace
+                    Barizi Resort
                   </h3>
 
                   <p className="mt-2 text-sm leading-6 text-black/45">
-                    Gatakwa, Rongai
+                    Gataka, Rongai
                     <br />
                     Nairobi, Kenya
                   </p>
@@ -142,7 +142,7 @@ export default function LocationPage() {
                 </p>
 
                 <p className="mt-2 text-sm uppercase tracking-[0.08em]">
-                  Kid Palace
+                  Barizi Resort
                 </p>
 
               </div>
@@ -151,7 +151,7 @@ export default function LocationPage() {
 
             <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8">
               <p className="text-[8px] uppercase tracking-[0.3em] text-white/30">
-                Gatakwa // Rongai
+                Gataka // Rongai
               </p>
             </div>
 
@@ -201,7 +201,7 @@ export default function LocationPage() {
                 </h3>
 
                 <p className="mt-4 text-sm leading-6 text-white/40">
-                  Search for Kid Palace, Gatakwa-Rongai
+                  Search for Barizi Resort, Gataka-Rongai
                   on your preferred navigation app.
                 </p>
               </div>

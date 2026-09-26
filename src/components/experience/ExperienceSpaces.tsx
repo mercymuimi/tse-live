@@ -8,21 +8,21 @@ const spaces = [
     title: "The Market",
     description:
       "A curated thrift playground where fashion finds meet independent vendors.",
-    image: "/images/image2.jpg",
+    image: "/images/thrift5.jpg",
   },
   {
     number: "02",
     title: "The Studio",
     description:
       "Designed moments, creative corners and content-ready spaces made to be captured.",
-    image: "/images/image1.jpg",
+    image: "/images/thrift1.jpg",
   },
   {
     number: "03",
     title: "The Pool",
     description:
       "Slow down, cool off and experience another side of TSE Live.",
-    image: "/images/image3.jpg",
+    image: "/images/venue1.jpg",
   },
 ];
 
@@ -32,7 +32,7 @@ export default function ExperienceSpaces() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.35em] text-white/30">
+            <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
               Explore the spaces
             </p>
 
@@ -55,10 +55,10 @@ export default function ExperienceSpaces() {
           {spaces.map((space, index) => (
             <article
               key={space.number}
-              className="grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-[80px_1fr_0.7fr]"
+              className="grid gap-8 border-t border-white/15 pt-8 lg:grid-cols-[80px_1fr_0.7fr]"
             >
               <div>
-                <span className="text-[9px] tracking-[0.2em] text-white/30">
+                <span className="text-[9px] tracking-[0.2em] text-white/35">
                   {space.number}
                 </span>
               </div>

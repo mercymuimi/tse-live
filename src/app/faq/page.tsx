@@ -23,7 +23,7 @@ const faqs: FAQ[] = [
   {
     question: "Where is TSE Live?",
     answer:
-      "The event is taking place at Kid Palace in Gatakwa-Rongai, Nairobi.",
+      "The event is taking place at Barizi Resort in Gataka-Rongai, Nairobi.",
   },
   {
     question: "What does my Regular ticket include?",

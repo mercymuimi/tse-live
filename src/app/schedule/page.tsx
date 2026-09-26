@@ -15,7 +15,7 @@ type ScheduleItem = {
 
 const schedule: ScheduleItem[] = [
   {
-    time: "12:00",
+    time: "3:00",
     period: "PM",
     title: "Doors Open",
     description:
@@ -24,7 +24,7 @@ const schedule: ScheduleItem[] = [
     category: "Arrival",
   },
   {
-    time: "12:30",
+    time: "3:30",
     period: "PM",
     title: "The Thrift Market",
     description:
@@ -34,7 +34,7 @@ const schedule: ScheduleItem[] = [
     featured: true,
   },
   {
-    time: "2:00",
+    time: "5:00",
     period: "PM",
     title: "Style Sessions",
     description:
@@ -43,7 +43,16 @@ const schedule: ScheduleItem[] = [
     category: "Style",
   },
   {
-    time: "3:30",
+    time: "5:30",
+    period: "PM",
+    title: "Pool & Chill",
+    description:
+      "Slow down, cool off and connect. Pool access is included with VIP and VVIP tickets.",
+    location: "Pool Area",
+    category: "Splash",
+  },
+  {
+    time: "6:30",
     period: "PM",
     title: "Content Hour",
     description:
@@ -53,26 +62,26 @@ const schedule: ScheduleItem[] = [
     featured: true,
   },
   {
-    time: "5:00",
+    time: "7:30",
     period: "PM",
-    title: "Pool & Chill",
+    title: "The Celebration",
     description:
-      "Slow down, cool off and connect. Pool access is available as an optional add-on.",
-    location: "Pool Area",
-    category: "Connect",
-  },
-  {
-    time: "6:30",
-    period: "PM",
-    title: "Live Music",
-    description:
-      "As the sun goes down, the energy shifts. Live performances set the tone for the evening.",
+      "Cake cutting, the best dressed reveal, games and giveaways — marking 1 year of TSE.",
     location: "Main Stage",
-    category: "Music",
+    category: "Celebrate",
     featured: true,
   },
   {
-    time: "8:00",
+    time: "8:30",
+    period: "PM",
+    title: "Live Music",
+    description:
+      "As the night sets in, the energy shifts. Live performances set the tone for the evening.",
+    location: "Main Stage",
+    category: "Music",
+  },
+  {
+    time: "10:00",
     period: "PM",
     title: "TSE After Dark",
     description:
@@ -86,10 +95,10 @@ const schedule: ScheduleItem[] = [
 const experiences = [
   "THRIFT",
   "STYLE",
+  "SPLASH",
   "CREATE",
-  "CONNECT",
+  "CELEBRATE",
   "MUSIC",
-  "COMMUNITY",
 ];
 
 export default function SchedulePage() {

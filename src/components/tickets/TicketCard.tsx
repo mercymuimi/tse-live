@@ -44,18 +44,18 @@ export default function TicketCard({
     <article
       className={`border transition ${
         isSelected
-          ? "border-black bg-white"
-          : "border-black/10 bg-[#f4f1ea]"
+          ? "border-white bg-white/6"
+          : "border-white/10 bg-white/2"
       }`}
     >
       {/* =====================================================
           HEADER
       ===================================================== */}
 
-      <div className="border-b border-black/10 p-6 md:p-8">
+      <div className="border-b border-white/10 p-6 md:p-8">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
               {ticket.tier}
             </p>
 
@@ -65,7 +65,7 @@ export default function TicketCard({
           </div>
 
           <div className="text-right">
-            <p className="text-[8px] uppercase tracking-[0.2em] text-black/35">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-white/35">
               From
             </p>
 
@@ -76,7 +76,7 @@ export default function TicketCard({
           </div>
         </div>
 
-        <p className="mt-5 max-w-xl text-sm leading-6 text-black/50">
+        <p className="mt-5 max-w-xl text-sm leading-6 text-white/50">
           {ticket.description}
         </p>
       </div>
@@ -87,7 +87,7 @@ export default function TicketCard({
 
       <div className="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:p-8">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+          <p className="text-[9px] uppercase tracking-[0.25em] text-white/35">
             Included
           </p>
 
@@ -96,7 +96,7 @@ export default function TicketCard({
               (inclusion) => (
                 <li
                   key={inclusion}
-                  className="flex items-start gap-3 text-xs text-black/55"
+                  className="flex items-start gap-3 text-xs text-white/55"
                 >
                   <Check
                     size={13}
@@ -117,13 +117,13 @@ export default function TicketCard({
             QUANTITY
         ================================================= */}
 
-        <div className="flex items-center justify-between gap-5 border-t border-black/10 pt-6 md:block md:border-t-0 md:pt-0">
+        <div className="flex items-center justify-between gap-5 border-t border-white/10 pt-6 md:block md:border-t-0 md:pt-0">
           <div>
-            <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-white/35">
               Quantity
             </p>
 
-            <div className="mt-3 flex items-center border border-black/15">
+            <div className="mt-3 flex items-center border border-white/15">
               <button
                 type="button"
                 aria-label={`Decrease ${ticket.name} quantity`}
@@ -137,7 +137,7 @@ export default function TicketCard({
                     )
                   )
                 }
-                className="flex h-11 w-11 items-center justify-center transition hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-20"
+                className="flex h-11 w-11 items-center justify-center transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-20"
               >
                 <Minus
                   size={15}
@@ -145,7 +145,7 @@ export default function TicketCard({
                 />
               </button>
 
-              <span className="flex h-11 min-w-12 items-center justify-center border-x border-black/15 text-sm">
+              <span className="flex h-11 min-w-12 items-center justify-center border-x border-white/15 text-sm">
                 {quantity}
               </span>
 
@@ -158,7 +158,7 @@ export default function TicketCard({
                     quantity + 1
                   )
                 }
-                className="flex h-11 w-11 items-center justify-center transition hover:bg-black hover:text-white"
+                className="flex h-11 w-11 items-center justify-center transition hover:bg-white hover:text-black"
               >
                 <Plus
                   size={15}
@@ -174,14 +174,15 @@ export default function TicketCard({
           ADD-ONS
       ===================================================== */}
 
-      {isSelected && (
-        <div className="border-t border-black/10 bg-black/[0.025] p-6 md:p-8">
+      {isSelected &&
+        ticket.addOns.length > 0 && (
+        <div className="border-t border-white/10 bg-white/3 p-6 md:p-8">
           <div className="mb-5">
-            <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-white/35">
               Enhance your experience
             </p>
 
-            <p className="mt-2 text-xs text-black/40">
+            <p className="mt-2 text-xs text-white/40">
               Optional extras for your
               selected tickets.
             </p>
@@ -207,8 +208,8 @@ export default function TicketCard({
                     }
                     className={`border p-4 text-left transition ${
                       active
-                        ? "border-black bg-black text-white"
-                        : "border-black/10 bg-white hover:border-black/30"
+                        ? "border-white bg-white text-black"
+                        : "border-white/10 bg-white/4 hover:border-white/30"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-4">
@@ -220,8 +221,8 @@ export default function TicketCard({
                         <p
                           className={`mt-2 text-[9px] leading-4 ${
                             active
-                              ? "text-white/45"
-                              : "text-black/35"
+                              ? "text-black/45"
+                              : "text-white/35"
                           }`}
                         >
                           {

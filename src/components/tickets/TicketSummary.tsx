@@ -62,7 +62,7 @@ export default function TicketSummary({
 
   if (activeTickets.length === 0) {
     return (
-      <aside className="bg-[#171717] p-6 text-white md:p-8 lg:sticky lg:top-28">
+      <aside className="border border-white/10 bg-[#171717] p-6 text-white md:p-8 lg:sticky lg:top-28">
         <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
           Your selection
         </p>
@@ -92,7 +92,7 @@ export default function TicketSummary({
   }
 
   return (
-    <aside className="bg-[#171717] p-6 text-white md:p-8 lg:sticky lg:top-28">
+    <aside className="border border-white/10 bg-[#171717] p-6 text-white md:p-8 lg:sticky lg:top-28">
       {/* HEADER */}
 
       <div className="flex items-start justify-between gap-5">
@@ -255,7 +255,7 @@ export default function TicketSummary({
         className="mt-7 flex w-full items-center justify-between bg-white px-5 py-4 text-[9px] font-bold uppercase tracking-[0.2em] text-black transition hover:bg-white/85"
       >
         <span>
-          Continue to checkout
+          Secure via WhatsApp
         </span>
 
         <span>→</span>

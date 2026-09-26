@@ -6,14 +6,16 @@ import {
   useState,
 } from "react";
 
-import { useRouter } from "next/navigation";
-
 import TicketCard from "@/components/tickets/TicketCard";
 import TicketSummary from "@/components/tickets/TicketSummary";
 
 import {
   TICKETS,
+  getAddOnById,
+  calculateTicketTotal,
 } from "@/lib/tickets";
+
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 import type {
   AddOnId,
@@ -25,8 +27,6 @@ const STORAGE_KEY =
   "tse-ticket-selection";
 
 export default function TicketsPage() {
-  const router = useRouter();
-
   const [
     selectedTickets,
     setSelectedTickets,
@@ -259,15 +259,64 @@ export default function TicketsPage() {
 
   const handleContinue =
     () => {
-      if (
-        selectedTickets.length ===
-        0
-      ) {
+      const activeTickets =
+        selectedTickets.filter(
+          (item) => item.quantity > 0
+        );
+
+      if (activeTickets.length === 0) {
         return;
       }
 
-      router.push(
-        "/checkout"
+      const lines = activeTickets.map(
+        (item) => {
+          const addOnNames = item.addOns
+            .map(
+              (id) =>
+                getAddOnById(id)?.name
+            )
+            .filter(Boolean)
+            .join(", ");
+
+          const lineTotal =
+            calculateTicketTotal(
+              item.ticket.id,
+              item.quantity,
+              item.addOns
+            );
+
+          return `• ${item.ticket.name} x${item.quantity}${
+            addOnNames
+              ? ` (+ ${addOnNames})`
+              : ""
+          } — KES ${lineTotal.toLocaleString()}`;
+        }
+      );
+
+      const total = activeTickets.reduce(
+        (sum, item) =>
+          sum +
+          calculateTicketTotal(
+            item.ticket.id,
+            item.quantity,
+            item.addOns
+          ),
+        0
+      );
+
+      const message = [
+        "Hi TSE! I'd like to secure my spot for TSE Live 🎉",
+        "",
+        ...lines,
+        "",
+        `Total: KES ${total.toLocaleString()}`,
+        "",
+        "Please confirm and send payment details.",
+      ].join("\n");
+
+      window.open(
+        buildWhatsAppLink(message),
+        "_blank"
       );
     };
 
@@ -287,7 +336,7 @@ export default function TicketsPage() {
     );
 
   return (
-    <main className="min-h-screen bg-[#f4f1ea] text-black">
+    <main className="min-h-screen bg-black text-white">
       {/* =====================================================
           HERO
       ===================================================== */}
@@ -331,9 +380,9 @@ export default function TicketsPage() {
             ================================================= */}
 
             <div className="space-y-6">
-              <div className="flex items-end justify-between border-b border-black/10 pb-5">
+              <div className="flex items-end justify-between border-b border-white/10 pb-5">
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
                     Available tickets
                   </p>
 
@@ -344,7 +393,7 @@ export default function TicketsPage() {
 
                 {ticketCount >
                   0 && (
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-black/35">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-white/35">
                     {ticketCount}{" "}
                     selected
                   </p>
@@ -379,8 +428,8 @@ export default function TicketsPage() {
                 )
               )}
 
-              <div className="border border-black/10 bg-white p-6 md:p-8">
-                <p className="text-[8px] uppercase leading-5 tracking-[0.15em] text-black/35">
+              <div className="border border-white/10 bg-white/5 p-6 md:p-8">
+                <p className="text-[8px] uppercase leading-5 tracking-[0.15em] text-white/35">
                   Tickets are
                   non-refundable.
                   Please review your

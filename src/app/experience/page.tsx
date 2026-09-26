@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function ExperiencePage() {
   return (
-    <main className="min-h-screen bg-[#f4f1ea] text-black">
+    <main className="min-h-screen bg-black text-white">
       <ExperienceHero />
       <ExperiencePillars />
       <ExperienceSpaces />

@@ -14,7 +14,7 @@ export const ADD_ONS: Record<AddOnId, AddOn> = {
     name: "Pool Access",
     price: 300,
     description:
-      "Access to the pool and lifestyle area during TSE Live.",
+      "Included with VIP and VVIP tickets. Not sold separately.",
   },
 
   food: {
@@ -40,48 +40,66 @@ export const ADD_ONS: Record<AddOnId, AddOn> = {
 
 export const TICKETS: TicketType[] = [
   {
-    id: "experience",
-    tier: "Tier 01 — Advance",
-    name: "TSE Experience",
+    id: "regular",
+    tier: "Tier 01 — Regular",
+    name: "Regular",
     description:
-      "Your full TSE Live experience — thrift, style, create, connect and celebrate one year of The Styled Edit.",
-    price: 5,
+      "Your entry into TSE Live — thrift, style, create and celebrate one year of The Styled Edit.",
+    price: 500,
 
     inclusions: [
       "Full event access",
+      "1 thrift outfit",
       "TSE Thrift Market",
-      "Styling sessions",
-      "Content & photoshoot spaces",
-      "Live music & DJ sets",
-      "Creative community",
-      "TSE event outfit / styled piece",
+      "Live music & entertainment",
+      "Unlimited photography",
+      "Curated content spaces",
     ],
 
-    addOns: [
-      ADD_ONS.pool,
-    ],
+    addOns: [],
   },
 
   {
-    id: "vendor",
-    tier: "Tier 02 — Vendor",
-    name: "TSE Vendor",
+    id: "vip",
+    tier: "Tier 02 — VIP",
+    name: "VIP",
     description:
-      "Bring your brand to TSE Live. Sell, connect and get your work in front of the TSE community.",
-    price: 1000,
+      "The full TSE Live day, plus a splash — pool access included.",
+    price: 800,
 
     inclusions: [
       "Full event access",
-      "Dedicated selling spot",
-      "Featured in TSE content",
-      "TSE community exposure",
-      "Priority vendor setup",
-      "Networking with creatives, vendors & brands",
+      "1 thrift outfit",
+      "TSE Thrift Market",
+      "Live music & entertainment",
+      "Unlimited photography",
+      "Curated content spaces",
+      "Pool access",
     ],
 
-    addOns: [
-      ADD_ONS.pool,
+    addOns: [],
+  },
+
+  {
+    id: "vvip",
+    tier: "Tier 03 — VVIP",
+    name: "VVIP",
+    description:
+      "The complete TSE Live experience, plus your own space to showcase or sell on the day.",
+    price: 1200,
+
+    inclusions: [
+      "Full event access",
+      "1 thrift outfit",
+      "TSE Thrift Market",
+      "Live music & entertainment",
+      "Unlimited photography",
+      "Curated content spaces",
+      "Pool access",
+      "Vendor space",
     ],
+
+    addOns: [],
   },
 ];
 
@@ -110,14 +128,12 @@ export const GATE_TICKET = {
 ========================================================= */
 
 /**
- * Only these add-ons should affect checkout totals.
- *
- * Food and drinks are purchased separately at the venue.
+ * No add-ons are currently sold separately through online
+ * checkout. Pool access is bundled into VIP and VVIP instead
+ * of being offered as a standalone add-on.
  */
 
-export const PAID_ADD_ONS: AddOn[] = [
-  ADD_ONS.pool,
-];
+export const PAID_ADD_ONS: AddOn[] = [];
 
 /* =========================================================
    VENUE EXTRAS

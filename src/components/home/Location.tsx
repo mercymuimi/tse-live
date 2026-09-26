@@ -68,7 +68,7 @@ export default function Location() {
 
             <div className="absolute bottom-6 left-6">
               <p className="font-display text-4xl uppercase leading-none tracking-[-0.03em] text-white sm:text-5xl">
-                Kid Palace
+                Barizi Resort
               </p>
               <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/60">
                 Gataka · Rongai

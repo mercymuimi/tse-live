@@ -20,8 +20,9 @@ export type AddOnId =
  * it is not an online ticket.
  */
 export type TicketId =
-  | "experience"
-  | "vendor";
+  | "regular"
+  | "vip"
+  | "vvip";
 
 /* =========================================================
    ADD-ON

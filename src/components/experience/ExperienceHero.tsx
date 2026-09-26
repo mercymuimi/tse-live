@@ -8,7 +8,7 @@ export default function ExperienceHero() {
   return (
     <section className="relative min-h-[92vh] overflow-hidden bg-black text-white">
       <Image
-        src="/img1.jpeg"
+        src="/images/experience1.jpg"
         alt="The Styled Edit Live"
         fill
         priority
@@ -37,7 +37,7 @@ export default function ExperienceHero() {
           <p className="max-w-md text-sm leading-6 text-white/65 md:text-base">
             A live expression of fashion, culture, creativity and
             community. Come thrift. Come style. Come create. Come
-            connect.
+            connect — as we celebrate 1 year of The Styled Edit.
           </p>
 
           <Link
@@ -45,13 +45,6 @@ export default function ExperienceHero() {
             className="group flex w-fit items-center gap-4 text-[9px] uppercase tracking-[0.25em]"
           >
             Explore the experience
-
-            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 transition group-hover:bg-white group-hover:text-black">
-              <ArrowDownRight
-                size={15}
-                strokeWidth={1.5}
-              />
-            </span>
           </Link>
         </div>
       </div>

@@ -206,7 +206,7 @@ export default function VendorsPage() {
               <p className="text-sm leading-7 text-white/45">
                 Are you a thrift seller, designer, stylist, artist,
                 maker or creative business? TSE Live is built for
-                people shaping the culture. A Vendor ticket gets you
+                people shaping the culture. A VVIP ticket gets you
                 a selling spot and a feature in TSE&apos;s content
                 and community.
               </p>
@@ -216,7 +216,7 @@ export default function VendorsPage() {
                   href="/tickets"
                   className="inline-flex border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
                 >
-                  Get A Vendor Ticket →
+                  Get A VVIP Ticket →
                 </Link>
 
                 <a
