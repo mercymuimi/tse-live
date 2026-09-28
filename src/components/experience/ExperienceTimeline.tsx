@@ -21,24 +21,30 @@ const moments = [
   },
   {
     time: "04",
+    title: "Compete",
+    description:
+      "Strut your look on the floor. TSE's fashion competition, live — this is where Best Styled and Best Dressed get decided.",
+  },
+  {
+    time: "05",
     title: "Splash",
     description:
       "Cool off at the pool — included with VIP and VVIP tickets.",
   },
   {
-    time: "05",
+    time: "06",
     title: "Create",
     description:
       "Find your angle. Capture the fit. Create something worth posting.",
   },
   {
-    time: "06",
+    time: "07",
     title: "Celebrate",
     description:
-      "Cake cutting, best dressed, games and giveaways — marking 1 year of TSE.",
+      "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs, marking 1 year of TSE.",
   },
   {
-    time: "07",
+    time: "08",
     title: "Stay",
     description:
       "Live music, DJ sets, food and drinks till late.",

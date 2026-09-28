@@ -43,6 +43,16 @@ const schedule: ScheduleItem[] = [
     category: "Style",
   },
   {
+    time: "5:15",
+    period: "PM",
+    title: "The Competition",
+    description:
+      "Strut your look on the floor. TSE's fashion competition, live — this is where Best Styled and Best Dressed get decided.",
+    location: "Main Stage",
+    category: "Compete",
+    featured: true,
+  },
+  {
     time: "5:30",
     period: "PM",
     title: "Pool & Chill",
@@ -66,7 +76,7 @@ const schedule: ScheduleItem[] = [
     period: "PM",
     title: "The Celebration",
     description:
-      "Cake cutting, the best dressed reveal, games and giveaways — marking 1 year of TSE.",
+      "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs, marking 1 year of TSE.",
     location: "Main Stage",
     category: "Celebrate",
     featured: true,
@@ -95,6 +105,7 @@ const schedule: ScheduleItem[] = [
 const experiences = [
   "THRIFT",
   "STYLE",
+  "COMPETE",
   "SPLASH",
   "CREATE",
   "CELEBRATE",
@@ -161,7 +172,7 @@ export default function SchedulePage() {
 
           <div className="max-w-3xl">
             <p className="text-2xl leading-[1.15] tracking-[-0.035em] md:text-4xl">
-              TSE Live isn't just an event you attend. It's a full-day
+              TSE Live isn&apos;t just an event you attend. It&apos;s a full-day
               experience built around fashion, culture, creativity and
               connection.
             </p>
@@ -220,7 +231,7 @@ export default function SchedulePage() {
           {/* TIMELINE */}
 
           <div className="divide-y divide-black/10">
-            {schedule.map((item, index) => (
+            {schedule.map((item) => (
               <article
                 key={`${item.time}-${item.title}`}
                 className={`group grid gap-8 py-10 md:grid-cols-[130px_1fr_180px] md:gap-12 md:py-14 ${
@@ -309,8 +320,8 @@ export default function SchedulePage() {
           <div>
             <p className="text-sm leading-6 text-white/45">
               The schedule is only the beginning. Leave room for unexpected
-              finds, new people, spontaneous content and moments that aren't
-              on the timetable.
+              finds, new people, spontaneous content and moments that
+              aren&apos;t on the timetable.
             </p>
           </div>
         </div>

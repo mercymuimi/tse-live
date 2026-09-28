@@ -5,6 +5,7 @@ import VendorPreview from "@/components/home/VendorPreview";
 import SchedulePreview from "@/components/home/SchedulePreview";
 import Location from "@/components/home/Location";
 import TicketCTA from "@/components/home/TicketCTA";
+
 export default function Home() {
   return (
     <main>
