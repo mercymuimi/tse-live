@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -30,16 +31,15 @@ export default function Footer() {
         {/* ==================================================
             BRAND
         ================================================== */}
-
-        <div className="pb-20 sm:pb-28 lg:pb-36">
-
-          <div className="max-w-225">
-            <div className="mb-8 flex items-center gap-3">
+        <div className="pb-20 pt-20 sm:pb-24 sm:pt-24 lg:pb-28 lg:pt-28">
+          <div className="max-w-200">
+            <div className="mb-7 flex items-center gap-3">
               <span
                 aria-hidden="true"
                 className="h-1.5 w-1.5 rounded-full"
                 style={{ backgroundColor: FLASH }}
               />
+
               <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
                 The Styled Edit Live
               </p>
@@ -48,10 +48,10 @@ export default function Footer() {
             <h2
               className="
                 font-display
-                text-[clamp(5rem,13vw,13rem)]
+                text-[clamp(4.5rem,11vw,11rem)]
                 font-bold
                 uppercase
-                leading-[0.73]
+                leading-[0.76]
                 tracking-[-0.065em]
               "
             >
@@ -60,9 +60,9 @@ export default function Footer() {
               <span className="ml-[8%]">LIVE.</span>
             </h2>
 
-            <p className="mt-10 max-w-md text-sm leading-6 text-white/40 sm:text-base sm:leading-7">
-              One year of thrift and styling, brought to life —
-              fashion, community and everything around it.
+            <p className="mt-8 max-w-sm text-sm leading-6 text-white/40 sm:mt-10 sm:text-base sm:leading-7">
+              One year of thrift, styling and community —
+              brought to life for one day.
             </p>
           </div>
         </div>
@@ -70,7 +70,6 @@ export default function Footer() {
         {/* ==================================================
             NAVIGATION
         ================================================== */}
-
         <div className="grid border-t border-white/10 py-10 sm:grid-cols-2 lg:grid-cols-3">
 
           {/* EXPLORE */}
@@ -79,7 +78,10 @@ export default function Footer() {
               Explore
             </p>
 
-            <nav className="flex flex-col gap-4">
+            <nav
+              aria-label="Explore"
+              className="flex flex-col gap-4"
+            >
               {exploreLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -95,23 +97,26 @@ export default function Footer() {
                     uppercase
                     leading-none
                     tracking-[-0.02em]
-                    text-white/70
+                    text-white/65
                     transition-colors
                     duration-300
                     hover:text-[#F4F0E8]
                   "
                 >
-                  {link.label}
+                  <span>{link.label}</span>
 
                   <ArrowUpRight
                     size={13}
                     strokeWidth={1.5}
+                    aria-hidden="true"
                     className="
+                      -translate-x-1
+                      translate-y-1
                       opacity-0
                       transition-all
                       duration-300
-                      group-hover:-translate-y-1
-                      group-hover:translate-x-1
+                      group-hover:translate-x-0
+                      group-hover:translate-y-0
                       group-hover:opacity-100
                     "
                     style={{ color: FLASH }}
@@ -127,7 +132,10 @@ export default function Footer() {
               Information
             </p>
 
-            <nav className="flex flex-col gap-4">
+            <nav
+              aria-label="Information"
+              className="flex flex-col gap-4"
+            >
               {informationLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -143,23 +151,26 @@ export default function Footer() {
                     uppercase
                     leading-none
                     tracking-[-0.02em]
-                    text-white/70
+                    text-white/65
                     transition-colors
                     duration-300
                     hover:text-[#F4F0E8]
                   "
                 >
-                  {link.label}
+                  <span>{link.label}</span>
 
                   <ArrowUpRight
                     size={13}
                     strokeWidth={1.5}
+                    aria-hidden="true"
                     className="
+                      -translate-x-1
+                      translate-y-1
                       opacity-0
                       transition-all
                       duration-300
-                      group-hover:-translate-y-1
-                      group-hover:translate-x-1
+                      group-hover:translate-x-0
+                      group-hover:translate-y-0
                       group-hover:opacity-100
                     "
                     style={{ color: FLASH }}
@@ -175,7 +186,10 @@ export default function Footer() {
               Follow the movement
             </p>
 
-            <nav className="flex flex-col gap-4">
+            <nav
+              aria-label="Social media"
+              className="flex flex-col gap-4"
+            >
               {socialLinks.map((link) => (
                 <Link
                   key={link.label}
@@ -193,23 +207,26 @@ export default function Footer() {
                     uppercase
                     leading-none
                     tracking-[-0.02em]
-                    text-white/70
+                    text-white/65
                     transition-colors
                     duration-300
                     hover:text-[#F4F0E8]
                   "
                 >
-                  {link.label}
+                  <span>{link.label}</span>
 
                   <ArrowUpRight
                     size={13}
                     strokeWidth={1.5}
+                    aria-hidden="true"
                     className="
+                      -translate-x-1
+                      translate-y-1
                       opacity-0
                       transition-all
                       duration-300
-                      group-hover:-translate-y-1
-                      group-hover:translate-x-1
+                      group-hover:translate-x-0
+                      group-hover:translate-y-0
                       group-hover:opacity-100
                     "
                     style={{ color: FLASH }}
@@ -223,31 +240,32 @@ export default function Footer() {
         {/* ==================================================
             EVENT STRIP
         ================================================== */}
+        <div className="border-t border-white/10 py-8 sm:py-9">
+          <div className="grid gap-8 sm:grid-cols-3 sm:items-end sm:gap-6">
 
-        <div className="border-t border-white/10 py-8">
-
-          <div className="grid gap-6 sm:grid-cols-3 sm:items-center">
-
+            {/* DATE */}
             <div>
               <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/25">
                 Date
               </p>
 
-              <p className="mt-2 font-display text-2xl uppercase">
+              <p className="mt-2 font-display text-2xl uppercase leading-none tracking-[-0.02em]">
                 30.10.26
               </p>
             </div>
 
+            {/* LOCATION */}
             <div>
               <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/25">
                 Location
               </p>
 
-              <p className="mt-2 font-display text-2xl uppercase">
-                Nairobi, Kenya
+              <p className="mt-2 max-w-xs font-display text-2xl uppercase leading-none tracking-[-0.02em]">
+                Gataka · Rongai
               </p>
             </div>
 
+            {/* TICKETS */}
             <div className="sm:text-right">
               <Link
                 href="/tickets"
@@ -257,7 +275,7 @@ export default function Footer() {
                   items-center
                   gap-3
                   border-b
-                  border-white/30
+                  border-white/25
                   pb-2
                   text-[9px]
                   font-bold
@@ -265,31 +283,18 @@ export default function Footer() {
                   tracking-[0.18em]
                   transition-colors
                   duration-300
-                  hover:border-white
+                  hover:border-[#F4F0E8]
                 "
               >
-                Get Your Ticket
-
-                <ArrowUpRight
-                  size={13}
-                  strokeWidth={1.5}
-                  className="
-                    transition-transform
-                    duration-300
-                    group-hover:-translate-y-1
-                    group-hover:translate-x-1
-                  "
-                />
+                <span>Get Your Ticket</span>
               </Link>
             </div>
-
           </div>
         </div>
 
         {/* ==================================================
             COPYRIGHT
         ================================================== */}
-
         <div
           className="
             flex

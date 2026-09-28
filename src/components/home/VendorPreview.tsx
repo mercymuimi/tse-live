@@ -4,23 +4,23 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-const categories = [
+const vendorSpaces = [
   {
     number: "01",
     name: "Thrift & Vintage",
-    tag: "Curated Racks",
+    tag: "Shop the racks",
     image: "/images/thrift1.JPG",
   },
   {
     number: "02",
-    name: "Bags",
-    tag: "Everyday Carry",
+    name: "Bags & Goods",
+    tag: "Discover the edit",
     image: "/images/bags1.jpg",
   },
   {
     number: "03",
-    name: "accessories",
-    tag: "Everyday Carry",
+    name: "Accessories",
+    tag: "Find your detail",
     image: "/images/accessories2.JPG",
   },
 ];
@@ -28,12 +28,13 @@ const categories = [
 export default function VendorPreview() {
   return (
     <section className="bg-[#090909] text-[#F4F0E8]">
-     <div className="mx-auto max-w-360 px-6 pt-12 pb-16 sm:px-8 sm:pt-16 sm:pb-20 lg:px-10 lg:pt-20 lg:pb-24">        {/* HEADER */}
-        <div className="grid gap-8 border-t border-white/10 pt-5 lg:grid-cols-12 lg:items-start">
+      <div className="mx-auto max-w-360 px-6 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+        {/* HEADER */}
+        <div className="grid gap-10 border-t border-white/10 pt-5 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-7">
             <div className="flex items-center gap-4">
               <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/45">
-                03 / The Market
+                04 / The Market
               </span>
 
               <span className="h-px w-10 bg-white/20" />
@@ -56,32 +57,33 @@ export default function VendorPreview() {
           </div>
 
           <div className="lg:col-span-4 lg:col-start-9 lg:border-l lg:border-white/10 lg:pl-8 lg:pt-2">
-            <p className="text-sm leading-6 text-white/55 sm:text-base sm:leading-7">
-              20+ independent vendors across thrift, accessories, styling
-              and design — shaping the scene, one rack at a time.
+            <p className="max-w-md text-sm leading-6 text-white/55 sm:text-base sm:leading-7">
+              Discover independent sellers, makers and creatives bringing
+              their own edit to TSE Live — from curated thrift and vintage to
+              the details that complete your look.
             </p>
           </div>
         </div>
 
-        {/* CATEGORY GRID */}
+        {/* VENDOR SPACES */}
         <div className="mt-20 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category, index) => (
+          {vendorSpaces.map((space, index) => (
             <motion.article
-              key={category.number}
+              key={space.number}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{
                 duration: 0.6,
-                delay: index * 0.06,
+                delay: index * 0.07,
               }}
               className="group"
             >
               {/* IMAGE */}
               <div className="relative aspect-3/4 overflow-hidden bg-[#111]">
                 <img
-                  src={category.image}
-                  alt={category.name}
+                  src={space.image}
+                  alt={space.name}
                   className="
                     h-full
                     w-full
@@ -89,13 +91,24 @@ export default function VendorPreview() {
                     grayscale
                     transition-all
                     duration-700
+                    ease-out
                     group-hover:scale-[1.04]
                     group-hover:grayscale-0
                   "
                 />
 
-                <div className="absolute inset-0 bg-black/25 transition-colors duration-500 group-hover:bg-black/10" />
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    bg-black/25
+                    transition-colors
+                    duration-500
+                    group-hover:bg-black/10
+                  "
+                />
 
+                {/* NUMBER */}
                 <span
                   className="
                     absolute
@@ -108,9 +121,10 @@ export default function VendorPreview() {
                     drop-shadow-sm
                   "
                 >
-                  {category.number}
+                  {space.number}
                 </span>
 
+                {/* TAG */}
                 <span
                   className="
                     absolute
@@ -129,9 +143,10 @@ export default function VendorPreview() {
                     backdrop-blur-sm
                   "
                 >
-                  {category.tag}
+                  {space.tag}
                 </span>
 
+                {/* ARROW */}
                 <div
                   className="
                     absolute
@@ -153,15 +168,29 @@ export default function VendorPreview() {
                   <ArrowUpRight
                     size={16}
                     strokeWidth={1.5}
-                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    className="
+                      transition-transform
+                      duration-300
+                      group-hover:-translate-y-0.5
+                      group-hover:translate-x-0.5
+                    "
                   />
                 </div>
               </div>
 
               {/* INFO */}
               <div className="mt-5 flex items-start justify-between border-t border-white/10 pt-4">
-                <h3 className="font-display text-2xl uppercase leading-none tracking-[-0.02em] sm:text-3xl">
-                  {category.name}
+                <h3
+                  className="
+                    font-display
+                    text-2xl
+                    uppercase
+                    leading-none
+                    tracking-[-0.02em]
+                    sm:text-3xl
+                  "
+                >
+                  {space.name}
                 </h3>
 
                 <span className="shrink-0 pl-4 text-[9px] uppercase tracking-[0.15em] text-white/35">
@@ -172,45 +201,107 @@ export default function VendorPreview() {
           ))}
         </div>
 
-        {/* CLOSING BAR */}
-        <div className="mt-20 flex flex-col gap-8 border-t border-white/10 pt-10 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40">
-              Building the next wave
-            </p>
+        {/* VENDOR EXPERIENCE */}
+        <div className="mt-24 border-t border-white/10 pt-10">
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40">
+                For the ones building the culture
+              </p>
 
-            <h3 className="mt-3 max-w-xl font-display text-4xl uppercase leading-[0.9] tracking-[-0.03em] sm:text-5xl">
-              Your brand belongs
-              <br />
-              in the room.
-            </h3>
+              <h3
+                className="
+                  mt-4
+                  max-w-3xl
+                  font-display
+                  text-[clamp(3rem,6vw,6rem)]
+                  uppercase
+                  leading-[0.85]
+                  tracking-[-0.045em]
+                "
+              >
+                Bring your
+                <br />
+                <span className="ml-[6%]">edit.</span>
+              </h3>
+            </div>
+
+            <div className="lg:col-span-4 lg:col-start-9">
+              <p className="text-sm leading-6 text-white/50 sm:text-base sm:leading-7">
+                Sell your pieces. Showcase your brand. Create content.
+                Connect with people who care about fashion, style and the
+                culture around it.
+              </p>
+
+              <Link
+                href="/vendors"
+                className="
+                  group
+                  mt-8
+                  flex
+                  w-fit
+                  items-center
+                  gap-4
+                  border-b
+                  border-white/30
+                  pb-3
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-[0.17em]
+                  transition-colors
+                  duration-300
+                  hover:border-[#edc87d]
+                "
+              >
+                Explore vendor spaces
+
+                <ArrowUpRight
+                  size={14}
+                  strokeWidth={1.5}
+                  className="
+                    transition-transform
+                    duration-300
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
+                />
+              </Link>
+            </div>
           </div>
+        </div>
 
-          <Link
-            href="/vendors"
-            className="
-              group
-              flex
-              w-fit
-              shrink-0
-              items-center
-              gap-4
-              border-b
-              border-white/30
-              pb-3
-              text-[10px]
-              font-bold
-              uppercase
-              tracking-[0.17em]
-              transition-colors
-              duration-300
-              hover:border-[#edc87d]
-            "
-          >
-            Explore all vendors
-
-          
-                    </Link>
+        {/* EXPERIENCE STRIP */}
+        <div className="mt-20 grid grid-cols-2 border-y border-white/10 sm:grid-cols-4 lg:grid-cols-6">
+          {[
+            "SELL",
+            "SHOWCASE",
+            "CREATE",
+            "COLLABORATE",
+            "CONNECT",
+            "DISCOVER",
+          ].map((item, index) => (
+            <div
+              key={item}
+              className={`
+                flex
+                min-h-20
+                items-center
+                justify-center
+                px-4
+                text-center
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-white/40
+                ${index < 5 ? "border-r border-white/10" : ""}
+                ${index > 1 ? "border-t border-white/10 sm:border-t-0" : ""}
+              `}
+            >
+              {item}
+            </div>
+          ))}
         </div>
       </div>
     </section>

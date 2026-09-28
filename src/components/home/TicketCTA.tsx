@@ -21,9 +21,9 @@ export default function FinalCTA() {
 
         {/* MAIN CTA */}
         <div className="relative mt-20">
-
-          {/* Decorative number */}
+          {/* Decorative year */}
           <span
+            aria-hidden="true"
             className="
               pointer-events-none
               absolute
@@ -39,11 +39,15 @@ export default function FinalCTA() {
             26
           </span>
 
+          {/* HEADING */}
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="
               relative
               z-10
@@ -60,16 +64,18 @@ export default function FinalCTA() {
             <span className="ml-[8%]">of it.</span>
           </motion.h2>
 
-          {/* SUPPORTING COPY */}
+          {/* SUPPORTING CONTENT */}
           <div className="relative z-10 mt-12 grid gap-10 lg:grid-cols-12 lg:items-end">
-
+            {/* COPY */}
             <div className="lg:col-span-5">
               <p className="max-w-md text-sm leading-6 text-white/45 sm:text-base sm:leading-7">
                 Come for the fashion. Stay for the people.
-                Leave inspired to create something of your own.
+                <br className="hidden sm:block" />
+                Leave with something to remember — and something to create.
               </p>
             </div>
 
+            {/* TICKET */}
             <div className="lg:col-span-4 lg:col-start-9">
               <div className="border-t border-white/10 pt-5">
                 <div className="flex items-center justify-between">
@@ -77,7 +83,7 @@ export default function FinalCTA() {
                     Entry
                   </span>
 
-                  <span className="font-display text-3xl">
+                  <span className="font-display text-3xl uppercase">
                     KES 500
                   </span>
                 </div>
@@ -95,7 +101,7 @@ export default function FinalCTA() {
                     bg-[#F4F0E8]
                     px-6
                     text-black
-                    transition-colors
+                    transition-all
                     duration-300
                     hover:bg-white
                   "
@@ -103,17 +109,6 @@ export default function FinalCTA() {
                   <span className="text-[10px] font-extrabold uppercase tracking-[0.16em]">
                     Get Your Ticket
                   </span>
-
-                  <ArrowUpRight
-                    size={17}
-                    strokeWidth={1.6}
-                    className="
-                      transition-transform
-                      duration-300
-                      group-hover:-translate-y-1
-                      group-hover:translate-x-1
-                    "
-                  />
                 </Link>
               </div>
             </div>
@@ -123,7 +118,6 @@ export default function FinalCTA() {
         {/* BOTTOM MESSAGE */}
         <div className="mt-28 border-t border-white/10 pt-6">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-
             <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/25">
               Fashion · Culture · Community
             </p>
@@ -131,7 +125,6 @@ export default function FinalCTA() {
             <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/25">
               30.10.26 · Nairobi, Kenya
             </p>
-
           </div>
         </div>
       </div>

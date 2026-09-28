@@ -18,9 +18,9 @@ const experiences = [
   {
     number: "02",
     title: "Style",
-    tag: "Compete",
+    tag: "The Style Off",
     description:
-      "Come with your personal style and make it count. Get styled, build your look and step into the TSE style competition.",
+      "Come with your personal style and make it count. Get styled, build your look and step into the TSE fashion competition.",
     image: "/images/experience4.JPG",
     className: "lg:col-span-5 lg:mt-16",
   },
@@ -35,10 +35,10 @@ const experiences = [
   },
   {
     number: "04",
-    title: "Play",
+    title: "Unwind",
     tag: "Poolside",
     description:
-      "Take a break from the racks. Swim, eat, listen to live music, meet people and enjoy the day beyond the shopping.",
+      "Step away from the racks. Swim, eat, listen to live music, meet people and enjoy the day beyond the shopping.",
     image: "/images/lifestyle1.jpg",
     className: "lg:col-span-7 lg:mt-16",
   },
@@ -178,7 +178,7 @@ export default function ExperiencePreview() {
 
                 {/* TITLE */}
 
-                <div className="absolute inset-x-5 bottom-16 z-10">
+                <div className="absolute inset-x-5 bottom-14 z-10">
                   <h3 className="font-display text-[clamp(4rem,8vw,8rem)] uppercase leading-[0.78] tracking-[-0.06em] text-white">
                     {experience.title}
                   </h3>
@@ -190,16 +190,6 @@ export default function ExperiencePreview() {
                   <span className="border border-white/30 bg-black/20 px-3 py-2 text-[8px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
                     {experience.tag}
                   </span>
-                </div>
-
-                {/* ARROW */}
-
-                <div className="absolute bottom-5 right-5 z-10 flex h-10 w-10 items-center justify-center border border-white/30 bg-black/10 text-white backdrop-blur-sm transition-all duration-300 group-hover:border-tse-paper group-hover:bg-tse-paper group-hover:text-tse-black">
-                  <ArrowUpRight
-                    size={16}
-                    strokeWidth={1.5}
-                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  />
                 </div>
               </div>
 
@@ -219,7 +209,7 @@ export default function ExperiencePreview() {
         </div>
 
         {/* =====================================================
-            WHAT ELSE IS HAPPENING
+            SUPPORTING MOMENTS
         ====================================================== */}
 
         <motion.div
@@ -236,12 +226,12 @@ export default function ExperiencePreview() {
             <div className="lg:col-span-9">
               <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
                 {[
-                  "Fashion Competition",
+                  "The Style Off",
                   "Live Music",
                   "Poolside",
                   "Food & Drinks",
                   "Gifts & Awards",
-                  "TSE Launch",
+                  "One Year of TSE",
                 ].map((item, index) => (
                   <div
                     key={item}
@@ -262,7 +252,7 @@ export default function ExperiencePreview() {
         </motion.div>
 
         {/* =====================================================
-            LAUNCH MOMENT
+            ANNIVERSARY MOMENT
         ====================================================== */}
 
         <motion.div
@@ -271,7 +261,7 @@ export default function ExperiencePreview() {
         >
           <div>
             <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40">
-              The reason we're celebrating
+              One year in
             </span>
 
             <p className="mt-3 font-display text-3xl uppercase leading-[0.9] tracking-[-0.02em] sm:text-4xl">
@@ -279,9 +269,9 @@ export default function ExperiencePreview() {
             </p>
 
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/45">
-              What started as a thrift and styling page is becoming something
-              bigger — a fashion and lifestyle house built around style,
-              creativity and community.
+              One year of finding pieces, building looks and building
+              community. Now we are bringing the world of TSE offline —
+              together, for one day.
             </p>
           </div>
 
