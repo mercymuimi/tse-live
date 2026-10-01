@@ -28,7 +28,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 24);
+      setScrolled(window.scrollY > 20);
     };
 
     handleScroll();
@@ -80,9 +80,9 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ===================================================
+      {/* =====================================================
           HEADER
-      =================================================== */}
+      ===================================================== */}
 
       <header
         className={`
@@ -90,7 +90,7 @@ export default function Navbar() {
           transition-all duration-500
           ${
             scrolled
-              ? "border-b border-white/8 bg-tse-black/88 backdrop-blur-xl"
+              ? "border-b border-white/8 bg-tse-black/90 backdrop-blur-xl"
               : "bg-transparent"
           }
         `}
@@ -98,7 +98,7 @@ export default function Navbar() {
         <div
           className="
             tse-container
-            flex h-19 items-center justify-between
+            flex h-[4.25rem] items-center justify-between
           "
         >
           {/* =================================================
@@ -126,13 +126,12 @@ export default function Navbar() {
             <span
               className="
                 font-display
-                text-[31px]
+                text-[30px]
                 leading-none
                 tracking-[0.015em]
                 text-tse-paper
                 transition-colors
                 duration-300
-                group-hover:text-tse-white
               "
             >
               TSE
@@ -140,14 +139,14 @@ export default function Navbar() {
 
             <span
               className="
-                ml-1.75
-                mt-0.75
+                ml-1.5
+                mt-0.5
                 font-sans
-                text-[9px]
+                text-[8px]
                 font-medium
                 uppercase
-                tracking-[0.24em]
-                text-white/45
+                tracking-[0.25em]
+                text-white/40
                 transition-colors
                 duration-300
                 group-hover:text-tse-accent
@@ -166,7 +165,7 @@ export default function Navbar() {
             className="
               hidden
               items-center
-              gap-7
+              gap-6
               lg:flex
             "
           >
@@ -181,7 +180,7 @@ export default function Navbar() {
                   className="
                     group
                     relative
-                    py-3
+                    py-2.5
                     focus-visible:outline-none
                     focus-visible:ring-1
                     focus-visible:ring-tse-accent
@@ -190,28 +189,28 @@ export default function Navbar() {
                   <span
                     className={`
                       font-sans
-                      text-[10px]
+                      text-[9px]
                       font-medium
                       uppercase
-                      tracking-[0.17em]
+                      tracking-[0.18em]
                       transition-colors
                       duration-300
                       ${
                         isActive
                           ? "text-tse-paper"
-                          : "text-white/55 group-hover:text-tse-paper"
+                          : "text-white/50 group-hover:text-tse-paper"
                       }
                     `}
                   >
                     {item.label}
                   </span>
 
-                  {/* Active / hover indicator */}
+                  {/* ACTIVE / HOVER LINE */}
                   <span
                     aria-hidden="true"
                     className={`
                       absolute
-                      bottom-1
+                      bottom-0.5
                       left-0
                       h-px
                       bg-tse-accent
@@ -237,12 +236,10 @@ export default function Navbar() {
             <Link
               href="/tickets"
               className="
-                group
                 inline-flex
-                min-h-10.5
+                min-h-10
                 items-center
                 justify-center
-                gap-2
                 border
                 border-white/20
                 px-5
@@ -262,19 +259,7 @@ export default function Navbar() {
                 focus-visible:ring-tse-accent
               "
             >
-              <span>Get Tickets</span>
-
-              <ArrowUpRight
-                size={12}
-                strokeWidth={1.5}
-                aria-hidden="true"
-                className="
-                  transition-transform
-                  duration-300
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
-                "
-              />
+              Get Tickets
             </Link>
           </div>
 
@@ -292,8 +277,8 @@ export default function Navbar() {
               relative
               z-60
               flex
-              h-11
-              w-11
+              h-10
+              w-10
               items-center
               justify-center
               border
@@ -343,7 +328,7 @@ export default function Navbar() {
                     duration: prefersReducedMotion ? 0 : 0.2,
                   }}
                 >
-                  <X size={18} strokeWidth={1.4} />
+                  <X size={17} strokeWidth={1.4} />
                 </motion.span>
               ) : (
                 <motion.span
@@ -375,7 +360,7 @@ export default function Navbar() {
                     duration: prefersReducedMotion ? 0 : 0.2,
                   }}
                 >
-                  <Menu size={18} strokeWidth={1.4} />
+                  <Menu size={17} strokeWidth={1.4} />
                 </motion.span>
               )}
             </AnimatePresence>
@@ -404,9 +389,7 @@ export default function Navbar() {
               bg-tse-black
             "
           >
-            {/* =================================================
-                EDITORIAL ATMOSPHERE
-            ================================================= */}
+            {/* ATMOSPHERE */}
 
             <div
               aria-hidden="true"
@@ -452,9 +435,9 @@ export default function Navbar() {
                 overflow-y-auto
                 px-5
                 pb-7
-                pt-26
+                pt-24
                 sm:px-8
-                sm:pt-27
+                sm:pt-26
               "
             >
               {/* =================================================
@@ -519,7 +502,7 @@ export default function Navbar() {
                             items-baseline
                             border-b
                             border-white/9
-                            py-3.75
+                            py-3.5
                             focus-visible:outline-none
                             focus-visible:ring-1
                             focus-visible:ring-inset
@@ -655,7 +638,8 @@ export default function Navbar() {
                   />
                 </Link>
 
-                {/* Event information */}
+                {/* EVENT INFORMATION */}
+
                 <div
                   className="
                     mt-6
@@ -703,7 +687,8 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* Closing line */}
+                {/* CLOSING LINE */}
+
                 <div
                   className="
                     mt-7
