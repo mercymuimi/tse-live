@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -17,6 +17,7 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const prefersReducedMotion = useReducedMotion();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -66,6 +67,17 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
+  /* -------------------------------------------------------
+     ACTIVE ROUTE
+  ------------------------------------------------------- */
+
+  const isActiveRoute = (href: string) => {
+    return (
+      pathname === href ||
+      (href !== "/" && pathname.startsWith(href))
+    );
+  };
+
   return (
     <>
       {/* ===================================================
@@ -78,7 +90,7 @@ export default function Navbar() {
           transition-all duration-500
           ${
             scrolled
-              ? "border-b border-white/[0.08] bg-tse-black/88 backdrop-blur-xl"
+              ? "border-b border-white/8 bg-tse-black/88 backdrop-blur-xl"
               : "bg-transparent"
           }
         `}
@@ -86,7 +98,7 @@ export default function Navbar() {
         <div
           className="
             tse-container
-            flex h-[76px] items-center justify-between
+            flex h-19 items-center justify-between
           "
         >
           {/* =================================================
@@ -96,14 +108,19 @@ export default function Navbar() {
           <Link
             href="/"
             aria-label="The Styled Edit Live — Home"
+            aria-current={pathname === "/" ? "page" : undefined}
             onClick={() => setMenuOpen(false)}
             className="
               group
               relative
-              z-[60]
+              z-60
               flex
               items-center
               focus-visible:outline-none
+              focus-visible:ring-1
+              focus-visible:ring-tse-accent
+              focus-visible:ring-offset-4
+              focus-visible:ring-offset-tse-black
             "
           >
             <span
@@ -123,8 +140,8 @@ export default function Navbar() {
 
             <span
               className="
-                ml-[7px]
-                mt-[3px]
+                ml-1.75
+                mt-0.75
                 font-sans
                 text-[9px]
                 font-medium
@@ -138,22 +155,6 @@ export default function Navbar() {
             >
               Live
             </span>
-
-            {/* Editorial underline */}
-            <span
-              aria-hidden="true"
-              className="
-                absolute
-                -bottom-[7px]
-                left-0
-                h-px
-                w-0
-                bg-tse-accent
-                transition-all
-                duration-500
-                group-hover:w-full
-              "
-            />
           </Link>
 
           {/* =================================================
@@ -170,20 +171,20 @@ export default function Navbar() {
             "
           >
             {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/" &&
-                  pathname.startsWith(item.href));
+              const isActive = isActiveRoute(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   className="
                     group
                     relative
                     py-3
                     focus-visible:outline-none
+                    focus-visible:ring-1
+                    focus-visible:ring-tse-accent
                   "
                 >
                   <span
@@ -207,6 +208,7 @@ export default function Navbar() {
 
                   {/* Active / hover indicator */}
                   <span
+                    aria-hidden="true"
                     className={`
                       absolute
                       bottom-1
@@ -235,13 +237,44 @@ export default function Navbar() {
             <Link
               href="/tickets"
               className="
-                tse-button
-                tse-button-outline
-                min-h-[42px]
+                group
+                inline-flex
+                min-h-10.5
+                items-center
+                justify-center
+                gap-2
+                border
+                border-white/20
                 px-5
+                font-sans
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-tse-paper
+                transition-all
+                duration-300
+                hover:border-tse-accent
+                hover:bg-tse-accent
+                hover:text-tse-black
+                focus-visible:outline-none
+                focus-visible:ring-1
+                focus-visible:ring-tse-accent
               "
             >
-              Get Tickets
+              <span>Get Tickets</span>
+
+              <ArrowUpRight
+                size={12}
+                strokeWidth={1.5}
+                aria-hidden="true"
+                className="
+                  transition-transform
+                  duration-300
+                  group-hover:-translate-y-0.5
+                  group-hover:translate-x-0.5
+                "
+              />
             </Link>
           </div>
 
@@ -251,15 +284,13 @@ export default function Navbar() {
 
           <button
             type="button"
-            aria-label={
-              menuOpen ? "Close menu" : "Open menu"
-            }
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((value) => !value)}
             className="
               relative
-              z-[60]
+              z-60
               flex
               h-11
               w-11
@@ -271,8 +302,10 @@ export default function Navbar() {
               transition-all
               duration-300
               hover:border-white/35
-              hover:bg-white/[0.04]
+              hover:bg-white/4
               focus-visible:outline-none
+              focus-visible:ring-1
+              focus-visible:ring-tse-accent
               lg:hidden
             "
           >
@@ -283,44 +316,64 @@ export default function Navbar() {
               {menuOpen ? (
                 <motion.span
                   key="close"
-                  initial={{
-                    opacity: 0,
-                    rotate: -45,
-                    scale: 0.8,
-                  }}
+                  initial={
+                    prefersReducedMotion
+                      ? false
+                      : {
+                          opacity: 0,
+                          rotate: -45,
+                          scale: 0.8,
+                        }
+                  }
                   animate={{
                     opacity: 1,
                     rotate: 0,
                     scale: 1,
                   }}
-                  exit={{
-                    opacity: 0,
-                    rotate: 45,
-                    scale: 0.8,
+                  exit={
+                    prefersReducedMotion
+                      ? undefined
+                      : {
+                          opacity: 0,
+                          rotate: 45,
+                          scale: 0.8,
+                        }
+                  }
+                  transition={{
+                    duration: prefersReducedMotion ? 0 : 0.2,
                   }}
-                  transition={{ duration: 0.2 }}
                 >
                   <X size={18} strokeWidth={1.4} />
                 </motion.span>
               ) : (
                 <motion.span
                   key="menu"
-                  initial={{
-                    opacity: 0,
-                    rotate: 45,
-                    scale: 0.8,
-                  }}
+                  initial={
+                    prefersReducedMotion
+                      ? false
+                      : {
+                          opacity: 0,
+                          rotate: 45,
+                          scale: 0.8,
+                        }
+                  }
                   animate={{
                     opacity: 1,
                     rotate: 0,
                     scale: 1,
                   }}
-                  exit={{
-                    opacity: 0,
-                    rotate: -45,
-                    scale: 0.8,
+                  exit={
+                    prefersReducedMotion
+                      ? undefined
+                      : {
+                          opacity: 0,
+                          rotate: -45,
+                          scale: 0.8,
+                        }
+                  }
+                  transition={{
+                    duration: prefersReducedMotion ? 0 : 0.2,
                   }}
-                  transition={{ duration: 0.2 }}
                 >
                   <Menu size={18} strokeWidth={1.4} />
                 </motion.span>
@@ -341,7 +394,9 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.3,
+            }}
             className="
               fixed
               inset-0
@@ -349,7 +404,10 @@ export default function Navbar() {
               bg-tse-black
             "
           >
-            {/* Editorial atmosphere */}
+            {/* =================================================
+                EDITORIAL ATMOSPHERE
+            ================================================= */}
+
             <div
               aria-hidden="true"
               className="
@@ -364,11 +422,11 @@ export default function Navbar() {
                   absolute
                   -right-32
                   top-20
-                  h-[420px]
-                  w-[420px]
+                  h-105
+                  w-105
                   rounded-full
-                  bg-tse-accent/[0.045]
-                  blur-[100px]
+                  bg-tse-accent/4
+                  blur-[110px]
                 "
               />
 
@@ -379,7 +437,7 @@ export default function Navbar() {
                   left-0
                   h-px
                   w-full
-                  bg-white/[0.08]
+                  bg-white/8
                 "
               />
             </div>
@@ -391,10 +449,12 @@ export default function Navbar() {
                 h-full
                 flex-col
                 justify-between
+                overflow-y-auto
                 px-5
                 pb-7
-                pt-[108px]
+                pt-26
                 sm:px-8
+                sm:pt-27
               "
             >
               {/* =================================================
@@ -402,55 +462,68 @@ export default function Navbar() {
               ================================================= */}
 
               <nav aria-label="Mobile navigation">
-                <div className="mb-7 flex items-center justify-between">
+                <div className="mb-6 flex items-center justify-between">
                   <span className="tse-eyebrow text-white/35">
                     Navigation
                   </span>
 
                   <span className="tse-label text-white/20">
-                    TSE / 01
+                    The Styled Edit Live
                   </span>
                 </div>
 
                 <div>
                   {navItems.map((item, index) => {
-                    const isActive =
-                      pathname === item.href ||
-                      (item.href !== "/" &&
-                        pathname.startsWith(item.href));
+                    const isActive = isActiveRoute(item.href);
 
                     return (
                       <motion.div
                         key={item.href}
-                        initial={{
-                          opacity: 0,
-                          x: -24,
-                        }}
+                        initial={
+                          prefersReducedMotion
+                            ? false
+                            : {
+                                opacity: 0,
+                                x: -20,
+                              }
+                        }
                         animate={{
                           opacity: 1,
                           x: 0,
                         }}
-                        exit={{
-                          opacity: 0,
-                          x: -12,
-                        }}
+                        exit={
+                          prefersReducedMotion
+                            ? undefined
+                            : {
+                                opacity: 0,
+                                x: -10,
+                              }
+                        }
                         transition={{
-                          duration: 0.45,
-                          delay: index * 0.055,
+                          duration: prefersReducedMotion ? 0 : 0.45,
+                          delay: prefersReducedMotion
+                            ? 0
+                            : index * 0.045,
                           ease: [0.22, 1, 0.36, 1],
                         }}
                       >
                         <Link
                           href={item.href}
+                          aria-current={
+                            isActive ? "page" : undefined
+                          }
                           onClick={() => setMenuOpen(false)}
                           className="
                             group
                             flex
                             items-baseline
                             border-b
-                            border-white/[0.09]
-                            py-[17px]
+                            border-white/9
+                            py-3.75
                             focus-visible:outline-none
+                            focus-visible:ring-1
+                            focus-visible:ring-inset
+                            focus-visible:ring-tse-accent
                           "
                         >
                           <span
@@ -476,15 +549,16 @@ export default function Navbar() {
                           <span
                             className={`
                               font-display
-                              text-[46px]
+                              text-[clamp(2.3rem,10vw,3.1rem)]
                               uppercase
                               leading-none
-                              transition-all
+                              tracking-tight
+                              transition-colors
                               duration-300
                               ${
                                 isActive
                                   ? "text-tse-paper"
-                                  : "text-white/90 group-hover:text-white/55"
+                                  : "text-white/85 group-hover:text-white/50"
                               }
                             `}
                           >
@@ -502,26 +576,33 @@ export default function Navbar() {
               ================================================= */}
 
               <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 24,
-                }}
+                initial={
+                  prefersReducedMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        y: 20,
+                      }
+                }
                 animate={{
                   opacity: 1,
                   y: 0,
                 }}
                 transition={{
-                  duration: 0.55,
-                  delay: 0.38,
+                  duration: prefersReducedMotion ? 0 : 0.5,
+                  delay: prefersReducedMotion ? 0 : 0.3,
                   ease: [0.22, 1, 0.36, 1],
                 }}
+                className="pt-8"
               >
                 <Link
                   href="/tickets"
                   onClick={() => setMenuOpen(false)}
                   className="
                     group
-                    block
+                    flex
+                    items-center
+                    justify-between
                     bg-tse-paper
                     px-5
                     py-5
@@ -529,31 +610,49 @@ export default function Navbar() {
                     transition-colors
                     duration-300
                     hover:bg-tse-white
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-tse-accent
                   "
                 >
-                  <p
-                    className="
-                      font-sans
-                      text-[8px]
-                      font-medium
-                      uppercase
-                      tracking-[0.2em]
-                      text-black/40
-                    "
-                  >
-                    Secure your spot
-                  </p>
+                  <div>
+                    <p
+                      className="
+                        font-sans
+                        text-[8px]
+                        font-medium
+                        uppercase
+                        tracking-[0.2em]
+                        text-black/40
+                      "
+                    >
+                      Secure your spot
+                    </p>
 
-                  <p
+                    <p
+                      className="
+                        mt-1
+                        font-display
+                        text-[clamp(1.9rem,8vw,2.2rem)]
+                        leading-none
+                        tracking-[-0.02em]
+                      "
+                    >
+                      GET TICKETS
+                    </p>
+                  </div>
+
+                  <ArrowUpRight
+                    size={19}
+                    strokeWidth={1.4}
+                    aria-hidden="true"
                     className="
-                      mt-1
-                      font-display
-                      text-[32px]
-                      leading-none
+                      transition-transform
+                      duration-300
+                      group-hover:-translate-y-1
+                      group-hover:translate-x-1
                     "
-                  >
-                    GET TICKETS
-                  </p>
+                  />
                 </Link>
 
                 {/* Event information */}
@@ -568,7 +667,7 @@ export default function Navbar() {
                 >
                   <div>
                     <p className="tse-eyebrow text-white/25">
-                      The Styled Edit Live
+                      Date
                     </p>
 
                     <p
@@ -599,12 +698,12 @@ export default function Navbar() {
                         text-white/45
                       "
                     >
-                      Rongai · Kenya
+                      Gataka · Rongai
                     </p>
                   </div>
                 </div>
 
-                {/* Edition mark */}
+                {/* Closing line */}
                 <div
                   className="
                     mt-7
@@ -613,13 +712,13 @@ export default function Navbar() {
                     gap-3
                   "
                 >
-                  <span className="h-px flex-1 bg-white/[0.08]" />
+                  <span className="h-px flex-1 bg-white/8" />
 
                   <span className="tse-label text-white/20">
-                    Edition 01
+                    Fashion · Culture · Community
                   </span>
 
-                  <span className="h-px flex-1 bg-white/[0.08]" />
+                  <span className="h-px flex-1 bg-white/8" />
                 </div>
               </motion.div>
             </div>

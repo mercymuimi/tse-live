@@ -43,16 +43,6 @@ const schedule: ScheduleItem[] = [
     category: "Style",
   },
   {
-    time: "5:15",
-    period: "PM",
-    title: "The Competition",
-    description:
-      "Strut your look on the floor. TSE's fashion competition, live — this is where Best Styled and Best Dressed get decided.",
-    location: "Main Stage",
-    category: "Compete",
-    featured: true,
-  },
-  {
     time: "5:30",
     period: "PM",
     title: "Pool & Chill",
@@ -76,7 +66,7 @@ const schedule: ScheduleItem[] = [
     period: "PM",
     title: "The Celebration",
     description:
-      "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs, marking 1 year of TSE.",
+      "Cake cutting, the best dressed reveal, games and giveaways — marking one year of TSE.",
     location: "Main Stage",
     category: "Celebrate",
     featured: true,
@@ -105,7 +95,6 @@ const schedule: ScheduleItem[] = [
 const experiences = [
   "THRIFT",
   "STYLE",
-  "COMPETE",
   "SPLASH",
   "CREATE",
   "CELEBRATE",
@@ -114,49 +103,57 @@ const experiences = [
 
 export default function SchedulePage() {
   return (
-    <main className="min-h-screen bg-[#f4f1ea] text-black">
+    <main className="min-h-screen bg-black text-white">
       {/* =====================================================
           HERO
       ===================================================== */}
 
-      <section className="relative overflow-hidden bg-black px-6 pb-20 pt-32 text-white md:px-12 md:pb-28 md:pt-40">
-        <div className="mx-auto max-w-7xl">
-          <Link
-            href="/"
-            className="mb-10 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.3em] text-white/35 transition hover:text-white"
-          >
-            ← Back home
-          </Link>
+      <section className="relative overflow-hidden bg-tse-black px-6 pb-20 pt-28 text-tse-paper md:px-12 md:pb-24 md:pt-36 lg:px-16">
+        <div className="mx-auto max-w-360">
+          <div className="grid gap-12 lg:grid-cols-[1fr_300px] lg:items-end">
+            {/* HERO TITLE */}
 
-          <div className="grid gap-12 lg:grid-cols-[1fr_280px] lg:items-end">
             <div>
-              <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
-                TSE LIVE // THE DAY
+              <p className="tse-eyebrow text-white/35">
+                TSE LIVE // THE FLOW
               </p>
 
-              <h1 className="mt-6 max-w-5xl font-display text-[clamp(5rem,13vw,11rem)] uppercase leading-[0.75] tracking-[-0.065em]">
+              <h1 className="mt-6 max-w-[10ch] font-display text-[clamp(5rem,12vw,11rem)] uppercase leading-[0.76] tracking-[-0.065em]">
                 The
                 <br />
                 Schedule.
               </h1>
             </div>
 
-            <div className="border-l border-white/15 pl-6">
-              <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
-                October 30
+            {/* EVENT META */}
+
+            <div className="border-l border-white/10 pl-6 lg:pb-2">
+              <p className="font-display text-3xl uppercase leading-none tracking-[-0.04em]">
+                30.10.26
               </p>
 
-              <p className="mt-4 text-sm leading-6 text-white/55">
-                One day. Fashion, music, creativity, community and
-                everything in between.
+              <p className="mt-3 text-[9px] uppercase tracking-[0.3em] text-white/35">
+                One year of TSE
+              </p>
+
+              <p className="mt-6 max-w-xs text-sm leading-6 text-white/50">
+                Fashion, music, creativity, community and everything that
+                happens between arrival and after dark.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Decorative number */}
-        <div className="pointer-events-none absolute -bottom-12 right-4 select-none font-display text-[18rem] leading-none tracking-[-0.08em] text-white/2.5 md:right-12">
-          01
+        {/* BOTTOM META */}
+
+        <div className="mx-auto mt-16 flex max-w-360 items-center justify-between border-t border-white/10 pt-5">
+          <span className="text-[8px] uppercase tracking-[0.3em] text-white/30">
+            03:00 PM — Late
+          </span>
+
+          <span className="text-[8px] uppercase tracking-[0.3em] text-white/30">
+            Gataka · Rongai
+          </span>
         </div>
       </section>
 
@@ -164,17 +161,17 @@ export default function SchedulePage() {
           INTRO
       ===================================================== */}
 
-      <section className="border-b border-black/10 px-6 py-12 md:px-12 md:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[180px_1fr]">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+      <section className="border-b border-white/10 px-6 py-14 md:px-12 md:py-20 lg:px-16">
+        <div className="mx-auto grid max-w-360 gap-8 md:grid-cols-12 md:items-start">
+          <p className="tse-eyebrow text-white/35 md:col-span-3">
             What happens
           </p>
 
-          <div className="max-w-3xl">
-            <p className="text-2xl leading-[1.15] tracking-[-0.035em] md:text-4xl">
-              TSE Live isn&apos;t just an event you attend. It&apos;s a full-day
-              experience built around fashion, culture, creativity and
-              connection.
+          <div className="md:col-span-7 md:col-start-6">
+            <p className="max-w-3xl text-[clamp(1.5rem,3vw,2.7rem)] leading-[1.08] tracking-[-0.04em] text-white">
+              TSE Live is more than a place to shop. Move through fashion,
+              creativity, music, water and community — all in one afternoon
+              that turns into a night.
             </p>
           </div>
         </div>
@@ -184,18 +181,18 @@ export default function SchedulePage() {
           EXPERIENCE STRIP
       ===================================================== */}
 
-      <section className="overflow-hidden border-b border-black/10 bg-[#e8e4da]">
-        <div className="flex min-w-max">
+      <section className="overflow-hidden border-b border-white/10 bg-[#111111]">
+        <div className="mx-auto flex max-w-360 min-w-max">
           {experiences.map((item, index) => (
             <div
               key={item}
-              className="flex items-center border-r border-black/10 px-8 py-6 md:px-12"
+              className="flex items-center border-r border-white/10 px-7 py-5 md:px-10 md:py-6"
             >
-              <span className="mr-5 text-[8px] text-black/30">
+              <span className="mr-4 text-[8px] tracking-[0.2em] text-white/25">
                 0{index + 1}
               </span>
 
-              <span className="font-display text-2xl tracking-[-0.03em] md:text-3xl">
+              <span className="font-display text-2xl uppercase tracking-[-0.03em] text-white md:text-3xl">
                 {item}
               </span>
             </div>
@@ -207,121 +204,145 @@ export default function SchedulePage() {
           SCHEDULE
       ===================================================== */}
 
-      <section className="px-6 py-16 md:px-12 md:py-24">
-        <div className="mx-auto max-w-7xl">
+      <section className="px-6 py-16 md:px-12 md:py-24 lg:px-16">
+        <div className="mx-auto max-w-360">
           {/* SECTION HEADER */}
 
-          <div className="mb-14 flex flex-col justify-between gap-6 border-b border-black/10 pb-8 md:flex-row md:items-end">
-            <div>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-                Timeline
+          <div className="grid gap-8 border-b border-white/10 pb-8 md:grid-cols-12 md:items-end">
+            <div className="md:col-span-7">
+              <p className="tse-eyebrow text-white/35">
+                The running order
               </p>
 
-              <h2 className="mt-3 font-display text-5xl uppercase leading-none tracking-tighter md:text-7xl">
-                The Day
+              <h2 className="mt-4 font-display text-[clamp(4rem,7vw,7rem)] uppercase leading-[0.8] tracking-[-0.06em] text-white">
+                Your
+                <br />
+                Day.
               </h2>
             </div>
 
-            <p className="max-w-xs text-[10px] uppercase leading-5 tracking-[0.12em] text-black/40">
-              Times may shift slightly throughout the day. Follow TSE Live
-              updates for the final running order.
-            </p>
+            <div className="md:col-span-4 md:col-start-9">
+              <p className="max-w-sm text-sm leading-6 text-white/45">
+                The flow is designed to move naturally from afternoon into
+                evening. Times may shift slightly as the day unfolds.
+              </p>
+            </div>
           </div>
 
           {/* TIMELINE */}
 
-          <div className="divide-y divide-black/10">
+          <div className="divide-y divide-white/10">
             {schedule.map((item) => (
               <article
                 key={`${item.time}-${item.title}`}
-                className={`group grid gap-8 py-10 md:grid-cols-[130px_1fr_180px] md:gap-12 md:py-14 ${
-                  item.featured ? "bg-black/2.5" : ""
+                className={`group relative py-8 transition-colors duration-300 md:py-10 ${
+                  item.featured ? "bg-white/3" : ""
                 }`}
               >
-                {/* TIME */}
+                <div className="grid gap-7 md:grid-cols-12 md:items-center md:gap-8">
+                  {/* TIME */}
 
-                <div className="flex items-start gap-3">
-                  <span className="font-display text-4xl leading-none tracking-[-0.04em] md:text-5xl">
-                    {item.time}
-                  </span>
-
-                  <span className="pt-1 text-[8px] uppercase tracking-[0.2em] text-black/35">
-                    {item.period}
-                  </span>
-                </div>
-
-                {/* CONTENT */}
-
-                <div>
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="text-[8px] uppercase tracking-[0.25em] text-black/35">
-                      {item.category}
-                    </span>
-
-                    {item.featured && (
-                      <span className="border border-black/15 px-2 py-1 text-[7px] uppercase tracking-[0.18em]">
-                        Highlight
+                  <div className="md:col-span-2">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-display text-4xl leading-none tracking-tighter text-white md:text-5xl">
+                        {item.time}
                       </span>
-                    )}
+
+                      <span className="text-[8px] uppercase tracking-[0.2em] text-white/30">
+                        {item.period}
+                      </span>
+                    </div>
                   </div>
 
-                  <h3 className="font-display text-4xl uppercase leading-none tracking-[-0.045em] transition-transform duration-300 group-hover:translate-x-1 md:text-6xl">
-                    {item.title}
-                  </h3>
+                  {/* CONTENT */}
 
-                  <p className="mt-5 max-w-xl text-sm leading-6 text-black/45">
-                    {item.description}
-                  </p>
-                </div>
+                  <div className="md:col-span-7">
+                    <div className="mb-3 flex items-center gap-3">
+                      <span className="text-[8px] uppercase tracking-[0.25em] text-white/35">
+                        {item.category}
+                      </span>
 
-                {/* LOCATION */}
+                      {item.featured && (
+                        <span className="h-px w-6 bg-white/20 transition-all duration-300 group-hover:w-10 group-hover:bg-white/60" />
+                      )}
+                    </div>
 
-                <div className="flex items-start gap-3 md:justify-end">
-                  <MapPin
-                    size={14}
-                    strokeWidth={1.5}
-                    className="mt-0.5 shrink-0 text-black/35"
-                  />
+                    <h3 className="font-display text-[clamp(2.7rem,4.5vw,5rem)] uppercase leading-[0.82] tracking-[-0.055em] text-white transition-transform duration-500 ease-out group-hover:translate-x-1">
+                      {item.title}
+                    </h3>
 
-                  <div>
-                    <p className="text-[8px] uppercase tracking-[0.2em] text-black/30">
-                      Location
-                    </p>
-
-                    <p className="mt-2 text-[10px] uppercase tracking-[0.12em]">
-                      {item.location}
+                    <p className="mt-4 max-w-xl text-sm leading-6 text-white/45 transition-colors duration-300 group-hover:text-white/75">
+                      {item.description}
                     </p>
                   </div>
+
+                  {/* LOCATION */}
+
+                  <div className="flex items-start gap-3 md:col-span-3 md:justify-self-end">
+                    <MapPin
+                      size={13}
+                      strokeWidth={1.4}
+                      aria-hidden="true"
+                      className="mt-0.5 shrink-0 text-white/25"
+                    />
+
+                    <div>
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-white/25">
+                        Location
+                      </p>
+
+                      <p className="mt-1.5 text-[9px] uppercase tracking-[0.12em] text-white">
+                        {item.location}
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
+                {/* HOVER LINE */}
+
+                <div className="absolute -bottom-px left-0 h-px w-0 bg-white/50 transition-all duration-500 ease-out group-hover:w-full" />
               </article>
             ))}
+          </div>
+
+          {/* TIMELINE NOTE */}
+
+          <div className="grid gap-6 pt-8 md:grid-cols-2 md:items-end">
+            <p className="tse-label text-white/30">
+              The schedule is a guide, not a script.
+            </p>
+
+            <p className="max-w-sm text-sm leading-6 text-white/40 md:justify-self-end">
+              Leave room for the unexpected — a new find, a new connection,
+              an extra photo or a reason to stay a little longer.
+            </p>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          NOTE
+          CLOSING STATEMENT
       ===================================================== */}
 
-      <section className="bg-black px-6 py-16 text-white md:px-12 md:py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[1fr_280px] md:items-end">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.3em] text-white/30">
+      <section className="bg-tse-black px-6 py-20 text-tse-paper md:px-12 md:py-28 lg:px-16">
+        <div className="mx-auto grid max-w-360 gap-12 md:grid-cols-12 md:items-end">
+          <div className="md:col-span-8">
+            <p className="tse-eyebrow text-white/30">
               Come for the fashion.
             </p>
 
-            <h2 className="mt-5 max-w-4xl font-display text-[clamp(4rem,9vw,8rem)] uppercase leading-[0.78] tracking-[-0.06em]">
+            <h2 className="mt-5 max-w-4xl font-display text-[clamp(4rem,8vw,8rem)] uppercase leading-[0.78] tracking-[-0.06em]">
               Stay for
               <br />
               the energy.
             </h2>
           </div>
 
-          <div>
-            <p className="text-sm leading-6 text-white/45">
-              The schedule is only the beginning. Leave room for unexpected
-              finds, new people, spontaneous content and moments that
-              aren&apos;t on the timetable.
+          <div className="md:col-span-4 md:col-start-9">
+            <p className="max-w-sm text-sm leading-7 text-white/45">
+              The schedule is only the beginning. Find something unexpected,
+              meet someone new, make something worth posting and stay for the
+              night.
             </p>
           </div>
         </div>
@@ -331,28 +352,31 @@ export default function SchedulePage() {
           CTA
       ===================================================== */}
 
-      <section className="px-6 py-16 md:px-12 md:py-24">
-        <div className="mx-auto max-w-7xl border-t border-black/10 pt-10">
+      <section className="px-6 py-16 md:px-12 md:py-24 lg:px-16">
+        <div className="mx-auto max-w-360 border-t border-white/10 pt-10">
           <div className="flex flex-col justify-between gap-10 md:flex-row md:items-end">
             <div>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-                Ready?
+              <p className="tse-eyebrow text-white/35">
+                30.10.26 // Gataka · Rongai
               </p>
 
-              <h2 className="mt-4 font-display text-5xl uppercase leading-none tracking-tighter md:text-7xl">
-                Be there.
+              <h2 className="mt-4 font-display text-[clamp(4rem,7vw,7rem)] uppercase leading-[0.8] tracking-[-0.06em] text-white">
+                Be
+                <br />
+                There.
               </h2>
             </div>
 
             <Link
               href="/tickets"
-              className="group inline-flex items-center justify-between bg-black px-6 py-5 text-[9px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-black/80 md:min-w-60"
+              className="group flex w-full items-center justify-between bg-white px-6 py-5 text-[9px] font-bold uppercase tracking-[0.22em] text-black transition-colors duration-300 hover:bg-white/80 md:w-64"
             >
               <span>Get your ticket</span>
 
               <ArrowDownRight
                 size={15}
                 strokeWidth={1.5}
+                aria-hidden="true"
                 className="transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
               />
             </Link>
@@ -364,10 +388,10 @@ export default function SchedulePage() {
           FOOTER
       ===================================================== */}
 
-      <footer className="bg-black px-6 py-12 text-white md:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+      <footer className="bg-tse-black px-6 py-10 text-tse-paper md:px-12 lg:px-16">
+        <div className="mx-auto flex max-w-360 flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="font-display text-3xl tracking-[-0.04em]">
+            <p className="font-display text-3xl uppercase tracking-[-0.04em]">
               TSE / LIVE
             </p>
 
@@ -377,7 +401,7 @@ export default function SchedulePage() {
           </div>
 
           <div className="flex items-center gap-2 text-[8px] uppercase tracking-[0.2em] text-white/30">
-            <Clock size={12} strokeWidth={1.5} />
+            <Clock size={12} strokeWidth={1.5} aria-hidden="true" />
             <span>Nairobi, Kenya</span>
           </div>
         </div>

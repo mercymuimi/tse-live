@@ -1,92 +1,165 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 const pillars = [
   {
     number: "01",
     title: "Shop",
-    description:
-      "Discover curated thrift pieces, independent vendors and unexpected fashion finds.",
     label: "THE MARKET",
+    description:
+      "Dig through curated thrift, independent fashion and unexpected finds. Discover something you didn't come looking for.",
+    detail: "Thrift Market",
   },
   {
     number: "02",
     title: "Style",
-    description:
-      "Experiment with your wardrobe, get inspired and connect with people who understand personal style.",
     label: "THE EDIT",
+    description:
+      "Build the look. Get inspired. Step into the style competition and let your personal style do the talking.",
+    detail: "Styling + Competition",
   },
   {
     number: "03",
     title: "Create",
-    description:
-      "Step into spaces designed for content, photography, expression and creative discovery.",
     label: "THE STUDIO",
+    description:
+      "Find your angle. Capture the moment. Explore photoshoot spaces and creative setups made for content and collaboration.",
+    detail: "Content + Photoshoots",
   },
   {
     number: "04",
-    title: "Connect",
+    title: "Play",
+    label: "THE POOLSIDE",
     description:
-      "Meet creatives, fashion lovers, vendors and a community built around shared taste.",
-    label: "THE COMMUNITY",
+      "Take a break from the racks. Swim, eat, listen to live music and enjoy the day without rushing anywhere.",
+    detail: "Poolside + Live Music",
+  },
+  {
+    number: "05",
+    title: "Celebrate",
+    label: "THE MOMENT",
+    description:
+      "One year of The Styled Edit. Cake, awards, gifts and a room full of people who helped make the journey possible.",
+    detail: "Launch + Awards",
   },
 ];
 
 export default function ExperiencePillars() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section
       id="experience"
-      className="bg-black px-6 py-24 md:px-12 md:py-32"
+      className="bg-tse-black px-6 pt-24 pb-16 text-tse-paper md:px-12 md:pt-32 md:pb-20 lg:px-16 lg:pt-40 lg:pb-24"
     >
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-          <div>
-            <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
-              What happens here
+      <div className="mx-auto max-w-360">
+        {/* INTRO */}
+        <div className="grid gap-10 border-b border-white/10 pb-16 lg:grid-cols-12 lg:pb-20">
+          <div className="lg:col-span-4">
+            <p className="tse-eyebrow text-white/35">
+              The experience
             </p>
-
-            <h2 className="mt-6 max-w-sm font-display text-6xl uppercase leading-[0.82] tracking-[-0.055em] md:text-8xl">
-              Enter
-              <br />
-              The
-              <br />
-              World.
-            </h2>
           </div>
 
-          <div className="grid border-t border-white/15 sm:grid-cols-2">
-            {pillars.map((pillar) => (
-              <article
-                key={pillar.number}
-                className="group border-b border-white/15 p-6 sm:p-8"
-              >
-                <div className="flex items-start justify-between">
-                  <span className="text-[9px] tracking-[0.2em] text-white/35">
+          <div className="lg:col-span-8">
+            <h2 className="max-w-220 font-display text-[clamp(4rem,8vw,8rem)] uppercase leading-[0.8] tracking-[-0.06em]">
+              Come for
+              <br />
+              the thrift.
+              <br />
+              <span className="text-white/45">Stay for</span>
+              <br />
+              the experience.
+            </h2>
+
+            <p className="mt-10 max-w-xl text-sm leading-7 text-white/50 md:text-base">
+              TSE Live is built around more than shopping. Spend the day
+              moving between fashion, creativity, music, water and community
+              — with every part of the experience designed to feel like TSE,
+              offline.
+            </p>
+          </div>
+        </div>
+
+        {/* PILLARS */}
+        <div className="divide-y divide-white/10">
+          {pillars.map((pillar, index) => (
+            <motion.article
+              key={pillar.number}
+              initial={
+                shouldReduceMotion
+                  ? false
+                  : {
+                      opacity: 0,
+                      y: 24,
+                    }
+              }
+              whileInView={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: 1,
+                      y: 0,
+                    }
+              }
+              viewport={{
+                once: true,
+                amount: 0.2,
+              }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : 0.65,
+                delay: shouldReduceMotion ? 0 : index * 0.04,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="group relative py-10 md:py-14 lg:py-16"
+            >
+              <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+                {/* NUMBER */}
+                <div className="lg:col-span-1">
+                  <span className="text-[10px] tracking-[0.25em] text-white/30">
                     {pillar.number}
                   </span>
-
-                  <ArrowUpRight
-                    size={16}
-                    strokeWidth={1.3}
-                    className="text-white/25 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white"
-                  />
                 </div>
 
-                <p className="mt-12 text-[8px] uppercase tracking-[0.25em] text-white/35">
-                  {pillar.label}
-                </p>
+                {/* TITLE */}
+                <div className="lg:col-span-4">
+                  <p className="tse-label text-tse-accent">
+                    {pillar.label}
+                  </p>
 
-                <h3 className="mt-3 font-display text-5xl uppercase leading-none tracking-[-0.04em]">
-                  {pillar.title}
-                </h3>
+                  <h3 className="mt-3 font-display text-[clamp(4rem,7vw,7rem)] uppercase leading-[0.8] tracking-[-0.055em] transition-transform duration-500 group-hover:translate-x-2">
+                    {pillar.title}
+                  </h3>
+                </div>
 
-                <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">
-                  {pillar.description}
-                </p>
-              </article>
-            ))}
-          </div>
+                {/* DESCRIPTION */}
+                <div className="lg:col-span-5 lg:col-start-7">
+                  <p className="max-w-lg text-sm leading-7 text-white/50 md:text-base">
+                    {pillar.description}
+                  </p>
+
+                  <p className="mt-6 text-[9px] uppercase tracking-[0.25em] text-white/30">
+                    {pillar.detail}
+                  </p>
+                </div>
+              </div>
+
+              <div className="absolute -bottom-px left-0 h-px w-0 bg-white/25 transition-all duration-500 group-hover:w-full" />
+            </motion.article>
+          ))}
+        </div>
+
+        {/* CLOSING STATEMENT */}
+        <div className="grid gap-6 border-t border-white/10 pt-8 md:grid-cols-2 md:items-end md:pt-10">
+          <p className="tse-label text-white/30">
+            One day. Five ways to experience TSE.
+          </p>
+
+          <p className="max-w-md text-sm leading-6 text-white/40 md:justify-self-end">
+            Shop something new to you. Find your people. Make something.
+            Take a swim. Stay for the music. Leave with a story.
+          </p>
         </div>
       </div>
     </section>

@@ -53,7 +53,7 @@ export default function Location() {
           >
             <Image
               src="/images/venue1.jpg"
-              alt="Kid Palace, Gataka — venue for TSE Live"
+              alt="Barizi Resort, Gataka — venue for TSE Live"
               fill
               priority={false}
               className="object-cover grayscale transition-all duration-1000 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
@@ -79,7 +79,7 @@ export default function Location() {
             {/* VENUE NAME */}
             <div className="absolute bottom-6 left-6">
               <p className="font-display text-4xl uppercase leading-none tracking-[-0.03em] text-white sm:text-5xl">
-                Kid Palace
+                Barizi Resort
               </p>
 
               <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/60">

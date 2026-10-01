@@ -6,7 +6,7 @@ const vendors = [
     name: "TSE Archive",
     category: "Curated Thrift",
     description:
-      "A carefully selected edit of vintage and contemporary pieces for the fashion-forward.",
+      "A carefully selected edit of rare finds and contemporary pieces for the fashion-forward.",
     tags: ["Vintage", "Streetwear", "Designer"],
   },
   {
@@ -53,7 +53,7 @@ const vendors = [
 
 export default function VendorsPage() {
   return (
-    <main className="min-h-screen bg-[#f4f1ea] text-black">
+    <main className="min-h-screen bg-black text-white">
       {/* =====================================================
           HERO
       ===================================================== */}
@@ -64,7 +64,7 @@ export default function VendorsPage() {
             TSE LIVE // THE MARKET
           </p>
 
-          <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px] lg:items-end">
+          <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px] lg:items-center">
             <h1 className="max-w-6xl font-display text-[clamp(4rem,11vw,9rem)] uppercase leading-[0.78] tracking-[-0.06em]">
               Meet
               <br />
@@ -84,7 +84,7 @@ export default function VendorsPage() {
                 href="/tickets"
                 className="mt-8 inline-flex border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
               >
-                Get Your Ticket →
+                Get Your Ticket
               </Link>
             </div>
           </div>
@@ -95,23 +95,23 @@ export default function VendorsPage() {
           INTRO
       ===================================================== */}
 
-      <section className="border-b border-black/10 px-6 py-16 md:px-12 md:py-24">
+      <section className="border-b border-white/10 px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[220px_1fr]">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-            01 // The Market
+          <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
+            The Market
           </p>
 
           <div className="max-w-4xl">
-            <p className="text-2xl uppercase leading-[1.15] tracking-[-0.04em] md:text-4xl">
+            <p className="text-2xl uppercase leading-[1.15] tracking-[-0.04em] text-white md:text-4xl">
               TSE Live is more than an event. It is a meeting
               point for people who believe style should be
               discovered, shared and experienced.
             </p>
 
-            <p className="mt-8 max-w-2xl text-sm leading-7 text-black/45">
+            <p className="mt-8 max-w-2xl text-sm leading-7 text-white/45">
               Explore curated thrift, vintage fashion, independent
               designers, handmade pieces and creative businesses
-              from across Nairobi's fashion community.
+              from across Nairobi&apos;s fashion community.
             </p>
           </div>
         </div>
@@ -123,44 +123,44 @@ export default function VendorsPage() {
 
       <section className="px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 flex items-end justify-between border-b border-black/10 pb-6">
+          <div className="mb-10 flex items-end justify-between border-b border-white/10 pb-6">
             <div>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
-                02 // Featured
+              <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
+                Featured
               </p>
 
-              <h2 className="mt-3 text-3xl uppercase tracking-[-0.04em] md:text-5xl">
+              <h2 className="mt-3 text-3xl uppercase tracking-[-0.04em] text-white md:text-5xl">
                 The Edit
               </h2>
             </div>
 
-            <span className="hidden text-[9px] uppercase tracking-[0.2em] text-black/30 sm:block">
+            <span className="hidden text-[9px] uppercase tracking-[0.2em] text-white/30 sm:block">
               {vendors.length} Creatives
             </span>
           </div>
 
-          <div className="grid border-l border-t border-black/10 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid border-l border-t border-white/10 md:grid-cols-2 lg:grid-cols-3">
             {vendors.map((vendor) => (
               <article
                 key={vendor.number}
-                className="group min-h-90 border-b border-r border-black/10 p-6 transition hover:bg-black hover:text-white md:p-8"
+                className="group min-h-90 border-b border-r border-white/10 p-6 transition hover:bg-white hover:text-black md:p-8"
               >
                 <div className="flex items-start justify-between">
-                  <span className="text-[9px] tracking-[0.2em] text-black/30 transition group-hover:text-white/30">
+                  <span className="text-[9px] tracking-[0.2em] text-white/30 transition group-hover:text-black/30">
                     {vendor.number}
                   </span>
 
-                  <span className="text-[9px] uppercase tracking-[0.18em] text-black/30 transition group-hover:text-white/30">
+                  <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 transition group-hover:text-black/30">
                     {vendor.category}
                   </span>
                 </div>
 
                 <div className="mt-24">
-                  <h3 className="text-3xl uppercase tracking-[-0.04em]">
+                  <h3 className="text-3xl uppercase tracking-[-0.04em] text-white transition group-hover:text-black">
                     {vendor.name}
                   </h3>
 
-                  <p className="mt-5 max-w-sm text-sm leading-6 text-black/45 transition group-hover:text-white/45">
+                  <p className="mt-5 max-w-sm text-sm leading-6 text-white/45 transition group-hover:text-black/45">
                     {vendor.description}
                   </p>
 
@@ -168,7 +168,7 @@ export default function VendorsPage() {
                     {vendor.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="border border-black/10 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-black/40 transition group-hover:border-white/10 group-hover:text-white/40"
+                        className="border border-white/10 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-white/40 transition group-hover:border-black/10 group-hover:text-black/40"
                       >
                         {tag}
                       </span>
@@ -187,10 +187,10 @@ export default function VendorsPage() {
 
       <section className="bg-black px-6 py-20 text-white md:px-12 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[1fr_400px] lg:items-end">
+          <div className="grid gap-12 lg:grid-cols-[1fr_400px] lg:items-center">
             <div>
               <p className="text-[9px] uppercase tracking-[0.35em] text-white/30">
-                03 // Want In?
+                Want In?
               </p>
 
               <h2 className="mt-6 max-w-5xl font-display text-[clamp(3.5rem,8vw,7rem)] uppercase leading-[0.8] tracking-[-0.055em]">
@@ -216,14 +216,17 @@ export default function VendorsPage() {
                   href="/tickets"
                   className="inline-flex border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
                 >
-                  Get A VVIP Ticket →
+                  Get A VVIP Ticket
                 </Link>
 
                 <a
-                  href="mailto:hello@thestylededit.com"
+                                
+                  href="https://wa.me/254110277215?text=Hi%20TSE%2C%20I%27d%20like%20to%20ask%20about%20becoming%20a%20vendor%20at%20TSE%20Live."
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center px-2 text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 transition hover:text-white"
                 >
-                  Or ask us a question
+                  Or ask us on WhatsApp
                 </a>
               </div>
             </div>

@@ -120,7 +120,7 @@ export default function SchedulePreview() {
                 py-7
                 transition-colors
                 duration-300
-                hover:bg-white/[0.025]
+                hover:bg-white/2.5
                 sm:grid-cols-[100px_1fr_auto]
                 sm:items-center
                 sm:gap-10

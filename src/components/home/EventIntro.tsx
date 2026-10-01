@@ -179,7 +179,7 @@ export default function EventIntro() {
           </div>
 
           <div className="lg:col-span-7 lg:col-start-5">
-            <p className="font-display text-[clamp(2rem,4vw,4rem)] uppercase leading-[0.9] tracking-[-0.025em] text-white/90">
+            <p className="font-display text-[clamp(2rem,4vw,4rem)] uppercase leading-[0.9] tracking-tight text-white/90">
               Come for the thrift.
               <br />
               Stay for the experience.
