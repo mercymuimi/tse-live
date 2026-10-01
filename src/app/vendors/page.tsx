@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 const vendors = [
   {
@@ -82,9 +83,9 @@ export default function VendorsPage() {
 
               <Link
                 href="/tickets"
-                className="mt-8 inline-flex border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
+                className="group mt-8 inline-flex items-center justify-between gap-6 border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
               >
-                Get Your Ticket
+                <span>Get Your Ticket</span>
               </Link>
             </div>
           </div>
@@ -214,13 +215,12 @@ export default function VendorsPage() {
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   href="/tickets"
-                  className="inline-flex border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
+                  className="group inline-flex items-center gap-4 border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
                 >
-                  Get A VVIP Ticket
+                  <span>Get A VVIP Ticket</span>
                 </Link>
 
                 <a
-                                
                   href="https://wa.me/254110277215?text=Hi%20TSE%2C%20I%27d%20like%20to%20ask%20about%20becoming%20a%20vendor%20at%20TSE%20Live."
                   target="_blank"
                   rel="noopener noreferrer"
