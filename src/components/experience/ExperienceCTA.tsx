@@ -37,7 +37,7 @@ export default function ExperienceCTA() {
           {/* COPY */}
           <div className="lg:col-span-9">
             <div className="flex items-center gap-3">
-              <span className="h-px w-7 bg-white/30" />
+              
 
               <p className="tse-eyebrow text-white/35">
                 TSE LIVE // 30.10.26
@@ -45,7 +45,7 @@ export default function ExperienceCTA() {
             </div>
 
             <h2 className="mt-7 max-w-260 font-display text-[clamp(4rem,9vw,9rem)] uppercase leading-[0.78] tracking-[-0.065em]">
-              Don't Just
+              Don&apos;t Just
               <br />
               Hear About It.
               <br />
@@ -65,7 +65,7 @@ export default function ExperienceCTA() {
             </Link>
 
             <p className="mt-4 text-[9px] uppercase tracking-[0.25em] text-white/25">
-              One day only · Gataka · Rongai
+              One day only · Barizi Resort
             </p>
           </div>
         </motion.div>

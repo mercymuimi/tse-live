@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 
 const moments = [
@@ -26,6 +27,7 @@ const moments = [
     title: "Compete",
     description:
       "Strut your look on the floor. TSE's fashion competition, live — this is where Best Styled and Best Dressed get decided.",
+    featured: true,
   },
   {
     time: "05",
@@ -44,6 +46,7 @@ const moments = [
     title: "Celebrate",
     description:
       "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs, marking 1 year of TSE.",
+    featured: true,
   },
   {
     time: "08",
@@ -60,7 +63,7 @@ export default function ExperienceTimeline() {
     <section className="bg-tse-black px-6 pt-16 pb-24 text-tse-paper md:px-12 md:pt-20 md:pb-32 lg:px-16 lg:pt-24 lg:pb-40">
       <div className="mx-auto max-w-360">
         {/* HEADER */}
-        <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-12 md:gap-8 md:pb-16">
+        <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-12 md:items-center md:gap-8 md:pb-16">
           {/* HEADING */}
           <div className="md:col-span-7">
             <p className="tse-eyebrow text-white/35">
@@ -77,7 +80,7 @@ export default function ExperienceTimeline() {
           </div>
 
           {/* INTRO COPY */}
-          <div className="md:col-span-4 md:col-start-9 md:self-start md:pt-16 lg:pt-20">
+          <div className="md:col-span-4 md:col-start-9">
             <p className="max-w-sm text-sm leading-7 text-white/45 md:text-[15px]">
               No fixed script. Move through the day at your own pace — shop,
               style, compete, create, celebrate and stay for the night.
@@ -115,7 +118,9 @@ export default function ExperienceTimeline() {
                 delay: shouldReduceMotion ? 0 : index * 0.04,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="group relative border-b border-white/10 py-7 md:py-9"
+              className={`group relative border-b border-white/10 py-7 transition-colors duration-300 md:py-9 ${
+                moment.featured ? "bg-white/[0.03]" : ""
+              }`}
             >
               <div className="grid gap-6 md:grid-cols-12 md:items-center md:gap-8">
                 {/* NUMBER */}
@@ -131,9 +136,17 @@ export default function ExperienceTimeline() {
 
                 {/* TITLE */}
                 <div className="md:col-span-5">
-                  <h3 className="font-display text-[clamp(3rem,5vw,5.5rem)] uppercase leading-[0.82] tracking-[-0.055em] text-white transition-transform duration-500 ease-out group-hover:translate-x-1">
-                    {moment.title}
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-display text-[clamp(3rem,5vw,5.5rem)] uppercase leading-[0.82] tracking-[-0.055em] text-white transition-transform duration-500 ease-out group-hover:translate-x-1">
+                      {moment.title}
+                    </h3>
+
+                    {moment.featured && (
+                      <span className="border border-tse-accent/40 px-2 py-1 text-[8px] uppercase tracking-[0.2em] text-tse-accent">
+                        Highlight
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* DESCRIPTION */}
@@ -160,6 +173,19 @@ export default function ExperienceTimeline() {
             Come for the clothes. Stay for the people. Leave with something
             worth remembering.
           </p>
+        </div>
+
+        {/* LINK TO FULL SCHEDULE */}
+        <div className="mt-10 border-t border-white/10 pt-8">
+          <Link
+            href="/schedule"
+            className="group inline-flex items-center gap-3 text-[9px] uppercase tracking-[0.25em] text-white/50 transition-colors duration-300 hover:text-white"
+          >
+            See the full schedule for exact times
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
         </div>
       </div>
     </section>

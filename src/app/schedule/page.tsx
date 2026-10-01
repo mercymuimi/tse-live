@@ -4,8 +4,7 @@ import Link from "next/link";
 import { ArrowDownRight, Clock, MapPin } from "lucide-react";
 
 type ScheduleItem = {
-  time: string;
-  period: string;
+  number: string;
   title: string;
   description: string;
   location: string;
@@ -15,8 +14,7 @@ type ScheduleItem = {
 
 const schedule: ScheduleItem[] = [
   {
-    time: "3:00",
-    period: "PM",
+    number: "01",
     title: "Doors Open",
     description:
       "Step into TSE Live. Check in, explore the space and get familiar with the day's energy.",
@@ -24,8 +22,7 @@ const schedule: ScheduleItem[] = [
     category: "Arrival",
   },
   {
-    time: "3:30",
-    period: "PM",
+    number: "02",
     title: "The Thrift Market",
     description:
       "Discover curated fashion, vintage finds, independent vendors and pieces worth taking home.",
@@ -34,8 +31,7 @@ const schedule: ScheduleItem[] = [
     featured: true,
   },
   {
-    time: "5:00",
-    period: "PM",
+    number: "03",
     title: "Style Sessions",
     description:
       "Get personal styling direction, experiment with your wardrobe and discover new ways to wear what you already own.",
@@ -43,8 +39,16 @@ const schedule: ScheduleItem[] = [
     category: "Style",
   },
   {
-    time: "5:30",
-    period: "PM",
+    number: "04",
+    title: "The Competition",
+    description:
+      "Strut your look on the floor. TSE's fashion competition, live — this is where Best Styled and Best Dressed get decided.",
+    location: "Main Stage",
+    category: "Compete",
+    featured: true,
+  },
+  {
+    number: "05",
     title: "Pool & Chill",
     description:
       "Slow down, cool off and connect. Pool access is included with VIP and VVIP tickets.",
@@ -52,8 +56,7 @@ const schedule: ScheduleItem[] = [
     category: "Splash",
   },
   {
-    time: "6:30",
-    period: "PM",
+    number: "06",
     title: "Content Hour",
     description:
       "The space becomes your studio. Capture looks, create content and make the event part of your feed.",
@@ -62,18 +65,16 @@ const schedule: ScheduleItem[] = [
     featured: true,
   },
   {
-    time: "7:30",
-    period: "PM",
+    number: "07",
     title: "The Celebration",
     description:
-      "Cake cutting, the best dressed reveal, games and giveaways — marking one year of TSE.",
+      "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs, marking 1 year of TSE.",
     location: "Main Stage",
     category: "Celebrate",
     featured: true,
   },
   {
-    time: "8:30",
-    period: "PM",
+    number: "08",
     title: "Live Music",
     description:
       "As the night sets in, the energy shifts. Live performances set the tone for the evening.",
@@ -81,8 +82,7 @@ const schedule: ScheduleItem[] = [
     category: "Music",
   },
   {
-    time: "10:00",
-    period: "PM",
+    number: "09",
     title: "TSE After Dark",
     description:
       "DJ sets, fashion, drinks, conversations and the kind of night you don't want to end early.",
@@ -95,6 +95,7 @@ const schedule: ScheduleItem[] = [
 const experiences = [
   "THRIFT",
   "STYLE",
+  "COMPETE",
   "SPLASH",
   "CREATE",
   "CELEBRATE",
@@ -110,7 +111,7 @@ export default function SchedulePage() {
 
       <section className="relative overflow-hidden bg-tse-black px-6 pb-20 pt-28 text-tse-paper md:px-12 md:pb-24 md:pt-36 lg:px-16">
         <div className="mx-auto max-w-360">
-          <div className="grid gap-12 lg:grid-cols-[1fr_300px] lg:items-end">
+          <div className="grid gap-12 lg:grid-cols-[1fr_300px] lg:items-center">
             {/* HERO TITLE */}
 
             <div>
@@ -127,7 +128,7 @@ export default function SchedulePage() {
 
             {/* EVENT META */}
 
-            <div className="border-l border-white/10 pl-6 lg:pb-2">
+            <div className="border-l border-white/10 pl-6">
               <p className="font-display text-3xl uppercase leading-none tracking-[-0.04em]">
                 30.10.26
               </p>
@@ -148,11 +149,11 @@ export default function SchedulePage() {
 
         <div className="mx-auto mt-16 flex max-w-360 items-center justify-between border-t border-white/10 pt-5">
           <span className="text-[8px] uppercase tracking-[0.3em] text-white/30">
-            03:00 PM — Late
+            Nine Moments, One Day
           </span>
 
           <span className="text-[8px] uppercase tracking-[0.3em] text-white/30">
-            Gataka · Rongai
+            Barizi Resort
           </span>
         </div>
       </section>
@@ -208,7 +209,7 @@ export default function SchedulePage() {
         <div className="mx-auto max-w-360">
           {/* SECTION HEADER */}
 
-          <div className="grid gap-8 border-b border-white/10 pb-8 md:grid-cols-12 md:items-end">
+          <div className="grid gap-8 border-b border-white/10 pb-8 md:grid-cols-12 md:items-center">
             <div className="md:col-span-7">
               <p className="tse-eyebrow text-white/35">
                 The running order
@@ -223,8 +224,8 @@ export default function SchedulePage() {
 
             <div className="md:col-span-4 md:col-start-9">
               <p className="max-w-sm text-sm leading-6 text-white/45">
-                The flow is designed to move naturally from afternoon into
-                evening. Times may shift slightly as the day unfolds.
+                No fixed clock — the flow is designed to move naturally from
+                afternoon into evening, at its own pace.
               </p>
             </div>
           </div>
@@ -234,24 +235,18 @@ export default function SchedulePage() {
           <div className="divide-y divide-white/10">
             {schedule.map((item) => (
               <article
-                key={`${item.time}-${item.title}`}
+                key={item.number}
                 className={`group relative py-8 transition-colors duration-300 md:py-10 ${
-                  item.featured ? "bg-white/3" : ""
+                  item.featured ? "bg-white/[0.03]" : ""
                 }`}
               >
                 <div className="grid gap-7 md:grid-cols-12 md:items-center md:gap-8">
-                  {/* TIME */}
+                  {/* NUMBER */}
 
                   <div className="md:col-span-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-display text-4xl leading-none tracking-tighter text-white md:text-5xl">
-                        {item.time}
-                      </span>
-
-                      <span className="text-[8px] uppercase tracking-[0.2em] text-white/30">
-                        {item.period}
-                      </span>
-                    </div>
+                    <span className="font-display text-4xl leading-none tracking-tighter text-white md:text-5xl">
+                      {item.number}
+                    </span>
                   </div>
 
                   {/* CONTENT */}
@@ -325,7 +320,7 @@ export default function SchedulePage() {
       ===================================================== */}
 
       <section className="bg-tse-black px-6 py-20 text-tse-paper md:px-12 md:py-28 lg:px-16">
-        <div className="mx-auto grid max-w-360 gap-12 md:grid-cols-12 md:items-end">
+        <div className="mx-auto grid max-w-360 gap-12 md:grid-cols-12 md:items-center">
           <div className="md:col-span-8">
             <p className="tse-eyebrow text-white/30">
               Come for the fashion.
@@ -357,7 +352,7 @@ export default function SchedulePage() {
           <div className="flex flex-col justify-between gap-10 md:flex-row md:items-end">
             <div>
               <p className="tse-eyebrow text-white/35">
-                30.10.26 // Gataka · Rongai
+                30.10.26 // Barizi Resort
               </p>
 
               <h2 className="mt-4 font-display text-[clamp(4rem,7vw,7rem)] uppercase leading-[0.8] tracking-[-0.06em] text-white">
@@ -372,13 +367,6 @@ export default function SchedulePage() {
               className="group flex w-full items-center justify-between bg-white px-6 py-5 text-[9px] font-bold uppercase tracking-[0.22em] text-black transition-colors duration-300 hover:bg-white/80 md:w-64"
             >
               <span>Get your ticket</span>
-
-              <ArrowDownRight
-                size={15}
-                strokeWidth={1.5}
-                aria-hidden="true"
-                className="transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
-              />
             </Link>
           </div>
         </div>

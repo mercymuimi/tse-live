@@ -55,7 +55,7 @@ export default function ExperiencePillars() {
         <div className="grid gap-10 border-b border-white/10 pb-16 lg:grid-cols-12 lg:pb-20">
           <div className="lg:col-span-3">
             <p className="tse-eyebrow text-white/35">
-              01 — The worlds of TSE
+              The worlds of TSE
             </p>
           </div>
 
