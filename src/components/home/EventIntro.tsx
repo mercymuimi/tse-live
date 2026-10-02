@@ -6,20 +6,28 @@ import { motion, useReducedMotion } from "framer-motion";
 
 const stats = [
   { value: "01", label: "Day of TSE Live" },
-  { value: "20+", label: "Vendors" },
-  { value: "100+", label: "Looks & Finds" },
-  { value: "01", label: "Year of TSE" },
+  { value: "01", label: "TSE Anniversary" },
+  { value: "05", label: "Ways to Experience TSE" },
+  { value: "01", label: "Live Celebration" },
 ];
 
 const activities = [
   "Thrift Market",
-  "Live Styling",
+  "Style Sessions",
   "Style Competition",
   "Content Creation",
   "Poolside",
   "Live Music",
   "Launch Moment",
   "Awards & Gifts",
+];
+
+const experienceWords = [
+  "Shop",
+  "Style",
+  "Create",
+  "Play",
+  "Celebrate",
 ];
 
 export default function EventIntro() {
@@ -58,7 +66,7 @@ export default function EventIntro() {
         >
           <span className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/45">
             <span className="h-1.5 w-1.5 rounded-full bg-tse-accent" />
-            01 / The TSE Live Experience
+            The TSE Live Experience
           </span>
 
           <span className="hidden text-[9px] uppercase tracking-[0.2em] text-white/35 sm:block">
@@ -105,18 +113,19 @@ export default function EventIntro() {
               {...fadeInView(0.4)}
               className="max-w-md text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
             >
-              TSE Live is The Styled Edit, offline — a one-day celebration of
-              thrift, personal style, creativity, community and everything
-              we're building next.
+              TSE Live is The Styled Edit, offline — one day
+              where fashion, creativity, community and
+              lifestyle come together.
             </motion.p>
 
             <motion.p
               {...fadeInView(0.48)}
               className="mt-6 max-w-md text-sm leading-6 text-white/45"
             >
-              Shop curated finds, get styled, compete for the best look,
-              create content, meet independent vendors, take a dip, catch live
-              music and celebrate one year of TSE with us.
+              Shop curated finds. Style your look. Create
+              content. Meet the people behind the brands.
+              Play, listen, connect and celebrate one year
+              of TSE.
             </motion.p>
 
             <motion.div {...fadeInView(0.56)}>
@@ -127,24 +136,56 @@ export default function EventIntro() {
                 <span className="transition-colors duration-300 group-hover:text-tse-accent">
                   Explore the experience
                 </span>
-
-                <ArrowUpRight
-                  size={13}
-                  strokeWidth={1.5}
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                />
               </Link>
             </motion.div>
           </div>
         </div>
 
         {/* =====================================================
-            EXPERIENCE STRIP
+            EXPERIENCE WORDMARK
         ====================================================== */}
 
         <motion.div
-          {...fadeInView(0.5)}
-          className="mt-20 border-y border-white/10 py-6 sm:mt-24"
+          {...fadeInView(0.48)}
+          className="mt-20 border-y border-white/10 py-8 sm:mt-24 sm:py-10"
+        >
+          <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 sm:gap-x-7">
+            {experienceWords.map((word, index) => (
+              <div
+                key={word}
+                className="flex items-baseline gap-3"
+              >
+                <span className="font-display text-[9px] text-tse-accent/60">
+                  0{index + 1}
+                </span>
+
+                <span
+                  className={`font-display text-[clamp(2rem,4vw,4rem)] uppercase leading-none tracking-[-0.04em] ${
+                    index === experienceWords.length - 1
+                      ? "text-white"
+                      : "text-white/75"
+                  }`}
+                >
+                  {word}
+                </span>
+
+                {index < experienceWords.length - 1 && (
+                  <span className="font-display text-xl text-white/15 sm:text-2xl">
+                    /
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* =====================================================
+            ACTIVITY STRIP
+        ====================================================== */}
+
+        <motion.div
+          {...fadeInView(0.54)}
+          className="mt-12 border-b border-white/10 pb-6 sm:mt-14"
         >
           <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
             {activities.map((activity, index) => (
@@ -169,7 +210,7 @@ export default function EventIntro() {
         ====================================================== */}
 
         <motion.div
-          {...fadeInView(0.56)}
+          {...fadeInView(0.58)}
           className="mt-16 grid gap-10 border-b border-white/10 pb-16 lg:grid-cols-12 lg:gap-8"
         >
           <div className="lg:col-span-3">
@@ -186,9 +227,10 @@ export default function EventIntro() {
             </p>
 
             <p className="mt-6 max-w-xl text-sm leading-7 text-white/45">
-              TSE Live brings together the people, brands and creatives around
-              The Styled Edit. It is a space to discover something new, express
-              your personal style, create, connect and celebrate.
+              TSE Live brings together the people, brands
+              and creatives around The Styled Edit. It is a
+              space to discover something new, express your
+              personal style, create, connect and celebrate.
             </p>
           </div>
         </motion.div>
@@ -201,7 +243,7 @@ export default function EventIntro() {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              {...fadeInView(0.6 + index * 0.08)}
+              {...fadeInView(0.62 + index * 0.08)}
               className="
                 border-b
                 border-white/10
