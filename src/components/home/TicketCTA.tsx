@@ -11,7 +11,7 @@ export default function FinalCTA() {
         {/* TOP META */}
         <div className="flex items-center justify-between border-t border-white/10 pt-5">
           <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
-            06 / Be Part Of It
+            Be Part Of It
           </span>
 
           <span className="hidden text-[9px] uppercase tracking-[0.2em] text-white/25 sm:block">
@@ -80,7 +80,7 @@ export default function FinalCTA() {
               <div className="border-t border-white/10 pt-5">
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/30">
-                    Entry
+                    From
                   </span>
 
                   <span className="font-display text-3xl uppercase">
