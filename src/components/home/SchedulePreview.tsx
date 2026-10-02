@@ -1,61 +1,56 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 const schedule = [
   {
-    time: "03:00",
-    period: "PM",
+    number: "01",
     title: "Doors Open",
     description:
       "Arrive, check in, meet the community and ease into the world of TSE Live.",
     type: "Arrive",
   },
   {
-    time: "03:30",
-    period: "PM",
+    number: "02",
     title: "The Thrift Edit",
     description:
       "Explore curated thrift, vintage pieces, independent brands and the day's vendor edit.",
-    type: "Discover",
+    type: "Shop",
   },
   {
-    time: "05:00",
-    period: "PM",
+    number: "03",
     title: "The Style Off",
     description:
-      "Bring your look, make your statement and step into the TSE fashion competition.",
-    type: "Style",
+      "Get styled, bring your look and step onto the floor for TSE's live fashion competition.",
+    type: "Compete",
+    featured: true,
   },
   {
-    time: "06:00",
-    period: "PM",
+    number: "04",
     title: "The Content Floor",
     description:
       "Shoot, create and collaborate across curated content spaces built for creators and brands.",
     type: "Create",
   },
   {
-    time: "07:00",
-    period: "PM",
+    number: "05",
     title: "Poolside",
     description:
-      "Take a break from the racks. Swim, eat, connect and settle into the slower side of the day.",
-    type: "Unwind",
+      "Swim, eat and connect. Pool access is included with VIP and VVIP tickets.",
+    type: "Splash",
   },
   {
-    time: "08:00",
-    period: "PM",
+    number: "06",
     title: "One Year of TSE",
     description:
-      "Cake cutting, awards and a celebration of one year of building TSE and its community.",
+      "Cake cutting and awards — Best Styled, Best Dressed and Client of the Year — with TSE merch and vouchers up for grabs.",
     type: "Celebrate",
+    featured: true,
   },
   {
-    time: "08:30",
-    period: "PM",
+    number: "07",
     title: "Live Music",
     description:
       "Live performances, DJ sets and the energy that carries TSE Live into the night.",
@@ -64,54 +59,134 @@ const schedule = [
 ];
 
 export default function SchedulePreview() {
+  const shouldReduceMotion = useReducedMotion();
+
+  const fadeInView = (delay = 0) => ({
+    initial: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 25,
+    },
+    whileInView: {
+      opacity: 1,
+      y: 0,
+    },
+    viewport: {
+      once: true,
+      amount: 0.15,
+    },
+    transition: {
+      duration: 0.7,
+      delay,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  });
+
   return (
-    <section className="bg-[#090909] text-[#F4F0E8]">
-      <div className="mx-auto max-w-360 px-6 pb-16 pt-16 sm:px-8 sm:pb-20 sm:pt-20 lg:px-10 lg:pb-24 lg:pt-24">
+    <section className="relative overflow-hidden bg-tse-black text-tse-paper">
+      <div className="mx-auto max-w-360 px-6 pb-20 pt-20 sm:px-8 sm:pb-24 sm:pt-24 lg:px-10 lg:pb-28 lg:pt-28">
         {/* =====================================================
             HEADER
         ====================================================== */}
 
-        <div className="grid gap-8 border-t border-white/10 pt-5 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-10 border-t border-white/10 pt-5 lg:grid-cols-12 lg:items-start lg:gap-8">
+          {/* LEFT */}
+
           <div className="lg:col-span-7">
-            <div className="flex items-center gap-4">
-              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40">
-                04 / The Day
+            <motion.div
+              {...fadeInView(0)}
+              className="flex items-center gap-4"
+            >
+              <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/40">
+                The Day
               </span>
 
-              <span className="h-px w-10 bg-white/20" />
-            </div>
+              <span className="h-px w-14 bg-white/20" />
+            </motion.div>
 
-            <h2 className="mt-14 font-display text-[clamp(4rem,9vw,9rem)] uppercase leading-[0.8] tracking-[-0.055em]">
+            <motion.h2
+              {...fadeInView(0.08)}
+              className="
+                mt-14
+                font-display
+                text-[clamp(4rem,9vw,9rem)]
+                uppercase
+                leading-[0.78]
+                tracking-[-0.06em]
+              "
+            >
               One day.
               <br />
-              <span className="ml-[8%]">Many moments.</span>
-            </h2>
+              <span className="ml-[7%]">Many moments.</span>
+            </motion.h2>
           </div>
 
-          <div className="lg:col-span-4 lg:col-start-9 lg:border-l lg:border-white/10 lg:pl-8 lg:pt-2">
-            <p className="max-w-md text-sm leading-6 text-white/50 sm:text-base sm:leading-7">
+          {/* RIGHT */}
+
+          <motion.div
+            {...fadeInView(0.18)}
+            className="lg:col-span-4 lg:col-start-9 lg:border-l lg:border-white/10 lg:pl-8 lg:pt-2"
+          >
+            <p className="max-w-md text-sm leading-6 text-white/55 sm:text-base sm:leading-7">
               From the first arrival to the final song, TSE Live moves through
               fashion, creativity, community and celebration — all in one day.
             </p>
-          </div>
+
+            <p className="mt-5 max-w-md text-sm leading-6 text-white/35">
+              Come early. Stay late. There is more to the day than the
+              schedule suggests.
+            </p>
+          </motion.div>
         </div>
+
+        {/* =====================================================
+            DAY FLOW
+        ====================================================== */}
+
+        <motion.div
+          {...fadeInView(0.15)}
+          className="mt-16 grid grid-cols-4 border-y border-white/10 sm:mt-20 sm:grid-cols-7"
+        >
+          {["THRIFT", "STYLE", "COMPETE", "SPLASH", "CREATE", "CELEBRATE", "MUSIC"].map(
+            (item, index, arr) => (
+              <div
+                key={item}
+                className={`
+                  flex
+                  min-h-16
+                  items-center
+                  justify-center
+                  gap-2
+                  px-2
+                  text-center
+                  ${
+                    index < arr.length - 1
+                      ? "border-r border-white/10"
+                      : ""
+                  }
+                `}
+              >
+                <span className="font-display text-[9px] text-tse-accent/60">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span className="text-[8px] font-semibold uppercase tracking-[0.15em] text-white/40 sm:text-[9px]">
+                  {item}
+                </span>
+              </div>
+            ),
+          )}
+        </motion.div>
 
         {/* =====================================================
             SCHEDULE
         ====================================================== */}
 
-        <div className="mt-20">
+        <div className="mt-16 sm:mt-20">
           {schedule.map((item, index) => (
             <motion.div
-              key={`${item.time}-${item.title}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.05,
-              }}
-              className="
+              key={item.number}
+              {...fadeInView(0.05 + index * 0.05)}
+              className={`
                 group
                 grid
                 gap-6
@@ -120,48 +195,47 @@ export default function SchedulePreview() {
                 py-7
                 transition-colors
                 duration-300
-                hover:bg-white/2.5
-                sm:grid-cols-[100px_1fr_auto]
+                hover:bg-white/[0.025]
+                sm:grid-cols-[80px_1fr_auto]
                 sm:items-center
                 sm:gap-10
-              "
+                ${item.featured ? "bg-white/[0.03]" : ""}
+              `}
             >
-              {/* TIME */}
+              {/* NUMBER */}
 
-              <div className="flex items-baseline gap-1">
-                <span className="font-display text-4xl leading-none tracking-[-0.03em] sm:text-5xl">
-                  {item.time}
-                </span>
-
-                <span className="text-[8px] font-semibold uppercase tracking-[0.15em] text-white/35">
-                  {item.period}
-                </span>
-              </div>
+              <span className="font-display text-4xl leading-none tracking-[-0.04em] text-white/70 sm:text-5xl">
+                {item.number}
+              </span>
 
               {/* CONTENT */}
 
               <div>
                 <div className="mb-2 flex items-center gap-3">
-                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/35">
+                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-tse-accent/70">
                     {item.type}
                   </span>
 
                   <span className="h-px w-5 bg-white/15" />
                 </div>
 
-                <h3 className="font-display text-3xl uppercase leading-none tracking-tight sm:text-4xl">
+                <h3 className="font-display text-3xl uppercase leading-none tracking-[-0.025em] sm:text-4xl">
                   {item.title}
                 </h3>
 
-                <p className="mt-3 max-w-lg text-xs leading-5 text-white/40 sm:text-sm sm:leading-6">
+                <p className="mt-3 max-w-xl text-xs leading-5 text-white/40 sm:text-sm sm:leading-6">
                   {item.description}
                 </p>
               </div>
 
-              {/* NUMBER */}
+              {/* FEATURED TAG */}
 
-              <span className="hidden text-[9px] font-medium tracking-[0.18em] text-white/20 sm:block">
-                {String(index + 1).padStart(2, "0")}
+              <span
+                className={`hidden self-start pt-1 text-[8px] font-bold uppercase tracking-[0.2em] sm:block ${
+                  item.featured ? "text-tse-accent" : "text-white/0"
+                }`}
+              >
+                {item.featured ? "Highlight" : ""}
               </span>
             </motion.div>
           ))}
@@ -173,11 +247,20 @@ export default function SchedulePreview() {
             FOOTER
         ====================================================== */}
 
-        <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs leading-5 text-white/40">
-            Timings are subject to change as the final programme comes
-            together.
-          </p>
+        <motion.div
+          {...fadeInView(0.25)}
+          className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
+        >
+          <div>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/30">
+              30.10.26 / One day only
+            </span>
+
+            <p className="mt-3 max-w-md text-xs leading-5 text-white/35">
+              No fixed clock — the flow moves naturally from afternoon into
+              evening, at its own pace.
+            </p>
+          </div>
 
           <Link
             href="/schedule"
@@ -201,19 +284,8 @@ export default function SchedulePreview() {
             "
           >
             View full schedule
-
-            <ArrowUpRight
-              size={14}
-              strokeWidth={1.5}
-              className="
-                transition-transform
-                duration-300
-                group-hover:-translate-y-0.5
-                group-hover:translate-x-0.5
-              "
-            />
-          </Link>
-        </div>
+                      </Link>
+        </motion.div>
       </div>
     </section>
   );
