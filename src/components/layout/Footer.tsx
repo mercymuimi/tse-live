@@ -138,21 +138,6 @@ export default function Footer() {
                     "
                   >
                     <span>{link.label}</span>
-
-                    <ArrowUpRight
-                      size={14}
-                      strokeWidth={1.3}
-                      aria-hidden="true"
-                      className="
-                        ml-2
-                        opacity-0
-                        transition-all
-                        duration-300
-                        group-hover:translate-x-1
-                        group-hover:-translate-y-1
-                        group-hover:opacity-100
-                      "
-                    />
                   </Link>
                 ))}
               </nav>
@@ -193,21 +178,6 @@ export default function Footer() {
                     "
                   >
                     <span>{link.label}</span>
-
-                    <ArrowUpRight
-                      size={14}
-                      strokeWidth={1.3}
-                      aria-hidden="true"
-                      className="
-                        ml-2
-                        opacity-0
-                        transition-all
-                        duration-300
-                        group-hover:translate-x-1
-                        group-hover:-translate-y-1
-                        group-hover:opacity-100
-                      "
-                    />
                   </Link>
                 ))}
               </nav>
@@ -250,21 +220,6 @@ export default function Footer() {
                     "
                   >
                     <span>{link.label}</span>
-
-                    <ArrowUpRight
-                      size={14}
-                      strokeWidth={1.3}
-                      aria-hidden="true"
-                      className="
-                        ml-2
-                        opacity-0
-                        transition-all
-                        duration-300
-                        group-hover:translate-x-1
-                        group-hover:-translate-y-1
-                        group-hover:opacity-100
-                      "
-                    />
                   </Link>
                 ))}
               </nav>
@@ -307,21 +262,6 @@ export default function Footer() {
                     "
                   >
                     <span>{link.label}</span>
-
-                    <ArrowUpRight
-                      size={14}
-                      strokeWidth={1.3}
-                      aria-hidden="true"
-                      className="
-                        ml-2
-                        opacity-0
-                        transition-all
-                        duration-300
-                        group-hover:translate-x-1
-                        group-hover:-translate-y-1
-                        group-hover:opacity-100
-                      "
-                    />
                   </Link>
                 ))}
               </nav>
@@ -353,18 +293,6 @@ export default function Footer() {
                 "
               >
                 <span>WhatsApp Us</span>
-
-                <ArrowUpRight
-                  size={12}
-                  strokeWidth={1.3}
-                  aria-hidden="true"
-                  className="
-                    transition-transform
-                    duration-300
-                    group-hover:-translate-y-0.5
-                    group-hover:translate-x-0.5
-                  "
-                />
               </a>
             </div>
           </div>
