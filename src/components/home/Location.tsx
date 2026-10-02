@@ -12,14 +12,14 @@ export default function Location() {
         {/* TOP META */}
         <div className="flex items-center gap-4 border-t border-white/10 pt-5">
           <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            05 / The Location
+            The Location
           </span>
 
           <span className="h-px w-10 bg-white/20" />
         </div>
 
         {/* HEADER */}
-        <div className="mt-16 grid gap-8 lg:grid-cols-12 lg:items-start">
+        <div className="mt-16 grid gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <h2 className="font-display text-[clamp(4rem,9vw,9rem)] uppercase leading-[0.8] tracking-[-0.055em]">
               Come for
@@ -53,7 +53,7 @@ export default function Location() {
           >
             <Image
               src="/images/venue1.jpg"
-              alt="Barizi Resort, Gataka — venue for TSE Live"
+              alt="Barizi Resort — venue for TSE Live"
               fill
               priority={false}
               className="object-cover grayscale transition-all duration-1000 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
@@ -83,7 +83,7 @@ export default function Location() {
               </p>
 
               <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/60">
-                Gataka · Rongai
+                Nairobi, Kenya
               </p>
             </div>
 
@@ -125,8 +125,6 @@ export default function Location() {
               </h3>
 
               <p className="mt-5 max-w-sm text-sm leading-6 text-white/50">
-                Gataka, Rongai
-                <br />
                 Nairobi, Kenya
               </p>
             </div>
