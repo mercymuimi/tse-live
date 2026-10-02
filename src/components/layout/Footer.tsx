@@ -16,274 +16,425 @@ const informationLinks = [
 ];
 
 const socialLinks = [
-  { label: "Instagram", href: "#" },
-  { label: "TikTok", href: "#" },
-  { label: "WhatsApp", href: "#" },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/thestylededit25?stkn=MW1wcGVlYWp6MWMxYw%3D%3D&utm_source=qr",
+  },
+  {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@thestylededit25?_r=1&_t=ZS-9ABWaWZVHhY",
+  },
 ];
 
-const FLASH = "#FF2A2A";
+const communityLinks = [
+  {
+    label: "Community",
+    href: "https://chat.whatsapp.com/DZGoBCqjN2yF5Fdef3DRRm",
+  },
+  {
+    label: "Main Group",
+    href: "https://chat.whatsapp.com/E1svM76iwp5HtHUnwDbkpT?s=cl&p=i&ilr=0",
+  },
+  {
+    label: "Second Group",
+    href: "https://chat.whatsapp.com/Hq4cOWQJnaIHhrGdI3TDxx?s=cl&p=i&ilr=0",
+  },
+];
+
+const whatsappNumber = "0110277215";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#090909] text-[#F4F0E8]">
-      <div className="mx-auto max-w-360 px-6 sm:px-8 lg:px-10">
+    <footer className="bg-tse-black text-tse-paper">
+      <div className="mx-auto max-w-360 px-6 sm:px-8 lg:px-16">
 
-        {/* ==================================================
-            BRAND
-        ================================================== */}
-        <div className="pb-20 pt-20 sm:pb-24 sm:pt-24 lg:pb-28 lg:pt-28">
-          <div className="max-w-200">
-            <div className="mb-7 flex items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ backgroundColor: FLASH }}
-              />
+        {/* =====================================================
+            BRAND STATEMENT
+        ===================================================== */}
 
-              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35">
+        <div className="border-t border-white/10 pb-20 pt-20 sm:pb-24 sm:pt-24 lg:pb-28 lg:pt-28">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-end">
+
+            {/* BRAND */}
+
+            <div className="lg:col-span-8">
+              <p className="tse-eyebrow mb-7 text-white/30">
                 The Styled Edit Live
               </p>
+
+              <h2
+                className="
+                  max-w-[8ch]
+                  font-display
+                  text-[clamp(5rem,12vw,12rem)]
+                  uppercase
+                  leading-[0.73]
+                  tracking-[-0.07em]
+                "
+              >
+                TSE
+                <br />
+                <span className="ml-[7%] text-white/30">
+                  Live.
+                </span>
+              </h2>
             </div>
 
-            <h2
-              className="
-                font-display
-                text-[clamp(4.5rem,11vw,11rem)]
-                font-bold
-                uppercase
-                leading-[0.76]
-                tracking-[-0.065em]
-              "
-            >
-              TSE
-              <br />
-              <span className="ml-[8%]">LIVE.</span>
-            </h2>
+            {/* STATEMENT */}
 
-            <p className="mt-8 max-w-sm text-sm leading-6 text-white/40 sm:mt-10 sm:text-base sm:leading-7">
-              One year of thrift, styling and community —
-              brought to life for one day.
-            </p>
+            <div className="lg:col-span-3 lg:col-start-10 lg:pb-2">
+
+              <p className="max-w-xs text-sm leading-7 text-white/45 md:text-[15px]">
+                One year of thrift, styling and community — brought to life
+                for one day.
+              </p>
+
+              <p className="mt-6 text-[9px] uppercase tracking-[0.22em] text-white/25">
+                30.10.26
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* ==================================================
+        {/* =====================================================
             NAVIGATION
-        ================================================== */}
-        <div className="grid border-t border-white/10 py-10 sm:grid-cols-2 lg:grid-cols-3">
+        ===================================================== */}
 
-          {/* EXPLORE */}
-          <div className="border-b border-white/10 pb-10 sm:border-b-0 sm:pb-0 lg:border-r lg:border-white/10 lg:pr-10">
-            <p className="mb-6 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/30">
-              Explore
-            </p>
+        <div className="border-t border-white/10">
+          <div className="grid lg:grid-cols-12">
 
-            <nav
-              aria-label="Explore"
-              className="flex flex-col gap-4"
-            >
-              {exploreLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="
-                    group
-                    flex
-                    w-fit
-                    items-center
-                    gap-2
-                    font-display
-                    text-2xl
-                    uppercase
-                    leading-none
-                    tracking-[-0.02em]
-                    text-white/65
-                    transition-colors
-                    duration-300
-                    hover:text-[#F4F0E8]
-                  "
-                >
-                  <span>{link.label}</span>
+            {/* =================================================
+                EXPLORE
+            ================================================= */}
 
-                  <ArrowUpRight
-                    size={13}
-                    strokeWidth={1.5}
-                    aria-hidden="true"
+            <div className="border-b border-white/10 py-10 lg:col-span-3 lg:border-b-0 lg:border-r lg:py-12 lg:pr-10">
+              <p className="tse-label mb-7 text-white/25">
+                Explore
+              </p>
+
+              <nav
+                aria-label="Explore"
+                className="flex flex-col"
+              >
+                {exploreLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     className="
-                      -translate-x-1
-                      translate-y-1
-                      opacity-0
-                      transition-all
+                      group
+                      flex
+                      w-fit
+                      items-center
+                      py-2
+                      font-display
+                      text-[clamp(1.8rem,2.5vw,2.35rem)]
+                      uppercase
+                      leading-none
+                      tracking-[-0.035em]
+                      text-white/60
+                      transition-colors
                       duration-300
-                      group-hover:translate-x-0
-                      group-hover:translate-y-0
-                      group-hover:opacity-100
+                      hover:text-tse-paper
                     "
-                    style={{ color: FLASH }}
-                  />
-                </Link>
-              ))}
-            </nav>
-          </div>
+                  >
+                    <span>{link.label}</span>
 
-          {/* INFORMATION */}
-          <div className="border-b border-white/10 py-10 sm:border-b-0 sm:px-8 sm:py-0 lg:border-r lg:border-white/10">
-            <p className="mb-6 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/30">
-              Information
-            </p>
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.3}
+                      aria-hidden="true"
+                      className="
+                        ml-2
+                        opacity-0
+                        transition-all
+                        duration-300
+                        group-hover:translate-x-1
+                        group-hover:-translate-y-1
+                        group-hover:opacity-100
+                      "
+                    />
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-            <nav
-              aria-label="Information"
-              className="flex flex-col gap-4"
-            >
-              {informationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="
-                    group
-                    flex
-                    w-fit
-                    items-center
-                    gap-2
-                    font-display
-                    text-2xl
-                    uppercase
-                    leading-none
-                    tracking-[-0.02em]
-                    text-white/65
-                    transition-colors
-                    duration-300
-                    hover:text-[#F4F0E8]
-                  "
-                >
-                  <span>{link.label}</span>
+            {/* =================================================
+                INFORMATION
+            ================================================= */}
 
-                  <ArrowUpRight
-                    size={13}
-                    strokeWidth={1.5}
-                    aria-hidden="true"
+            <div className="border-b border-white/10 py-10 lg:col-span-3 lg:border-b-0 lg:border-r lg:px-10 lg:py-12">
+              <p className="tse-label mb-7 text-white/25">
+                Information
+              </p>
+
+              <nav
+                aria-label="Information"
+                className="flex flex-col"
+              >
+                {informationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     className="
-                      -translate-x-1
-                      translate-y-1
-                      opacity-0
-                      transition-all
+                      group
+                      flex
+                      w-fit
+                      items-center
+                      py-2
+                      font-display
+                      text-[clamp(1.8rem,2.5vw,2.35rem)]
+                      uppercase
+                      leading-none
+                      tracking-[-0.035em]
+                      text-white/60
+                      transition-colors
                       duration-300
-                      group-hover:translate-x-0
-                      group-hover:translate-y-0
-                      group-hover:opacity-100
+                      hover:text-tse-paper
                     "
-                    style={{ color: FLASH }}
-                  />
-                </Link>
-              ))}
-            </nav>
-          </div>
+                  >
+                    <span>{link.label}</span>
 
-          {/* SOCIAL */}
-          <div className="pt-10 sm:px-8 sm:pt-0 lg:pl-8">
-            <p className="mb-6 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/30">
-              Follow the movement
-            </p>
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.3}
+                      aria-hidden="true"
+                      className="
+                        ml-2
+                        opacity-0
+                        transition-all
+                        duration-300
+                        group-hover:translate-x-1
+                        group-hover:-translate-y-1
+                        group-hover:opacity-100
+                      "
+                    />
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-            <nav
-              aria-label="Social media"
-              className="flex flex-col gap-4"
-            >
-              {socialLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    group
-                    flex
-                    w-fit
-                    items-center
-                    gap-2
-                    font-display
-                    text-2xl
-                    uppercase
-                    leading-none
-                    tracking-[-0.02em]
-                    text-white/65
-                    transition-colors
-                    duration-300
-                    hover:text-[#F4F0E8]
-                  "
-                >
-                  <span>{link.label}</span>
+            {/* =================================================
+                FOLLOW TSE
+            ================================================= */}
 
-                  <ArrowUpRight
-                    size={13}
-                    strokeWidth={1.5}
-                    aria-hidden="true"
+            <div className="border-b border-white/10 py-10 lg:col-span-3 lg:border-b-0 lg:border-r lg:px-10 lg:py-12">
+              <p className="tse-label mb-7 text-white/25">
+                Follow TSE
+              </p>
+
+              <nav
+                aria-label="Social media"
+                className="flex flex-col"
+              >
+                {socialLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="
-                      -translate-x-1
-                      translate-y-1
-                      opacity-0
-                      transition-all
+                      group
+                      flex
+                      w-fit
+                      items-center
+                      py-2
+                      font-display
+                      text-[clamp(1.8rem,2.5vw,2.35rem)]
+                      uppercase
+                      leading-none
+                      tracking-[-0.035em]
+                      text-white/60
+                      transition-colors
                       duration-300
-                      group-hover:translate-x-0
-                      group-hover:translate-y-0
-                      group-hover:opacity-100
+                      hover:text-tse-paper
                     "
-                    style={{ color: FLASH }}
-                  />
-                </Link>
-              ))}
-            </nav>
+                  >
+                    <span>{link.label}</span>
+
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.3}
+                      aria-hidden="true"
+                      className="
+                        ml-2
+                        opacity-0
+                        transition-all
+                        duration-300
+                        group-hover:translate-x-1
+                        group-hover:-translate-y-1
+                        group-hover:opacity-100
+                      "
+                    />
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* =================================================
+                COMMUNITY
+            ================================================= */}
+
+            <div className="py-10 lg:col-span-3 lg:py-12 lg:pl-10">
+              <p className="tse-label mb-7 text-white/25">
+                Join the community
+              </p>
+
+              <nav
+                aria-label="TSE community"
+                className="flex flex-col"
+              >
+                {communityLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      group
+                      flex
+                      w-fit
+                      items-center
+                      py-2
+                      font-display
+                      text-[clamp(1.8rem,2.5vw,2.35rem)]
+                      uppercase
+                      leading-none
+                      tracking-[-0.035em]
+                      text-white/60
+                      transition-colors
+                      duration-300
+                      hover:text-tse-paper
+                    "
+                  >
+                    <span>{link.label}</span>
+
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.3}
+                      aria-hidden="true"
+                      className="
+                        ml-2
+                        opacity-0
+                        transition-all
+                        duration-300
+                        group-hover:translate-x-1
+                        group-hover:-translate-y-1
+                        group-hover:opacity-100
+                      "
+                    />
+                  </Link>
+                ))}
+              </nav>
+
+              {/* WHATSAPP */}
+
+              <a
+                href={`https://wa.me/254${whatsappNumber.slice(1)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  group
+                  mt-7
+                  inline-flex
+                  items-center
+                  gap-3
+                  border-b
+                  border-white/20
+                  pb-2
+                  text-[8px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.2em]
+                  text-white/45
+                  transition-all
+                  duration-300
+                  hover:border-tse-accent
+                  hover:text-tse-accent
+                "
+              >
+                <span>WhatsApp Us</span>
+
+                <ArrowUpRight
+                  size={12}
+                  strokeWidth={1.3}
+                  aria-hidden="true"
+                  className="
+                    transition-transform
+                    duration-300
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
+                />
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* ==================================================
-            EVENT STRIP
-        ================================================== */}
-        <div className="border-t border-white/10 py-8 sm:py-9">
-          <div className="grid gap-8 sm:grid-cols-3 sm:items-end sm:gap-6">
+        {/* =====================================================
+            EVENT INFORMATION
+        ===================================================== */}
+
+        <div className="border-t border-white/10 py-9 md:py-10">
+          <div className="grid gap-8 md:grid-cols-12 md:items-end">
 
             {/* DATE */}
-            <div>
-              <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/25">
+
+            <div className="md:col-span-3">
+              <p className="tse-label text-white/25">
                 Date
               </p>
 
-              <p className="mt-2 font-display text-2xl uppercase leading-none tracking-[-0.02em]">
+              <p className="mt-3 font-display text-3xl uppercase leading-none tracking-[-0.035em]">
                 30.10.26
               </p>
             </div>
 
             {/* LOCATION */}
-            <div>
-              <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/25">
+
+            <div className="md:col-span-3">
+              <p className="tse-label text-white/25">
                 Location
               </p>
 
-              <p className="mt-2 max-w-xs font-display text-2xl uppercase leading-none tracking-[-0.02em]">
+              <p className="mt-3 font-display text-3xl uppercase leading-none tracking-[-0.035em]">
                 Gataka · Rongai
               </p>
             </div>
 
+            {/* FORMAT */}
+
+            <div className="md:col-span-3">
+              <p className="tse-label text-white/25">
+                Format
+              </p>
+
+              <p className="mt-3 font-display text-3xl uppercase leading-none tracking-[-0.035em]">
+                One Day
+              </p>
+            </div>
+
             {/* TICKETS */}
-            <div className="sm:text-right">
+
+            <div className="md:col-span-3 md:text-right">
               <Link
                 href="/tickets"
                 className="
                   group
                   inline-flex
                   items-center
-                  gap-3
+                  gap-4
                   border-b
                   border-white/25
-                  pb-2
+                  pb-3
                   text-[9px]
-                  font-bold
+                  font-semibold
                   uppercase
-                  tracking-[0.18em]
-                  transition-colors
+                  tracking-[0.22em]
+                  text-tse-paper
+                  transition-all
                   duration-300
-                  hover:border-[#F4F0E8]
+                  hover:border-tse-accent
+                  hover:text-tse-accent
                 "
               >
                 <span>Get Your Ticket</span>
@@ -292,39 +443,27 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ==================================================
-            COPYRIGHT
-        ================================================== */}
-        <div
-          className="
-            flex
-            flex-col
-            gap-3
-            border-t
-            border-white/10
-            py-6
-            text-[8px]
-            font-medium
-            uppercase
-            tracking-[0.17em]
-            text-white/25
-            sm:flex-row
-            sm:items-center
-            sm:justify-between
-          "
-        >
-          <span>
-            © {new Date().getFullYear()} The Styled Edit Live
-          </span>
+        {/* =====================================================
+            FINAL FOOTER LINE
+        ===================================================== */}
 
-          <span className="sm:text-center">
-            Fashion · Culture · Community
-          </span>
+        <div className="border-t border-white/10 py-7">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-          <span className="sm:text-right">
-            Nairobi · Kenya
-          </span>
+            <p className="text-[8px] font-medium uppercase tracking-[0.18em] text-white/25">
+              {"©"} {new Date().getFullYear()} The Styled Edit Live
+          </p>
+            <p className="text-[8px] font-medium uppercase tracking-[0.18em] text-white/25">
+              Fashion · Culture · Community
+            </p>
+
+            <p className="text-[8px] font-medium uppercase tracking-[0.18em] text-white/25">
+              Nairobi · Kenya
+            </p>
+
+          </div>
         </div>
+
       </div>
     </footer>
   );
