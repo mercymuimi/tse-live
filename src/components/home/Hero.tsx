@@ -17,8 +17,8 @@ export default function Hero() {
   /* =====================================================
      HERO-SPECIFIC SCROLL PROGRESS
 
-     Instead of tracking the entire page, the parallax
-     animation now responds specifically to the Hero.
+     The parallax responds specifically to the Hero rather
+     than the entire page.
   ====================================================== */
 
   const { scrollYProgress } = useScroll({
@@ -57,7 +57,7 @@ export default function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
       >
-        {/* Vertical editorial guide */}
+        {/* Editorial guide */}
         <div className="absolute left-[8%] top-0 h-full w-px bg-white/[0.035]" />
 
         {/* Soft radial glow */}
@@ -96,7 +96,9 @@ export default function Hero() {
           ================================================== */}
 
           <div className="relative z-20 flex flex-col lg:col-span-7">
-            {/* TOP META */}
+            {/* =================================================
+                TOP META
+            ================================================== */}
 
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -126,7 +128,9 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* DATE */}
+            {/* =================================================
+                DATE
+            ================================================== */}
 
             <motion.div
               style={{
@@ -157,6 +161,8 @@ export default function Hero() {
 
             {/* =================================================
                 MAIN TITLE
+
+                Slightly more breathing room from the date.
             ================================================== */}
 
             <motion.h1
@@ -167,7 +173,7 @@ export default function Hero() {
                 delay: 0.1,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="mt-8 font-display uppercase tracking-[-0.065em] sm:mt-12"
+              className="mt-10 font-display uppercase tracking-[-0.065em] sm:mt-14"
             >
               <span className="block text-[clamp(6.5rem,13vw,12rem)] leading-[0.68]">
                 TSE<span className="text-tse-accent">.</span>
@@ -193,9 +199,9 @@ export default function Hero() {
               className="mt-7 max-w-125 sm:mt-9"
             >
               <p className="font-sans text-[14px] leading-6 text-white/52 sm:text-[15px] sm:leading-7">
-                A live expression of thrift, style, creativity and
-                community — bringing The Styled Edit from the
-                screen into real life.
+                One year of The Styled Edit, brought into
+                real life — a day of thrift, style, creativity,
+                music, community and culture.
               </p>
             </motion.div>
 
@@ -271,7 +277,7 @@ export default function Hero() {
                   fill
                   priority
                   placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAKAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAKAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   sizes="(max-width: 1024px) 90vw, 42vw"
                   className="object-cover grayscale transition-all duration-1000 ease-out group-hover:scale-[1.025] group-hover:grayscale-0"
                 />
@@ -352,7 +358,7 @@ export default function Hero() {
               </p>
 
               <p className="mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-white/55">
-                From KES 500
+                Tickets available
               </p>
             </div>
 
@@ -364,7 +370,7 @@ export default function Hero() {
               </p>
 
               <p className="mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-white/55">
-                Thrift · Style · Live
+                Shop · Style · Create · Play
               </p>
             </div>
           </div>
