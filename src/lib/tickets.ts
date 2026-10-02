@@ -41,7 +41,7 @@ export const ADD_ONS: Record<AddOnId, AddOn> = {
 export const TICKETS: TicketType[] = [
   {
     id: "regular",
-    tier: "Tier 01 — Regular",
+    tier: "Regular",
     name: "Regular",
     description:
       "Your entry into TSE Live — thrift, style, create and celebrate one year of The Styled Edit.",
@@ -61,7 +61,7 @@ export const TICKETS: TicketType[] = [
 
   {
     id: "vip",
-    tier: "Tier 02 — VIP",
+    tier: "VIP",
     name: "VIP",
     description:
       "The full TSE Live day, plus a splash — pool access included.",
@@ -82,7 +82,7 @@ export const TICKETS: TicketType[] = [
 
   {
     id: "vvip",
-    tier: "Tier 03 — VVIP",
+    tier: "VVIP",
     name: "VVIP",
     description:
       "The complete TSE Live experience, plus your own space to showcase or sell on the day.",
