@@ -1,55 +1,64 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
-const vendors = [
+const marketCategories = [
   {
     number: "01",
-    name: "TSE Archive",
-    category: "Curated Thrift",
+    name: "Thrift & Vintage",
+    category: "THE FIND",
     description:
-      "A carefully selected edit of rare finds and contemporary pieces for the fashion-forward.",
-    tags: ["Vintage", "Streetwear", "Designer"],
+      "Curated thrift, vintage pieces and unexpected finds for people who like their style with a story.",
+    tags: ["Vintage", "Thrift", "Archive"],
   },
   {
     number: "02",
-    name: "The Vintage Room",
-    category: "Vintage Fashion",
+    name: "Designers & Makers",
+    category: "THE MAKER",
     description:
-      "Rare finds, timeless silhouettes and pieces with stories worth carrying forward.",
-    tags: ["Vintage", "Archive", "Y2K"],
+      "Independent designers, reworked pieces and handmade fashion created by the people shaping the next wave.",
+    tags: ["Designers", "Handmade", "Reworked"],
   },
   {
     number: "03",
-    name: "Made Local",
-    category: "Artisan",
+    name: "Accessories",
+    category: "THE DETAIL",
     description:
-      "Independent Kenyan creatives bringing handmade objects, accessories and art into the TSE world.",
-    tags: ["Handmade", "Local", "Craft"],
+      "Jewellery, bags and statement pieces that take a look somewhere completely different.",
+    tags: ["Jewellery", "Bags", "Statement"],
   },
   {
     number: "04",
-    name: "Second Story",
-    category: "Thrift & Rework",
+    name: "Beauty",
+    category: "THE FINISH",
     description:
-      "Pre-loved fashion transformed into fresh expressions of personal style.",
-    tags: ["Reworked", "Upcycled", "Thrift"],
+      "Makeup, nails and lashes bringing the finishing touches to the looks moving through TSE Live.",
+    tags: ["Makeup", "Nails", "Lashes"],
   },
   {
     number: "05",
-    name: "The Accessory Edit",
-    category: "Accessories",
+    name: "Creative Brands",
+    category: "THE CULTURE",
     description:
-      "Statement pieces designed to finish the look and make the outfit unmistakably yours.",
-    tags: ["Jewellery", "Bags", "Accessories"],
+      "Independent creative businesses, artists and makers bringing their world into the TSE market.",
+    tags: ["Creative", "Local", "Independent"],
   },
   {
     number: "06",
-    name: "Creative Market",
-    category: "Independent Creatives",
+    name: "Lifestyle",
+    category: "THE LIFE",
     description:
-      "A rotating selection of emerging designers, makers and creative businesses.",
-    tags: ["Designers", "Creators", "Independent"],
+      "Objects, experiences and ideas that extend TSE beyond the wardrobe and into everyday life.",
+    tags: ["Lifestyle", "Culture", "Experience"],
   },
+];
+
+const marketFlow = [
+  "SELL",
+  "SHOWCASE",
+  "CREATE",
+  "COLLABORATE",
+  "CONNECT",
+  "GROW",
 ];
 
 export default function VendorsPage() {
@@ -61,33 +70,53 @@ export default function VendorsPage() {
 
       <section className="bg-black px-6 pb-20 pt-32 text-white md:px-12 md:pb-28 md:pt-40">
         <div className="mx-auto max-w-7xl">
-          <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
-            TSE LIVE // THE MARKET
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
+              TSE LIVE // THE MARKET
+            </p>
 
-          <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px] lg:items-center">
+            <span className="hidden text-[9px] uppercase tracking-[0.25em] text-white/25 sm:block">
+              30.10.26 / NAIROBI
+            </span>
+          </div>
+
+          <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_360px] lg:items-end">
             <h1 className="max-w-6xl font-display text-[clamp(4rem,11vw,9rem)] uppercase leading-[0.78] tracking-[-0.06em]">
               Meet
               <br />
               The
               <br />
-              Vendors.
+              Market.
             </h1>
 
-            <div className="max-w-sm">
+            <div className="max-w-sm pb-2">
               <p className="text-xs uppercase leading-6 tracking-[0.12em] text-white/45">
-                Independent sellers, designers, creatives and
-                collectors coming together for one unforgettable
-                fashion and culture experience.
+                A curated mix of thrift, fashion, beauty, design and
+                independent creativity — all coming together under one roof.
               </p>
 
               <Link
                 href="/tickets"
-                className="group mt-8 inline-flex items-center justify-between gap-6 border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
+                className="group mt-8 inline-flex items-center justify-between gap-6 border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition duration-300 hover:bg-white hover:text-black"
               >
                 <span>Get Your Ticket</span>
+
+                <ArrowUpRight
+                  size={14}
+                  strokeWidth={1.5}
+                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
               </Link>
             </div>
+          </div>
+
+          <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[8px] uppercase tracking-[0.25em] text-white/30">
+            <span>Thrift</span>
+            <span>Style</span>
+            <span>Beauty</span>
+            <span>Design</span>
+            <span>Culture</span>
+            <span>Community</span>
           </div>
         </div>
       </section>
@@ -96,30 +125,58 @@ export default function VendorsPage() {
           INTRO
       ===================================================== */}
 
-      <section className="border-b border-white/10 px-6 py-16 md:px-12 md:py-24">
+      <section className="border-y border-white/10 px-6 py-16 md:px-12 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[220px_1fr]">
           <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
             The Market
           </p>
 
-          <div className="max-w-4xl">
-            <p className="text-2xl uppercase leading-[1.15] tracking-[-0.04em] text-white md:text-4xl">
-              TSE Live is more than an event. It is a meeting
-              point for people who believe style should be
-              discovered, shared and experienced.
+          <div className="max-w-5xl">
+            <p className="text-2xl uppercase leading-[1.1] tracking-[-0.04em] text-white md:text-4xl lg:text-5xl">
+              Come looking for one thing.
+              <br />
+              Leave with something
+              <br />
+              completely unexpected.
             </p>
 
             <p className="mt-8 max-w-2xl text-sm leading-7 text-white/45">
-              Explore curated thrift, vintage fashion, independent
-              designers, handmade pieces and creative businesses
-              from across Nairobi&apos;s fashion community.
+              The TSE Market brings together people making, finding, styling
+              and selling things worth discovering. Shop curated pieces,
+              discover independent brands, meet creatives and find the details
+              that make your look yours.
             </p>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          VENDOR GRID
+          MARKET FLOW
+      ===================================================== */}
+
+      <section className="border-b border-white/10 px-6 py-10 md:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-wrap">
+            {marketFlow.map((item, index) => (
+              <div
+                key={item}
+                className="flex items-center border-b border-white/10 py-5 pr-8 md:border-b-0 md:pr-10"
+              >
+                <span className="mr-3 text-[8px] tracking-[0.2em] text-white/25">
+                  0{index + 1}
+                </span>
+
+                <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/55">
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          MARKET CATEGORIES
       ===================================================== */}
 
       <section className="px-6 py-16 md:px-12 md:py-24">
@@ -127,7 +184,7 @@ export default function VendorsPage() {
           <div className="mb-10 flex items-end justify-between border-b border-white/10 pb-6">
             <div>
               <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
-                Featured
+                What&apos;s Inside
               </p>
 
               <h2 className="mt-3 text-3xl uppercase tracking-[-0.04em] text-white md:text-5xl">
@@ -136,40 +193,40 @@ export default function VendorsPage() {
             </div>
 
             <span className="hidden text-[9px] uppercase tracking-[0.2em] text-white/30 sm:block">
-              {vendors.length} Creatives
+              06 Market Categories
             </span>
           </div>
 
           <div className="grid border-l border-t border-white/10 md:grid-cols-2 lg:grid-cols-3">
-            {vendors.map((vendor) => (
+            {marketCategories.map((item) => (
               <article
-                key={vendor.number}
-                className="group min-h-90 border-b border-r border-white/10 p-6 transition hover:bg-white hover:text-black md:p-8"
+                key={item.number}
+                className="group min-h-[22rem] border-b border-r border-white/10 p-6 transition-colors duration-500 hover:bg-white hover:text-black md:p-8"
               >
                 <div className="flex items-start justify-between">
-                  <span className="text-[9px] tracking-[0.2em] text-white/30 transition group-hover:text-black/30">
-                    {vendor.number}
+                  <span className="text-[9px] tracking-[0.2em] text-white/30 transition-colors duration-300 group-hover:text-black/30">
+                    {item.number}
                   </span>
 
-                  <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 transition group-hover:text-black/30">
-                    {vendor.category}
+                  <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 transition-colors duration-300 group-hover:text-black/30">
+                    {item.category}
                   </span>
                 </div>
 
                 <div className="mt-24">
-                  <h3 className="text-3xl uppercase tracking-[-0.04em] text-white transition group-hover:text-black">
-                    {vendor.name}
+                  <h3 className="max-w-sm text-3xl uppercase leading-[0.95] tracking-[-0.04em] text-white transition-colors duration-300 group-hover:text-black">
+                    {item.name}
                   </h3>
 
-                  <p className="mt-5 max-w-sm text-sm leading-6 text-white/45 transition group-hover:text-black/45">
-                    {vendor.description}
+                  <p className="mt-5 max-w-sm text-sm leading-6 text-white/45 transition-colors duration-300 group-hover:text-black/45">
+                    {item.description}
                   </p>
 
                   <div className="mt-7 flex flex-wrap gap-2">
-                    {vendor.tags.map((tag) => (
+                    {item.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="border border-white/10 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-white/40 transition group-hover:border-black/10 group-hover:text-black/40"
+                        className="border border-white/10 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-white/40 transition-colors duration-300 group-hover:border-black/10 group-hover:text-black/40"
                       >
                         {tag}
                       </span>
@@ -178,6 +235,38 @@ export default function VendorsPage() {
                 </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          MARKET STATEMENT
+      ===================================================== */}
+
+      <section className="border-y border-white/10 px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-[220px_1fr]">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-white/30">
+              More Than Shopping
+            </p>
+
+            <div>
+              <h2 className="max-w-6xl font-display text-[clamp(3rem,7vw,7rem)] uppercase leading-[0.82] tracking-[-0.055em]">
+                Find it.
+                <br />
+                Wear it.
+                <br />
+                Make it
+                <br />
+                yours.
+              </h2>
+
+              <p className="mt-10 max-w-xl text-sm leading-7 text-white/45">
+                The market is part of the experience — not a separate stop.
+                Move through the space, discover something new, build a look,
+                meet the person behind the brand and keep the day moving.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -205,26 +294,30 @@ export default function VendorsPage() {
 
             <div>
               <p className="text-sm leading-7 text-white/45">
-                Are you a thrift seller, designer, stylist, artist,
-                maker or creative business? TSE Live is built for
-                people shaping the culture. A VVIP ticket gets you
-                a selling spot and a feature in TSE&apos;s content
-                and community.
+                Are you a thrift seller, designer, stylist, beauty artist,
+                maker or creative business? Bring what you do to TSE Live and
+                become part of the market, the content and the community.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap items-center gap-5">
                 <Link
                   href="/tickets"
-                  className="group inline-flex items-center gap-4 border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition hover:bg-white hover:text-black"
+                  className="group inline-flex items-center gap-4 border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition duration-300 hover:bg-white hover:text-black"
                 >
-                  <span>Get A VVIP Ticket</span>
+                  <span>Get A Vendor Ticket</span>
+
+                  <ArrowUpRight
+                    size={14}
+                    strokeWidth={1.5}
+                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
                 </Link>
 
                 <a
                   href="https://wa.me/254110277215?text=Hi%20TSE%2C%20I%27d%20like%20to%20ask%20about%20becoming%20a%20vendor%20at%20TSE%20Live."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-2 text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 transition hover:text-white"
+                  className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/40 transition-colors duration-300 hover:text-white"
                 >
                   Or ask us on WhatsApp
                 </a>
@@ -250,9 +343,15 @@ export default function VendorsPage() {
             </p>
           </div>
 
-          <p className="text-[8px] uppercase tracking-[0.2em] text-white/30">
-            Nairobi, Kenya
-          </p>
+          <div className="flex flex-col gap-2 md:items-end">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-white/30">
+              30.10.26
+            </p>
+
+            <p className="text-[8px] uppercase tracking-[0.2em] text-white/30">
+              Nairobi, Kenya
+            </p>
+          </div>
         </div>
       </footer>
     </main>
