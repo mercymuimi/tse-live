@@ -29,7 +29,7 @@ const experiences = [
     tag: "The Studio",
     description:
       "Photoshoot setups, creative corners and content collaborations made for creators, brands and anyone who wants the shot.",
-    image: "/images/content2.JPG",
+    image: "/images/content2.jpg",
     className: "lg:col-span-5",
   },
   {
