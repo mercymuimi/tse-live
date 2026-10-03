@@ -5,21 +5,26 @@ import type {
 } from "@/types/ticket";
 
 /* =========================================================
-   ADD-ONS
+   VENUE EXTRAS
 ========================================================= */
 
+/**
+ * Informational extras available at the venue.
+ *
+ * These are NOT purchased through the online checkout.
+ */
 export const ADD_ONS: Record<AddOnId, AddOn> = {
   pool: {
     id: "pool",
     name: "Pool Access",
     price: 300,
     description:
-      "Included with VIP and VVIP tickets. Not sold separately.",
+      "Pool access is included with VIP and VVIP tickets.",
   },
 
   food: {
     id: "food",
-    name: "Artisan Food",
+    name: "Food",
     price: 0,
     description:
       "Food will be available for purchase separately at the venue.",
@@ -27,7 +32,7 @@ export const ADD_ONS: Record<AddOnId, AddOn> = {
 
   drinks: {
     id: "drinks",
-    name: "Craft Drinks",
+    name: "Drinks",
     price: 0,
     description:
       "Drinks will be available for purchase separately at the venue.",
@@ -44,15 +49,15 @@ export const TICKETS: TicketType[] = [
     tier: "Regular",
     name: "Regular",
     description:
-      "Your entry into TSE Live — thrift, style, create and celebrate one year of The Styled Edit.",
+      "Your entry into TSE Live — thrift, style, create, play and celebrate one year of The Styled Edit.",
     price: 500,
 
     inclusions: [
       "Full event access",
       "1 thrift outfit",
       "TSE Thrift Market",
+      "Style sessions & fashion activities",
       "Live music & entertainment",
-      "Unlimited photography",
       "Curated content spaces",
     ],
 
@@ -64,15 +69,15 @@ export const TICKETS: TicketType[] = [
     tier: "VIP",
     name: "VIP",
     description:
-      "The full TSE Live day, plus a splash — pool access included.",
+      "The full TSE Live experience with pool access included.",
     price: 800,
 
     inclusions: [
       "Full event access",
       "1 thrift outfit",
       "TSE Thrift Market",
+      "Style sessions & fashion activities",
       "Live music & entertainment",
-      "Unlimited photography",
       "Curated content spaces",
       "Pool access",
     ],
@@ -85,18 +90,18 @@ export const TICKETS: TicketType[] = [
     tier: "VVIP",
     name: "VVIP",
     description:
-      "The complete TSE Live experience, plus your own space to showcase or sell on the day.",
+      "The complete TSE Live experience with pool access and a dedicated space to showcase or sell.",
     price: 1200,
 
     inclusions: [
       "Full event access",
       "1 thrift outfit",
       "TSE Thrift Market",
+      "Style sessions & fashion activities",
       "Live music & entertainment",
-      "Unlimited photography",
       "Curated content spaces",
       "Pool access",
-      "Vendor space",
+      "Dedicated vendor space",
     ],
 
     addOns: [],
@@ -105,16 +110,15 @@ export const TICKETS: TicketType[] = [
 
 /* =========================================================
    GATE PRICING
-   ========================================================= */
+========================================================= */
 
 /**
  * At-the-gate pricing is intentionally kept separate
  * from the online ticket catalogue.
  *
- * This means customers cannot accidentally purchase
- * the gate ticket through the normal online checkout.
+ * This prevents the gate ticket from being purchased
+ * through the normal online checkout.
  */
-
 export const GATE_TICKET = {
   id: "gate",
   name: "At The Gate",
@@ -128,11 +132,12 @@ export const GATE_TICKET = {
 ========================================================= */
 
 /**
- * No add-ons are currently sold separately through online
- * checkout. Pool access is bundled into VIP and VVIP instead
- * of being offered as a standalone add-on.
+ * No add-ons are currently sold separately through
+ * online checkout.
+ *
+ * Pool access is bundled into VIP and VVIP.
+ * Food and drinks are purchased separately at the venue.
  */
-
 export const PAID_ADD_ONS: AddOn[] = [];
 
 /* =========================================================
@@ -141,9 +146,8 @@ export const PAID_ADD_ONS: AddOn[] = [];
 
 /**
  * Informational extras that may appear on the website,
- * but are NOT charged during checkout.
+ * but are NOT charged during online checkout.
  */
-
 export const VENUE_EXTRAS: AddOn[] = [
   ADD_ONS.food,
   ADD_ONS.drinks,
@@ -171,7 +175,7 @@ export function getAddOnById(
  * Returns the canonical price of a ticket.
  *
  * IMPORTANT:
- * This function should be used by server-side
+ * Use this function for server-side
  * checkout/payment validation.
  */
 export function getTicketPrice(
@@ -197,21 +201,23 @@ export function isPaidAddOn(
 /**
  * Calculates the paid add-on total for ONE ticket.
  *
- * Free venue extras such as food and drinks
- * automatically contribute KES 0.
+ * Free/informational venue extras contribute KES 0.
  */
 export function calculateAddOnTotal(
   addOns: AddOnId[]
 ): number {
-  return addOns.reduce((total, addOnId) => {
-    if (!isPaidAddOn(addOnId)) {
-      return total;
-    }
+  return addOns.reduce(
+    (total, addOnId) => {
+      if (!isPaidAddOn(addOnId)) {
+        return total;
+      }
 
-    const addOn = getAddOnById(addOnId);
+      const addOn = getAddOnById(addOnId);
 
-    return total + (addOn?.price ?? 0);
-  }, 0);
+      return total + (addOn?.price ?? 0);
+    },
+    0
+  );
 }
 
 /**
