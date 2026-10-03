@@ -100,12 +100,6 @@ export default function VendorsPage() {
                 className="group mt-8 inline-flex items-center justify-between gap-6 border border-white/20 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.25em] transition duration-300 hover:bg-white hover:text-black"
               >
                 <span>Get Your Ticket</span>
-
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={1.5}
-                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                />
               </Link>
             </div>
           </div>
@@ -305,12 +299,6 @@ export default function VendorsPage() {
                   className="group inline-flex items-center gap-4 border border-white/20 px-7 py-5 text-[9px] font-bold uppercase tracking-[0.25em] transition duration-300 hover:bg-white hover:text-black"
                 >
                   <span>Get A Vendor Ticket</span>
-
-                  <ArrowUpRight
-                    size={14}
-                    strokeWidth={1.5}
-                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  />
                 </Link>
 
                 <a

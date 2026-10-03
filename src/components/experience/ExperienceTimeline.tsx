@@ -182,9 +182,6 @@ export default function ExperienceTimeline() {
             className="group inline-flex items-center gap-3 text-[9px] uppercase tracking-[0.25em] text-white/50 transition-colors duration-300 hover:text-white"
           >
             See the full schedule for exact times
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
-              →
-            </span>
           </Link>
         </div>
       </div>

@@ -11,7 +11,7 @@ const experiences = [
     tag: "The Market",
     description:
       "Curated thrift finds, independent fashion and TSE pieces — discover something, try it on and take it home.",
-    image: "/images/thrift1.JPG",
+    image: "/images/thrift2.JPG",
     className: "lg:col-span-7",
   },
   {
@@ -20,7 +20,7 @@ const experiences = [
     tag: "The Style Off",
     description:
       "Build your look, bring your personal style and step into the TSE fashion competition.",
-    image: "/images/experience4.JPG",
+    image: "/images/shoot1.JPG",
     className: "lg:col-span-5 lg:mt-20",
   },
   {
@@ -29,7 +29,7 @@ const experiences = [
     tag: "The Studio",
     description:
       "Photoshoot setups, creative corners and content collaborations made for creators, brands and anyone who wants the shot.",
-    image: "/images/shoot6.JPG",
+    image: "/images/content2.JPG",
     className: "lg:col-span-5",
   },
   {
@@ -38,7 +38,7 @@ const experiences = [
     tag: "Poolside",
     description:
       "Swim, eat, listen to live music, meet people and enjoy the day beyond the racks.",
-    image: "/images/lifestyle1.jpg",
+    image: "/images/pool1.jpg",
     className: "lg:col-span-7 lg:mt-20",
   },
 ];

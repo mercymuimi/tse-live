@@ -38,7 +38,7 @@ const spaces = [
     eyebrow: "CELEBRATE + REMEMBER",
     description:
       "When the day comes together, we celebrate one year of The Styled Edit — with cake, awards, gifts and the people who made the journey possible.",
-    image: "/images/shoot2.JPG",
+    image: "/images/Celebration1.JPG",
     detail: "ONE YEAR · AWARDS · TSE COMMUNITY",
   },
 ];
@@ -124,7 +124,7 @@ export default function ExperienceSpaces() {
 
                 {/* IMAGE */}
                 <div className="order-2 md:order-1 md:col-span-6">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
+                  <div className="relative aspect-4/3 overflow-hidden bg-white/5">
                     <Image
                       src={space.image}
                       alt={space.title}

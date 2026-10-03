@@ -52,7 +52,7 @@ export default function Location() {
             className="group relative aspect-16/10 overflow-hidden lg:col-span-8"
           >
             <Image
-              src="/images/venue1.jpg"
+              src="/images/venue.jpeg"
               alt="Barizi Resort — venue for TSE Live"
               fill
               priority={false}
